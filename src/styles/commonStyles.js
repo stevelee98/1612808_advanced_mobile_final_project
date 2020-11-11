@@ -35,7 +35,7 @@ export default {
         fontStyle: 'italic',
     },
     title: {
-        color: Colors.COLOR_PRIMARY,
+        color: Colors.COLOR_TEXT,
         fontSize: Fonts.FONT_SIZE_LARGE,
         margin: Constants.MARGIN,
     },
@@ -78,7 +78,7 @@ export default {
         shadowColor: Colors.COLOR_GREY_LIGHT
     },
     header: {
-        backgroundColor: Colors.COLOR_WHITE,
+        backgroundColor: Colors.COLOR_TAB,
         borderBottomWidth: 0,
         alignItems: 'center'
     },

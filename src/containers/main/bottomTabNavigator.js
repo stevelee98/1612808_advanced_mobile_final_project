@@ -12,16 +12,15 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 const Tab = createMaterialBottomTabNavigator();
 
 import HomeView from 'containers/home/homeView';
+import ic_home_white from "images/ic_home_white.png";
+import ic_home_blue from "images/ic_home_blue.png";
+import { Colors } from 'values/colors';
 
-import ic_home_black from "images/ic_home_black.png";
-import ic_home_black from "images/ic_home_black.png";
-import styles from './styles';
-
-const BottomTabNavigator = ({ badgeCount }) => {
+const BottomTabNavigator = () => {
 	return (
 		<Tab.Navigator
 			initialRouteName="TabHome"
-			activeColor={'black'}
+			activeColor={Colors.COLOR_BLUE}
 			inactiveColor={'white'}
 			backBehavior={"initialRoute"}
 		>
@@ -31,52 +30,46 @@ const BottomTabNavigator = ({ badgeCount }) => {
 				options={{
 					title: "Home",
 					tabBarIcon: ({ focused, color, size }) => (
-						<Image source={focused ? ic_home_black : ic_home_black} />
+						<Image source={focused ? ic_home_blue : ic_home_white} />
 					),
-					tabBarColor: 'white'
+					tabBarColor: Colors.COLOR_TAB
 				}}
 			/>
 			<Tab.Screen
-				name="TabHome"
+				name="TabHome1"
 				component={HomeView}
 				options={{
 					title: "Home",
 					tabBarIcon: ({ focused, color, size }) => (
-						<Image source={focused ? ic_home_black : ic_home_black} />
+						<Image source={focused ? ic_home_blue : ic_home_white} />
 					),
-					tabBarColor: 'white'
+					tabBarColor: Colors.COLOR_TAB
 				}}
 			/>
 			<Tab.Screen
-				name="TabHome"
+				name="TabHome2"
 				component={HomeView}
 				options={{
 					title: "Home",
 					tabBarIcon: ({ focused, color, size }) => (
-						<Image source={focused ? ic_home_black : ic_home_black} />
+						<Image source={focused ? ic_home_blue : ic_home_white} />
 					),
-					tabBarColor: 'white'
+					tabBarColor: Colors.COLOR_TAB
 				}}
 			/>
 			<Tab.Screen
-				name="TabHome"
+				name="TabHome3"
 				component={HomeView}
 				options={{
 					title: "Home",
 					tabBarIcon: ({ focused, color, size }) => (
-						<Image source={focused ? ic_home_black : ic_home_black} />
+						<Image source={focused ? ic_home_blue : ic_home_white} />
 					),
-					tabBarColor: 'white'
+					tabBarColor: Colors.COLOR_TAB
 				}}
 			/>
 		</Tab.Navigator>
 	);
 }
 
-const mapStateToProps = state => ({
-})
-
-const mapDispatchToProps = {
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BottomTabNavigator);
+export default BottomTabNavigator;
