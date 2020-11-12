@@ -15,16 +15,19 @@ import Button from 'components/button';
 import commonStyles from 'styles/commonStyles';
 import { Fonts } from 'values/fonts';
 
-class ForgetPasswordView extends Component {
+class VerifyPasswordView extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             hidePassword: true,
-            password: '',
+            newPassword: '',
+            confirmPassword: '',
             email: '',
             user: null,
             errorSignIn: null,
+            validateNewPassword: null,
+            validateConfirmPassword: null,
         };
         this.hidePassword = true;
     }
@@ -74,9 +77,9 @@ class ForgetPasswordView extends Component {
                     <Content
                         contentContainerStyle={{ flexGrow: 1 }}
                         style={{ flexGrow: 1, backgroundColor: Colors.COLOR_BACKGROUND, paddingHorizontal: Constants.PADDING_LARGE }}>
-                        <View style={{ marginHorizontal: Constants.MARGIN_X_LARGE , marginTop: Constants.MARGIN_XX_LARGE}}>
-                            <Text style={{ ...commonStyles.textBold, fontSize: Fonts.FONT_SIZE_XX_LARGE }}>Forgot password</Text>
-                            <Text style={{ ...commonStyles.text, width: "80%", marginTop: Constants.MARGIN_XX_LARGE }}>Enter your email address and we'll send you a link to reset your password</Text>
+                        <View style={{ marginHorizontal: Constants.MARGIN_X_LARGE, marginTop: Constants.MARGIN_XX_LARGE }}>
+                            <Text style={{ ...commonStyles.textBold, fontSize: Fonts.FONT_SIZE_XX_LARGE }}>Verify password</Text>
+                            <Text style={{ ...commonStyles.text, width: "80%", marginTop: Constants.MARGIN_XX_LARGE }}>Enter your new password and confirm password</Text>
                         </View>
                         {this.renderForm()}
                         {this.renderButton()}
@@ -87,26 +90,49 @@ class ForgetPasswordView extends Component {
     }
 
     renderForm = () => {
-        let { email, validateEmail } = this.state;
+        let { newPassword, validateNewPassword, confirmPassword, validateConfirmPassword } = this.state;
         return (
             <View style={{ marginTop: Constants.MARGIN_XX_LARGE }}>
                 <TextInputCustom
-                    onRef={(r) => (this.email = r)}
+                    onRef={(ref) => (this.newPassword = ref)}
                     oneLine={true}
-                    label={'Your email'}
-                    placeholder={'Please input your email'}
-                    warnLabel={validateEmail}
-                    value={email}
+                    label={'New password'}
+                    warnLabel={validateNewPassword}
+                    placeholder={'Please input new password'}
+                    value={newPassword}
+                    secureTextEntry={this.state.hidePassword}
                     onChangeText={(txt) => {
-                        this.setState({ email: txt, validateEmail: null });
+                        this.setState({ newPassword: txt, validateNewPassword: null });
                     }}
                     onSubmitEditing={() => {
-                        this.password.focus();
+                        Keyboard.dismiss();
                     }}
-                    returnKeyType={'next'}
-                    keyboardType={'email-address'}
+                    returnKeyType={'done'}
+                    contentRight={this.state.hidePassword ? ic_eye_lock_grey : ic_eye_grey}
+                    onPressRight={this.managePasswordVisibility}
                     onBlur={() => {
-                        this.setState({ validateEmail: null });
+                        this.setState({ validateNewPassword: null });
+                    }}
+                />
+                <TextInputCustom
+                    onRef={(ref) => (this.confirmPassword = ref)}
+                    oneLine={true}
+                    label={'Confirm new password'}
+                    warnLabel={validateConfirmPassword}
+                    placeholder={'Please input confirm password'}
+                    value={confirmPassword}
+                    secureTextEntry={this.state.hidePassword}
+                    onChangeText={(txt) => {
+                        this.setState({ confirmPassword: txt, validateConfirmPassword: null });
+                    }}
+                    onSubmitEditing={() => {
+                        Keyboard.dismiss();
+                    }}
+                    returnKeyType={'done'}
+                    contentRight={this.state.hidePassword ? ic_eye_lock_grey : ic_eye_grey}
+                    onPressRight={this.managePasswordVisibility}
+                    onBlur={() => {
+                        this.setState({ validateConfirmPassword: null });
                     }}
                 />
             </View>
@@ -116,7 +142,7 @@ class ForgetPasswordView extends Component {
     renderButton = () => {
         return (
             <View style={{ marginTop: Constants.MARGIN }}>
-                <Button title={"SEND EMAIL"} titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }} backgroundColor={Colors.COLOR_DRK_GREY} />
+                <Button title={"CONFIRM"} titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }} backgroundColor={Colors.COLOR_DRK_GREY} />
             </View>
         )
     }
@@ -130,4 +156,4 @@ const mapDispatchToProps = {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ForgetPasswordView)
+export default connect(mapStateToProps, mapDispatchToProps)(VerifyPasswordView)
