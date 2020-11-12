@@ -3,7 +3,7 @@ export const Constants = {
     MAX_WIDTH: Dimensions.get("screen").width,
     MAX_HEIGHT: Dimensions.get("screen").height,
     CORNER_RADIUS: 6,
-    BORDER_RADIUS: 50,
+    BORDER_RADIUS: 56,
     BORDER_WIDTH: 1.5,
     MARGIN: 4, 
     PADDING: 4,

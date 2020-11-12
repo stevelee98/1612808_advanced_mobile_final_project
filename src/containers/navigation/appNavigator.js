@@ -12,6 +12,7 @@ import { enableScreens } from 'react-native-screens';
 import { Colors } from 'values/colors';
 import ForgetPasswordView from "containers/forgetPass/forgetPasswordView";
 import VerifyPassWordView from "containers/verifyPass/verifyPassWordView";
+import UserProfileView from "containers/profile/userProfileView";
 
 enableScreens();
 
@@ -29,7 +30,7 @@ const AppNavigator = () => {
     return (
         <NavigationContainer theme={MyTheme}>
             <Stack.Navigator
-                initialRouteName={'VerifyPass'}
+                initialRouteName={'Main'}
                 headerMode={'none'}
                 mode={'modal'}
                 screenOptions={{
@@ -44,6 +45,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Register" component={RegisterView} />
                 <Stack.Screen name="ForgetPass" component={ForgetPasswordView} />
                 <Stack.Screen name="VerifyPass" component={VerifyPassWordView} />
+                <Stack.Screen name="UserProfile" component={UserProfileView} />
             </Stack.Navigator>
         </NavigationContainer>
     )

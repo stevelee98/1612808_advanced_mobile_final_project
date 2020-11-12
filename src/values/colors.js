@@ -7,7 +7,7 @@ export const Colors = {
     COLOR_TAB: '#080f15',
     COLOR_WHITE: '#ffffff',
     COLOR_BLACK: '#000000',
-    COLOR_BLUE: '#1d6ec9',
+    COLOR_BLUE: '#3498DB',
     COLOR_BLACK_OPACITY_30: 'rgba(00, 00, 00, 0.3)',
     COLOR_TEXT: '#cccccc',
     COLOR_BLACK_OPACITY_50: 'rgba(00, 00, 00, 0.5)',

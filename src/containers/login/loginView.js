@@ -63,18 +63,16 @@ class LoginView extends Component {
 
     render() {
         return (
-            <Container style={styles.container}>
-                <Root>
-                    <Header
-                        title={"Sign In"}
-                        onBack={() => { }}
-                    />
-                    <Content style={{ flex: 1, backgroundColor: Colors.COLOR_BACKGROUND, paddingHorizontal: Constants.PADDING_LARGE }}>
-                        {this.renderForm()}
-                        {this.renderButton()}
-                    </Content>
-                </Root>
-            </Container>
+            <View style={styles.container}>
+                <Header
+                    title={"Sign In"}
+                    onBack={() => { }}
+                />
+                <Content style={{ flex: 1, backgroundColor: Colors.COLOR_BACKGROUND, paddingHorizontal: Constants.PADDING_LARGE }}>
+                    {this.renderForm()}
+                    {this.renderButton()}
+                </Content>
+            </View>
         )
     }
 

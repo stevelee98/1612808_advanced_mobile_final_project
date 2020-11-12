@@ -14,6 +14,12 @@ const Tab = createMaterialBottomTabNavigator();
 import HomeView from 'containers/home/homeView';
 import ic_home_white from "images/ic_home_white.png";
 import ic_home_blue from "images/ic_home_blue.png";
+import ic_search_white from 'images/ic_search_white.png';
+import ic_search_blue from 'images/ic_search_blue.png';
+import ic_grid_white from 'images/ic_grid_white.png';
+import ic_grid_blue from 'images/ic_grid_blue.png';
+import ic_download_blue from 'images/ic_download_blue.png';
+import ic_download_white from 'images/ic_download_white.png';
 import { Colors } from 'values/colors';
 
 const BottomTabNavigator = () => {
@@ -36,34 +42,34 @@ const BottomTabNavigator = () => {
 				}}
 			/>
 			<Tab.Screen
-				name="TabHome1"
+				name="TabDownload"
 				component={HomeView}
 				options={{
-					title: "Home",
+					title: "Downloads",
 					tabBarIcon: ({ focused, color, size }) => (
-						<Image source={focused ? ic_home_blue : ic_home_white} />
+						<Image source={focused ? ic_download_blue : ic_download_white} />
 					),
 					tabBarColor: Colors.COLOR_TAB
 				}}
 			/>
 			<Tab.Screen
-				name="TabHome2"
+				name="TabBrowser"
 				component={HomeView}
 				options={{
-					title: "Home",
+					title: "Browser",
 					tabBarIcon: ({ focused, color, size }) => (
-						<Image source={focused ? ic_home_blue : ic_home_white} />
+						<Image source={focused ? ic_grid_blue : ic_grid_white} />
 					),
 					tabBarColor: Colors.COLOR_TAB
 				}}
 			/>
 			<Tab.Screen
-				name="TabHome3"
+				name="TabSearch"
 				component={HomeView}
 				options={{
-					title: "Home",
+					title: "Search",
 					tabBarIcon: ({ focused, color, size }) => (
-						<Image source={focused ? ic_home_blue : ic_home_white} />
+						<Image source={focused ? ic_search_blue : ic_search_white} />
 					),
 					tabBarColor: Colors.COLOR_TAB
 				}}

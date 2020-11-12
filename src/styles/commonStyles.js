@@ -47,7 +47,7 @@ export default {
     },
     textSmall: {
         color: Colors.COLOR_TEXT,
-        fontSize: Fonts.FONT_SIZE_XX_SMALL,
+        fontSize: Fonts.FONT_SIZE_X_SMALL,
     },
     textSmallBold: {
         color: Colors.COLOR_TEXT,
