@@ -8,9 +8,9 @@ import SplashView from "containers/splash/splashView";
 import Main from "containers/main/bottomTabNavigator";
 import LoginView from 'containers/login/loginView';
 import RegisterView from 'containers/register/registerView';
-
 import { enableScreens } from 'react-native-screens';
 import { Colors } from 'values/colors';
+import ForgetPasswordView from "containers/forgetPass/forgetPasswordView";
 
 enableScreens();
 
@@ -28,7 +28,7 @@ const AppNavigator = () => {
     return (
         <NavigationContainer theme={MyTheme}>
             <Stack.Navigator
-                initialRouteName={'Register'}
+                initialRouteName={'ForgetPass'}
                 headerMode={'none'}
                 mode={'modal'}
                 screenOptions={{
@@ -41,6 +41,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Main" component={Main} />
                 <Stack.Screen name="Login" component={LoginView} />
                 <Stack.Screen name="Register" component={RegisterView} />
+                <Stack.Screen name="ForgetPass" component={ForgetPasswordView} />
             </Stack.Navigator>
         </NavigationContainer>
     )
