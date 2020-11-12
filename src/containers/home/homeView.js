@@ -12,6 +12,7 @@ import Utils from 'utils/utils';
 import commonStyles from 'styles/commonStyles';
 import { Constants } from 'values/constants';
 import { Fonts } from 'values/fonts';
+import { Colors } from 'values/colors';
 import ic_search_white from 'images/ic_search_white.png';
 import ic_grid_white from 'images/ic_grid_white.png';
 
@@ -23,7 +24,7 @@ const LIST_MENU = [
     },
     {
         name: 'Setting',
-        screen: null,
+        screen: 'Setting',
         value: 2
     }
 ]

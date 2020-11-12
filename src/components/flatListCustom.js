@@ -60,7 +60,7 @@ export default class FlatListCustom extends Component {
                     return (this.renderItem(item.data, index))
                 }}
                 keyExtractor={(item, index) => item.parentIndex.toString()}
-                ListFooterComponent={() => this.props.enableLoadMore ? this.renderFooter() : null}
+                ListFooterComponent={() => this.props.footerComponent ? this.props.footerComponent() : this.props.enableLoadMore ? this.renderFooter() : null}
                 ListEmptyComponent={() => this.props.isShowEmpty ? this.renderEmptyComponent(this.props.styleEmpty, this.props.styleTextEmpty) : null}
                 onMomentumScrollBegin={() => {
                     this.onEndReachedCalledDuringMomentum = false;
@@ -84,7 +84,7 @@ export default class FlatListCustom extends Component {
                 keyboardShouldPersistTaps='always'
             />
         )
-    }   
+    }
 
     /**
      * Empty component

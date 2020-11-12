@@ -94,7 +94,8 @@ export default class Header extends React.Component {
                         {this.props.menus && this.props.menus.map((item, index) => {
                             return (
                                 <MenuOption
-                                    style={{ backgroundColor: '#414952'}}
+                                    key={index}
+                                    style={{ backgroundColor: '#414952' }}
                                     onSelect={() => {
                                         if (item.screen != null) {
                                             this.props.navigation?.navigate(item.screen)

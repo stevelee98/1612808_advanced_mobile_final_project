@@ -13,6 +13,7 @@ import { Colors } from 'values/colors';
 import ForgetPasswordView from "containers/forgetPass/forgetPasswordView";
 import VerifyPassWordView from "containers/verifyPass/verifyPassWordView";
 import UserProfileView from "containers/profile/userProfileView";
+import SettingView  from "containers/setting/settingView";
 
 enableScreens();
 
@@ -46,6 +47,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="ForgetPass" component={ForgetPasswordView} />
                 <Stack.Screen name="VerifyPass" component={VerifyPassWordView} />
                 <Stack.Screen name="UserProfile" component={UserProfileView} />
+                <Stack.Screen name="Setting" component={SettingView} />
             </Stack.Navigator>
         </NavigationContainer>
     )

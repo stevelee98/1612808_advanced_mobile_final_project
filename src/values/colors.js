@@ -8,6 +8,7 @@ export const Colors = {
     COLOR_WHITE: '#ffffff',
     COLOR_BLACK: '#000000',
     COLOR_BLUE: '#3498DB',
+    COLOR_BLUE_STEEL: '#1f6696',
     COLOR_BLACK_OPACITY_30: 'rgba(00, 00, 00, 0.3)',
     COLOR_TEXT: '#cccccc',
     COLOR_BLACK_OPACITY_50: 'rgba(00, 00, 00, 0.5)',
