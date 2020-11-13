@@ -14,6 +14,8 @@ import ForgetPasswordView from "containers/forgetPass/forgetPasswordView";
 import VerifyPassWordView from "containers/verifyPass/verifyPassWordView";
 import UserProfileView from "containers/profile/userProfileView";
 import SettingView  from "containers/setting/settingView";
+import CourseListView from 'containers/courses/list/courseListView';
+import CourseDetailView from "containers/courses/detail/courseDetailView";
 
 enableScreens();
 
@@ -31,7 +33,7 @@ const AppNavigator = () => {
     return (
         <NavigationContainer theme={MyTheme}>
             <Stack.Navigator
-                initialRouteName={'Main'}
+                initialRouteName={'CourseDetail'}
                 headerMode={'none'}
                 mode={'modal'}
                 screenOptions={{
@@ -48,6 +50,8 @@ const AppNavigator = () => {
                 <Stack.Screen name="VerifyPass" component={VerifyPassWordView} />
                 <Stack.Screen name="UserProfile" component={UserProfileView} />
                 <Stack.Screen name="Setting" component={SettingView} />
+                <Stack.Screen name="CourseList" component={CourseListView} />
+                <Stack.Screen name="CourseDetail" component={CourseDetailView} />
             </Stack.Navigator>
         </NavigationContainer>
     )

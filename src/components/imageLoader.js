@@ -84,7 +84,7 @@ export default class ImageLoader extends Component {
                 resizeMode={this.returnResizeMode(resizeModeType)}
                 source={
                     this.state._path != null ?
-                        { uri: this.getUriImage(this.state._path), priority: FastImage.priority.high }
+                        { uri: this.state._path, priority: FastImage.priority.high }
                         : ic_default_user}
                 onError={() => {
                     this.setState({
@@ -93,7 +93,7 @@ export default class ImageLoader extends Component {
                 }}
                 onLoadEnd={this.onLoadEnd}
                 onLoadStart={this.onLoadStart}
-            />
+            />  
         )
     }
 }

@@ -14,21 +14,14 @@ import commonStyles from 'styles/commonStyles';
 import { Colors } from "values/colors";
 import { ErrorCode } from "config/errorCode";
 import StorageUtil from "utils/storageUtil";
-import firebase, { Notification, NotificationOpen } from 'react-native-firebase';
 import DateUtil from "utils/dateUtil";
 import Utils from 'utils/utils'
 import Toast from 'react-native-root-toast';
-import DeviceInfo from 'react-native-device-info';
-import statusType from "enum/statusType";
 import StringUtil from "utils/stringUtil";
 import { async } from "rxjs/internal/scheduler/async";
 import { Fonts } from "values/fonts";
 import NetInfo from "@react-native-community/netinfo";
 import { CommonActions } from '@react-navigation/native';
-import Hr from "components/hr";
-import ic_back_black from "images/ic_back_black.png";
-
-const screen = Dimensions.get("window");
 
 const resetAction = CommonActions.reset({
     index: 0,
@@ -191,7 +184,6 @@ class BaseView extends Component {
      * @param {} errorCode 
      */
     handleError (errorCode, error) {
-        console.log("ERROR CODE IN BASE VIEW: ", errorCode, "     ERROR: ", error)
         switch (errorCode) {
             case ErrorCode.ERROR_COMMON:
                 this.showMessage(localizes("error_in_process"))
@@ -235,8 +227,6 @@ class BaseView extends Component {
 
     async componentDidMount () {
         this.checkPermission();
-        // this.createNotificationListeners();
-
     }
 
     getLanguage = () => {
@@ -262,28 +252,6 @@ class BaseView extends Component {
             await firebase.messaging().requestPermission();
         } catch (error) {
             console.log('permission rejected');
-        }
-    }
-
-    /**
-     * Go to notification
-     * @param {*} className 
-     * @param {*} params 
-     * @param {*} isNavigate 
-     */
-    goToScreen = async (data) => {
-        if (this.props.navigation) {
-            if (data && data.type && data.type == notificationType.CHAT) {  
-                let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
-                if (!Utils.isNull(user)) {
-                    this.props.navigation.navigate("Chat");
-                }
-            } else {
-                let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
-                if (!Utils.isNull(user)) {
-                    this.props.navigation.navigate("Notification");
-                }
-            }
         }
     }
 }
