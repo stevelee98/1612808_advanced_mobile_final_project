@@ -33,7 +33,7 @@ const AppNavigator = () => {
     return (
         <NavigationContainer theme={MyTheme}>
             <Stack.Navigator
-                initialRouteName={'CourseDetail'}
+                initialRouteName={'Main'}
                 headerMode={'none'}
                 mode={'modal'}
                 screenOptions={{

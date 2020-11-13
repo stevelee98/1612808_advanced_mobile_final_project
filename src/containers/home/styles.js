@@ -7,5 +7,11 @@ import { Fonts } from "values/fonts";
 export default styles = {
     container: {
         flexGrow: 1,
+    },
+    titleList: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginHorizontal: Constants.MARGIN_X_LARGE
     }
 };
