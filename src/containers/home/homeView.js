@@ -216,6 +216,7 @@ export class HomeView extends Component {
                 item={item}
                 horizontal={true}
                 length={data.length}
+                onPress={()=>this.props.navigation.navigate("CourseDetail")}
             />
         )
     }

@@ -13,9 +13,11 @@ export const Colors = {
     COLOR_TEXT: '#cccccc',
     COLOR_BLACK_OPACITY_50: 'rgba(00, 00, 00, 0.5)',
     COLOR_DRK_GREY: '#383838',
+    COLOR_GREY_BLUE: '#232e36',
     COLOR_DRK_OPACITY: '#282828',
     COLOR_GREY_LIGHT: '#cdcdcd',
     COLOR_TEXT_HOLDER: '#7e7e7e',
     COLOR_SHADOW: '#F2F2F6',
-    COLOR_TEXT_INPUT_BG: '#151b22'
+    COLOR_TEXT_INPUT_BG: '#151b22',
+    COLOR_GREY_BLUE_LIGHT: '#3f5665'
 }

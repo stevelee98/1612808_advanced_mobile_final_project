@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Switch, Image } from 'react-native';
+import { View, Text, Switch, Image, Pressable } from 'react-native';
 import commonStyles from 'styles/commonStyles';
 import { Colors } from 'values/colors';
 import { Constants } from 'values/constants';
@@ -28,11 +28,13 @@ class ItemCourse extends PureComponent {
     render() {
         const { item, index, length, onPress, horizontal } = this.props;
         return (
-            <View style={horizontal && {
-                width: Constants.MAX_WIDTH * 0.6,
-                marginRight: Constants.MARGIN_LARGE,
-                marginLeft: index == 0 ? Constants.MARGIN_X_LARGE : 0
-            }}>
+            <Pressable
+                onPress={onPress}
+                style={horizontal && {
+                    width: Constants.MAX_WIDTH * 0.6,
+                    marginRight: Constants.MARGIN_LARGE,
+                    marginLeft: index == 0 ? Constants.MARGIN_X_LARGE : 0
+                }}>
                 <View style={{
                     flexDirection: horizontal ? 'column' : 'row',
                     alignItems: 'flex-start',
@@ -65,10 +67,12 @@ class ItemCourse extends PureComponent {
                             <Text style={commonStyles.textSmall}>(403)</Text>
                         </View>
                     </View>
-                    <Image source={ic_menu_vertical} style={horizontal && { position: 'absolute', top: 16, right: 4 }} />
+                    <Pressable onPress={() => { }} style={[{ elevation: 16 }, horizontal && { position: 'absolute', top: 16, right: 4 }]}>
+                        <Image source={ic_menu_vertical} />
+                    </Pressable>
                 </View>
                 {(index == 2 || index == 12 || index == 13) && <View style={{ backgroundColor: Colors.COLOR_DRK_GREY, height: 1, width: Constants.MAX_WIDTH }} />}
-            </View>
+            </Pressable>
         );
     }
 }

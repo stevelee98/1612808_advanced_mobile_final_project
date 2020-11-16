@@ -15,7 +15,7 @@ export default styles = {
         elevation: 16
     },
     viewInfo: {
-        backgroundColor: Colors.COLOR_DRK_GREY,
+        backgroundColor: Colors.COLOR_GREY_BLUE,
         padding: Constants.PADDING_X_LARGE
     },
     avtArthur: {
@@ -25,8 +25,48 @@ export default styles = {
     },
     arthur: {
         flexDirection: 'row',
-        backgroundColor: Colors.COLOR_GREY_LIGHT,
-        borderRadius:Constants.BORDER_RADIUS,
-        paddingRight: Constants.PADDING
+        backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT,
+        borderRadius: Constants.BORDER_RADIUS,
+        paddingRight: Constants.PADDING,
+        alignItems: 'center',
+        marginRight: Constants.MARGIN_LARGE,
+        marginTop: Constants.MARGIN_LARGE
+    },
+    nameArthur: {
+        ...commonStyles.textSmall,
+        marginHorizontal: Constants.MARGIN_LARGE
+    },
+    btnAction: {
+        alignItems: 'center',
+    },
+    imgBtnAction: {
+        borderRadius: Constants.BORDER_RADIUS,
+        backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT,
+        padding: Constants.PADDING_LARGE, marginBottom: Constants.MARGIN
+    },
+    viewBtn: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        marginTop: Constants.MARGIN_X_LARGE
+    },
+    courseResource: {
+        width: Constants.MAX_WIDTH,
+        height: Constants.MAX_WIDTH * (9 / 16)
+    },
+    viewCat: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexWrap: 'wrap'
+    },
+    viewRating: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: Constants.MARGIN_X_LARGE, marginTop: 6
+    },
+    viewDes: {
+        flexDirection: 'row',
+        alignItems: 'stretch',
+        marginTop: Constants.MARGIN_X_LARGE
     }
 };
