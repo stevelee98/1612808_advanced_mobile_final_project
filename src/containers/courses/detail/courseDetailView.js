@@ -24,6 +24,8 @@ import ic_download_white from 'images/ic_download_white.png';
 import ic_book_mark from 'images/ic_book_mark.png';
 import ic_online from 'images/ic_online.png';
 import ic_dropdown_white from 'images/ic_dropdown_white.png';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import ic_menu_vertical from 'images/ic_menu_vertical.png';
 
 class CourseDetailView extends BaseView {
 
@@ -34,7 +36,11 @@ class CourseDetailView extends BaseView {
             enableLoadMore: false,
             enableRefresh: true,
             refreshing: false,
-            resource: null
+            resource: null,
+            viewDescription: false,
+            enableScrollViewScroll: true,
+            tabActive: 0,
+            chapPlaying: { chap: 0, session: 0 },
         }
         this.data = [
             {
@@ -62,12 +68,56 @@ class CourseDetailView extends BaseView {
             description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         }
         this.listLesson = [
-            { id: 1, title: 'Overview', type: 1, resource: "https://www.traveller.com.au/content/dam/images/h/1/2/1/d/w/image.related.articleLeadwide.620x349.h12k0q.png/1545876271475.jpg", long: '2m50' }
+            {
+                title: 'Overview', session: 1, duration: '48m50',
+                listChap: [
+                    { title: 'Getting started', learned: true, duration: '1m40', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                ]
+            },
+            {
+                title: 'Keep Concept and core service', session: 2, duration: '48m50',
+                listChap: [
+                    { title: 'What we will cover', learned: true, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: true, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                ]
+            },
+            {
+                title: 'Keep Concept and core service', session: 3, duration: '10m50',
+                listChap: [
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                ]
+            },
+            {
+                title: 'Keep Concept and core service', session: 4, duration: '8m50',
+                listChap: [
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
+                ]
+            },
         ]
     }
 
     componentDidMount = () => {
-        this.setState({ resource: this.listLesson[0].resource })
+        this.setState({ resource: this.listLesson[0].listChap[0].source })
     }
 
     componentWillReceiveProps = (nextProps) => {
@@ -79,6 +129,203 @@ class CourseDetailView extends BaseView {
     onPressItem = (id) => {
     }
 
+    render() {
+        return (
+            <View style={{ flex: 1 }}>
+                <Pressable
+                    onPress={this.onBack}
+                    android_ripple={Constants.ANDROID_RIPPLE}
+                    style={styles.btnBack}>
+                    <Image source={ic_back_white} style={{}} />
+                </Pressable>
+                <ImageLoader path={this.state.resource} resizeModeType={'cover'} style={styles.courseResource} />
+                <ScrollView style={styles.viewInfo}>
+                    {this.renderCourseInfo()}
+                    {this.renderButton()}
+                    {this.renderDescription()}
+                    {this.renderButtonBottom()}
+                    <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
+                        {this.renderTabs()}
+                    </View>
+                </ScrollView>
+                <StatusBar translucent backgroundColor='transparent' />
+            </View>
+        )
+    }
+
+    renderCourseInfo = () => {
+        return (
+            <View style={{ padding: Constants.PADDING_X_LARGE }}>
+                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_X_LARGE }]}>{this.course.title}</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                    {this.course.arthur && this.course.arthur.map((item, index) => {
+                        return (
+                            <Pressable
+                                key={index}
+                                style={styles.arthur}
+                            >
+                                <ImageLoader path={item.avatar} resizeModeType={'cover'} style={styles.avtArthur} />
+                                <Text numberOfLines={1} style={styles.nameArthur}>{item.name}</Text>
+                            </Pressable>
+                        )
+                    })}
+                </View>
+                <View style={styles.viewCat}>
+                    <Text style={[commonStyles.textSmall, { marginTop: Constants.MARGIN_LARGE }]}>
+                        {this.course.level}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'}</Text>  {this.course.createdAt}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {this.course.long}
+                    </Text>
+                    <View style={styles.viewRating}>
+                        <AirbnbRating
+                            count={5}
+                            showRating={false}
+                            isDisabled={true}
+                            defaultRating={2.5}
+                            size={10}
+                        />
+                        <Text style={commonStyles.textSmall}>(403)</Text>
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
+    renderButton = () => {
+        return (
+            <View style={styles.viewBtn}>
+                <Pressable
+                    android_ripple={Constants.ANDROID_RIPPLE}
+                    style={styles.btnAction}>
+                    <View style={styles.imgBtnAction}>
+                        <Image source={ic_book_mark} />
+                    </View>
+                    <Text style={commonStyles.text}>Bookmark</Text>
+                </Pressable>
+                <Pressable
+                    android_ripple={Constants.ANDROID_RIPPLE}
+                    style={styles.btnAction}>
+                    <View style={styles.imgBtnAction}>
+                        <Image source={ic_online} />
+                    </View>
+                    <Text style={commonStyles.text}>Add to chanel</Text>
+                </Pressable>
+                <Pressable
+                    android_ripple={Constants.ANDROID_RIPPLE}
+                    style={styles.btnAction}>
+                    <View style={styles.imgBtnAction}>
+                        <Image source={ic_download_white} />
+                    </View>
+                    <Text style={commonStyles.text}>Download</Text>
+                </Pressable>
+            </View>
+        )
+    }
+
+    renderDescription = () => {
+        return (
+            <View style={styles.viewDes}>
+                <Text numberOfLines={this.state.viewDescription ? null : 3}
+                    style={styles.txtDes}>
+                    {this.course.description}
+                </Text>
+                <View style={styles.btnDescription}>
+                    <Pressable
+                        onPress={() => { this.setState({ viewDescription: !this.state.viewDescription }) }}
+                        android_ripple={Constants.ANDROID_RIPPLE}
+                    >
+                        <Image source={ic_dropdown_white} style={{
+                            transform: [
+                                {
+                                    rotate: this.state.viewDescription ?
+                                        '-180deg' : '0deg'
+                                }
+                            ]
+                        }} />
+                    </Pressable>
+                </View>
+            </View>
+        )
+    }
+
+    renderButtonBottom = () => {
+        return (
+            <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE }}>
+                <Pressable android_ripple={Constants.ANDROID_RIPPLE} style={styles.btnAction2}>
+                    <Image source={ic_download_white} />
+                    <Text style={commonStyles.text}>Take a learning check</Text>
+                </Pressable>
+                <Pressable android_ripple={Constants.ANDROID_RIPPLE} style={styles.btnAction2}>
+                    <Image source={ic_download_white} />
+                    <Text style={commonStyles.text}>View related paths and course</Text>
+                </Pressable>
+            </View>
+
+        )
+    }
+
+    renderTabs = () => {
+        let { tabActive } = this.state;
+        return (
+            <View style={styles.bottom}>
+                <View style={styles.tabView}>
+                    <Pressable
+                        onPress={() => { this.onChangeTab(0) }}
+                        android_ripple={Constants.ANDROID_RIPPLE}
+                        style={[styles.tab, { borderBottomColor: tabActive == 0 ? Colors.COLOR_PRIMARY : 'transparent' }]}>
+                        <Text style={{ ...commonStyles.text, flex: 1 }}>CONTENT</Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => { this.onChangeTab(1) }}
+                        android_ripple={Constants.ANDROID_RIPPLE}
+                        style={[styles.tab, { borderBottomColor: tabActive == 1 ? Colors.COLOR_PRIMARY : 'transparent' }]}>
+                        <Text style={{ ...commonStyles.text, flex: 1 }}>TRANSCRIPT</Text>
+                    </Pressable>
+                </View>
+                {this.renderListSession()}
+                {this.renderTranscript()}
+            </View>
+        )
+    }
+
+    onChangeTab = (tab) => {
+        this.setState({ tabActive: tab })
+    }
+
+    renderListSession = () => {
+        return (
+            this.state.tabActive == 0 && <FlatListCustom
+                onRef={(ref) => { this.flatListRef = ref }}
+                contentContainerStyle={{
+                    flexGrow: 1,
+                    marginHorizontal: Constants.MARGIN_X_LARGE
+                }}
+                style={{
+                    flex: 1,
+                }}
+                data={this.listLesson}
+                renderItem={this.renderItem}
+                enableLoadMore={this.state.enableLoadMore}
+                keyExtractor={item => item.id}
+                showsHorizontalScrollIndicator={false}
+                isShowEmpty={this.data == 0}
+                isShowImageEmpty={true}
+                textForEmpty={""}
+                nestedScrollEnabled
+            />
+        )
+    }
+
+    renderTranscript = () => {
+        return (
+            this.state.tabActive == 1 && <View style={{ flex: 1, padding: Constants.PADDING_X_LARGE }}>
+                <Text style={commonStyles.text}>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    {'\n'}{'\n'}
+                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+                </Text>
+            </View>
+        )
+    }
+
     /**
      * Render item
      * @param {*} item
@@ -86,104 +333,44 @@ class CourseDetailView extends BaseView {
      */
     renderItem = (item, index) => {
         return (
-            <ItemCourse
-                key={index}
-                item={item}
-                length={this.data.length}
-            />
-        )
-    }
-
-    render() {
-        return (
-            <View style={{ flex: 1 }}>
-                <Pressable
-                    onPress={this.onBack}
-                    android_ripple={{
-                        color: Colors.COLOR_WHITE,
-                        borderless: false,
-                    }}
-                    style={styles.btnBack}>
-                    <Image source={ic_back_white} style={{}} />
-                </Pressable>
-                <ImageLoader path={this.state.resource} resizeModeType={'contain'} style={styles.courseResource} />
-                <ScrollView style={styles.viewInfo}>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_X_LARGE }]}>{this.course.title}</Text>
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                        {this.course.arthur && this.course.arthur.map((item, index) => {
-                            return (
-                                <Pressable
-                                    key={index}
-                                    style={styles.arthur}
-                                >
-                                    <ImageLoader path={item.avatar} resizeModeType={'cover'} style={styles.avtArthur} />
-                                    <Text numberOfLines={1} style={styles.nameArthur}>{item.name}</Text>
-                                </Pressable>
-                            )
-                        })}
+            <View>
+                <View style={styles.itemSession}>
+                    <View style={styles.sessionNum}>
+                        <Text style={commonStyles.text}>{item.session}</Text>
                     </View>
-                    <View style={styles.viewCat}>
-                        <Text style={[commonStyles.textSmall, { marginTop: Constants.MARGIN_LARGE }]}>
-                            {this.course.level}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'}</Text>  {this.course.createdAt}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {this.course.long}
-                        </Text>
-                        <View style={styles.viewRating}>
-                            <AirbnbRating
-                                count={5}
-                                showRating={false}
-                                isDisabled={true}
-                                defaultRating={2.5}
-                                size={10}
-                            />
-                            <Text style={commonStyles.textSmall}>(403)</Text>
-                        </View>
+                    <View style={styles.sessionInfo}>
+                        <Text style={styles.sessionTitle}>{item.title}</Text>
+                        <Text style={styles.sessionDuration}>{item.duration}</Text>
                     </View>
-                    <View style={styles.viewBtn}>
-                        <Pressable style={styles.btnAction}>
-                            <View style={styles.imgBtnAction}>
-                                <Image source={ic_book_mark} />
-                            </View>
-                            <Text style={commonStyles.text}>Bookmark</Text>
-                        </Pressable>
-                        <Pressable style={styles.btnAction}>
-                            <View style={styles.imgBtnAction}>
-                                <Image source={ic_online} />
-                            </View>
-                            <Text style={commonStyles.text}>Add to chanel</Text>
-                        </Pressable>
-                        <Pressable style={styles.btnAction}>
-                            <View style={styles.imgBtnAction}>
-                                <Image source={ic_download_white} />
-                            </View>
-                            <Text style={commonStyles.text}>Download</Text>
-                        </Pressable>
-                    </View>
-                    <View style={styles.viewDes}>
-                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM, flex: 1 }}>
-                            {this.course.description}
-                        </Text>
-                        <View style={{ backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT, borderRadius: Constants.CORNER_RADIUS, padding: Constants.PADDING_LARGE }}>
-                            <Image source={ic_dropdown_white} />
-                        </View>
-                    </View>
-                </ScrollView>
+                    <Image source={ic_menu_vertical} />
+                </View>
                 <FlatListCustom
-                    onRef={(ref) => { this.flatListRef = ref }}
+                    onRef={(ref) => { this.flatListChap = ref }}
                     contentContainerStyle={{
-                        marginHorizontal: Constants.MARGIN_LARGE
+                        flexGrow: 1,
                     }}
-                    style={{
-                    }}
-                    data={this.data}
-                    renderItem={this.renderItem}
-                    enableLoadMore={this.state.enableLoadMore}
+                    data={item.listChap}
+                    renderItem={this.renderItemChap}
                     keyExtractor={item => item.id}
                     showsHorizontalScrollIndicator={false}
-                    isShowEmpty={this.data == 0}
+                    isShowEmpty={item.listChap == null || item.listChap.length == 0}
                     isShowImageEmpty={true}
                     textForEmpty={""}
                 />
-                <StatusBar translucent backgroundColor='transparent' />
             </View>
+        )
+    }
+
+    renderItemChap = (item, index) => {
+        return (
+            <Pressable style={styles.chapItem}>
+                <View style={{
+                    ...styles.chapLearned,
+                    backgroundColor: item.learned ? Colors.COLOR_GREEN : Colors.COLOR_DRK_GREY
+                }} />
+                <Text style={[[styles.chapTitle, { color: this.state.chapPlaying.chap == index ? Colors.COLOR_GREEN : Colors.COLOR_TEXT }]]}>{item.title}</Text>
+                <Text style={commonStyles.textSmall}>{item.duration}</Text>
+            </Pressable>
         )
     }
 }

@@ -1,5 +1,5 @@
 export const Colors = {
-    COLOR_PRIMARY: '#7ac8e5',
+    COLOR_PRIMARY: '#3498DB',
     COLOR_TEXT_PRIMARY: '#57bde3',
     COLOR_PRIMARY_DARK: '#7ddcff',
     COLOR_PRIMARY_LIGHT: '#7ddcff',
@@ -19,5 +19,6 @@ export const Colors = {
     COLOR_TEXT_HOLDER: '#7e7e7e',
     COLOR_SHADOW: '#F2F2F6',
     COLOR_TEXT_INPUT_BG: '#151b22',
+    COLOR_GREEN: '#52af52',
     COLOR_GREY_BLUE_LIGHT: '#3f5665'
 }
