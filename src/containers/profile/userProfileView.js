@@ -20,10 +20,11 @@ class UserProfileView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: {
-                avatar: null,
-                name: 'Obama'
-            },
+            // user: {
+            //     avatar: null,
+            //     name: 'Obama'
+            // },
+            user: null
         };
     }
 

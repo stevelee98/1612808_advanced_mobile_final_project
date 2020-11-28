@@ -1,4 +1,5 @@
 import { Dimensions } from 'react-native'
+import { Colors } from './colors'
 export const Constants = {
     MAX_WIDTH: Dimensions.get("screen").width,
     MAX_HEIGHT: Dimensions.get("screen").height,
@@ -21,4 +22,8 @@ export const Constants = {
     SHADOW_OFFSET_WIDTH: 0,
     SHADOW_OFFSET_HEIGHT: 4,
     STATUS_BAR_HEIGHT: 18,
+    ANDROID_RIPPLE: {
+        color: Colors.COLOR_GREY_LIGHT,
+        borderless: false,
+    }
 }
