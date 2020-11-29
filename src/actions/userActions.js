@@ -10,3 +10,7 @@ export const loginSuccess = data => ({
     type: getActionSuccess(ActionEvent.LOGIN),
     payload: { data }
 });
+
+export const notifyLoginSuccess = () => ({
+    type: ActionEvent.NOTIFY_LOGIN_SUCCESS
+})

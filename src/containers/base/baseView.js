@@ -176,7 +176,7 @@ class BaseView extends Component {
         StorageUtil.storeItem(StorageUtil.FIREBASE_TOKEN, null);
         global.token = "";
         global.firebaseToken = "";
-        firebase.auth().signOut();
+        // firebase.auth().signOut();
     }
 
     /**
@@ -237,6 +237,11 @@ class BaseView extends Component {
                 this.language = 'vi'
             }
         })
+    }
+
+    getProfile = async () => {
+        let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
+        return user;
     }
 
     async checkPermission () {

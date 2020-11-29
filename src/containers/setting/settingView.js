@@ -17,8 +17,9 @@ import ic_grid_white from 'images/ic_grid_white.png';
 import ItemSetting from './itemSetting';
 import { Colors } from 'values/colors';
 import Button from 'components/button';
+import BaseView from 'containers/base/baseView';
 
-export class SettingView extends Component {
+export class SettingView extends BaseView {
     constructor(props) {
         super(props);
         this.state = {
@@ -42,8 +43,9 @@ export class SettingView extends Component {
         ]
     }
 
-    componentDidMount() {
-
+    componentDidMount = async () => {
+        let user = await this.getProfile();
+        this.setState({ user })
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -87,15 +89,22 @@ export class SettingView extends Component {
                     keyExtractor={item => item.title}
                     showsHorizontalScrollIndicator={false}
                     footerComponent={() => {
-                        return (
-                            <Button title={"SING OUT"} titleStyle={{ color: Colors.COLOR_BLUE }}
-                            style={{marginTop:Constants.MARGIN_X_LARGE}}
-                                border={{
-                                    borderRadius: Constants.CORNER_RADIUS,
-                                    borderWidth: 1,
-                                    borderColor: Colors.COLOR_BLUE
-                                }} />
-                        )
+                        if (this.state.user) {
+                            return (
+                                <Button
+                                    onPress={() => { this.logout(); this.goHomeScreen();this.showMessage("Logout success") }}
+                                    title={"SING OUT"}
+                                    titleStyle={{ color: Colors.COLOR_BLUE }}
+                                    style={{ marginTop: Constants.MARGIN_X_LARGE }}
+                                    border={{
+                                        borderRadius: Constants.CORNER_RADIUS,
+                                        borderWidth: 1,
+                                        borderColor: Colors.COLOR_BLUE
+                                    }} />
+                            )
+                        } else {
+                            return null
+                        }
                     }}
                 />
             </View>

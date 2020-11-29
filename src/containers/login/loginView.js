@@ -12,8 +12,10 @@ import ic_eye_grey from 'images/ic_eye_grey.png';
 import ic_eye_lock_grey from 'images/ic_eye_lock_grey.png';
 import styles from './styles';
 import Button from 'components/button';
+import BaseView from 'containers/base/baseView';
+import StorageUtil from 'utils/storageUtil';
 
-class LoginView extends Component {
+class LoginView extends BaseView {
 
     constructor(props) {
         super(props);
@@ -59,6 +61,17 @@ class LoginView extends Component {
         this.setState({
             userName,
         });
+    }
+
+    login = async () => {
+        let user ={
+            id: 1,
+            name: 'Obama',
+            avatar: 'https://vcdn-vnexpress.vnecdn.net/2020/11/08/556318717088a-Obama-9977-1604774594.jpg'
+        }
+        let stored = StorageUtil.storeItem(StorageUtil.USER_PROFILE, user)
+        this.goHomeScreen()
+        this.showMessage("Login success")
     }
 
     render() {
@@ -126,10 +139,17 @@ class LoginView extends Component {
     renderButton = () => {
         return (
             <View style={{ marginTop: Constants.MARGIN }}>
-                <Button title={"SIGN IN"} titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }} backgroundColor={Colors.COLOR_DRK_GREY} />
+                <Button
+                    onPress={this.login}
+                    title={"SIGN IN"}
+                    titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }}
+                    backgroundColor={Colors.COLOR_DRK_GREY} />
                 <Button title={"FORGOT PASSWORD?"} titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />
                 <Button title={"USE SINGLE SIGN-ON (SSO)"} titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} border={{ borderWidth: 1, borderColor: Colors.COLOR_BLUE }} />
-                <Button title={"SIGN UP FREE"} titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />
+                <Button
+                    onPress={() => { this.props.navigation.navigate("Register") }}
+                    title={"SIGN UP FREE"}
+                    titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />
             </View>
         )
     }

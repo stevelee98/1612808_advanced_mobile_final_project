@@ -14,21 +14,21 @@ import Utils from 'utils/utils';
 import commonStyles from 'styles/commonStyles';
 import { Fonts } from 'values/fonts';
 import ImageLoader from 'components/imageLoader';
+import StorageUtil from 'utils/storageUtil';
+import BaseView from 'containers/base/baseView';
 
-class UserProfileView extends Component {
+class UserProfileView extends BaseView {
 
     constructor(props) {
         super(props);
         this.state = {
-            // user: {
-            //     avatar: null,
-            //     name: 'Obama'
-            // },
             user: null
         };
     }
 
-    async componentDidMount() {
+    componentDidMount = async () => {
+        let user = await this.getProfile();
+        this.setState({ user })
     }
 
     render() {

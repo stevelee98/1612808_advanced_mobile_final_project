@@ -17,6 +17,7 @@ import SettingView  from "containers/setting/settingView";
 import CourseListView from 'containers/courses/list/courseListView';
 import CourseDetailView from "containers/courses/detail/courseDetailView";
 import BrowseView from "containers/browse/browseView";
+import SearchView from "containers/search/searchView";
 
 enableScreens();
 
@@ -54,6 +55,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="CourseList" component={CourseListView} />
                 <Stack.Screen name="CourseDetail" component={CourseDetailView} />
                 <Stack.Screen name="Browse" component={BrowseView} />
+                <Stack.Screen name="Search" component={SearchView} />
             </Stack.Navigator>
         </NavigationContainer>
     )

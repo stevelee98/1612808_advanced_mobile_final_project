@@ -13,6 +13,9 @@ const Tab = createMaterialBottomTabNavigator();
 
 import HomeView from 'containers/home/homeView';
 import BrowseView from 'containers/browse/browseView';
+import DownloadView from 'containers/download/downloadView';
+import SearchView from 'containers/search/searchView';
+
 import ic_home_white from "images/ic_home_white.png";
 import ic_home_blue from "images/ic_home_blue.png";
 import ic_search_white from 'images/ic_search_white.png';
@@ -44,7 +47,7 @@ const BottomTabNavigator = () => {
 			/>
 			<Tab.Screen
 				name="TabDownload"
-				component={HomeView}
+				component={DownloadView}
 				options={{
 					title: "Downloads",
 					tabBarIcon: ({ focused, color, size }) => (
@@ -65,8 +68,8 @@ const BottomTabNavigator = () => {
 				}}
 			/>
 			<Tab.Screen
-				name="TabSearch"
-				component={HomeView}
+				name="Search"
+				component={SearchView}
 				options={{
 					title: "Search",
 					tabBarIcon: ({ focused, color, size }) => (

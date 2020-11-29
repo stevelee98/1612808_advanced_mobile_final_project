@@ -191,9 +191,14 @@ export class BrowseView extends Component {
     renderNotLogin = () => {
         return (
             <View style={{ flexGrow: 1, marginBottom: Constants.MARGIN_X_LARGE }}>
-                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE, marginHorizontal: Constants.MARGIN_X_LARGE + 8 }]}>Sign in to skill up today</Text>
-                <Text style={[commonStyles.text, { marginHorizontal: Constants.MARGIN_X_LARGE + 8 }]}>Keep your skills uo-to-date with access to thousands of courses by industry experts</Text>
-                <Button style={{ marginHorizontal: Constants.MARGIN_X_LARGE + 8 }} title={"SIGN IN TO START WATCHING"} titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_WHITE }} backgroundColor={Colors.COLOR_PRIMARY} />
+                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE - 2, marginHorizontal: Constants.MARGIN_X_LARGE + 8 }]}>Sign in to skill up today</Text>
+                <Text style={[commonStyles.text, { marginHorizontal: Constants.MARGIN_X_LARGE + 8, opacity: 0.7 }]}>Keep your skills uo-to-date with access to thousands of courses by industry experts</Text>
+                <Button
+                    onPress={() => { this.props.navigation.navigate("Login") }}
+                    style={{ marginHorizontal: Constants.MARGIN_X_LARGE }}
+                    title={"SIGN IN TO START WATCHING"}
+                    titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_WHITE }}
+                    backgroundColor={Colors.COLOR_PRIMARY} />
             </View>
         )
     }

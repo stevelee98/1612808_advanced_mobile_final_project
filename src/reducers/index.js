@@ -1,6 +1,7 @@
 import { ErrorCode } from 'config/errorCode';
 import {combineReducers} from 'redux';
 import loginReducer from './loginReducer';
+import homeReducer from './homeReducer';
 
 export const initialState = {
     data: null,
@@ -11,5 +12,6 @@ export const initialState = {
 }
 
 export default combineReducers({
-    login: loginReducer
+    login: loginReducer,
+    home: homeReducer,
 });
