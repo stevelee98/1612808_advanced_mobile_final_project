@@ -12,6 +12,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 const Tab = createMaterialBottomTabNavigator();
 
 import HomeView from 'containers/home/homeView';
+import BrowseView from 'containers/browse/browseView';
 import ic_home_white from "images/ic_home_white.png";
 import ic_home_blue from "images/ic_home_blue.png";
 import ic_search_white from 'images/ic_search_white.png';
@@ -29,7 +30,7 @@ const BottomTabNavigator = () => {
 			activeColor={Colors.COLOR_BLUE}
 			inactiveColor={'white'}
 			backBehavior={"initialRoute"}
-		>
+		> 
 			<Tab.Screen
 				name="TabHome"
 				component={HomeView}
@@ -54,7 +55,7 @@ const BottomTabNavigator = () => {
 			/>
 			<Tab.Screen
 				name="TabBrowser"
-				component={HomeView}
+				component={BrowseView}
 				options={{
 					title: "Browser",
 					tabBarIcon: ({ focused, color, size }) => (

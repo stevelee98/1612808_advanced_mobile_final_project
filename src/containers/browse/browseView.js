@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, ScrollView, Image, Pressable } from 'react-native'
+import { View, Text, ScrollView, Image, Pressable, ImageBackground } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { ErrorCode } from "config/errorCode";
@@ -17,7 +17,19 @@ import ic_search_white from 'images/ic_search_white.png';
 import ic_grid_white from 'images/ic_grid_white.png';
 import ItemCourse from 'containers/courses/list/itemCourse';
 import img_iron_man from 'images/img_iron_man.jpg';
-console.disableYellowBox = true;
+import cat1 from 'images/cat1.jpg';
+import cat2 from 'images/cat2.jpg';
+import cat3 from 'images/cat3.jpg';
+import cat4 from 'images/cat4.jpg';
+import cat5 from 'images/cat5.jpg';
+import cat6 from 'images/cat6.jpg';
+import cat7 from 'images/cat7.jpg';
+import cat8 from 'images/cat8.jpg';
+import CategoryListView from './list/category/categoryListView';
+import { PathListView } from './list/paths/pathListView';
+import ImageLoader from 'components/imageLoader';
+import Button from 'components/button';
+
 const LIST_MENU = [
     {
         name: 'Profile',
@@ -30,13 +42,11 @@ const LIST_MENU = [
         value: 2
     }
 ]
-export class HomeView extends Component {
+export class BrowseView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: {
-                name: 'Obama'
-            }
+            user: null
         }
         this.data = [
             {
@@ -138,6 +148,36 @@ export class HomeView extends Component {
                 ]
             }
         ];
+
+        this.dataCat = [
+            { title: "CONFERENCES", source: cat3 },
+            { title: "CERTIFICATIONS", source: cat4 },
+            { title: `<Software>${'\n'}Development`, source: cat5 },
+            { title: `IT${'\n'}OPS`, source: cat6 },
+            { title: `Information${'\n'}AND${'\n'}CYBER SECURITY`, source: cat7 },
+            { title: `DATA${'\n'}PROFESSIONAL`, source: cat8 },
+        ]
+        this.dataPopularSkill = [
+            { title: "Angular" },
+            { title: "JavaScript" },
+            { title: "Java" },
+            { title: "C#" },
+            { title: "Python" },
+            { title: "React" },
+            { title: "Flutter" },
+        ]
+        this.dataPath = [
+            { title: 'React native', subTitle: '8 courses', source: 'https://codersera.com/blog/wp-content/uploads/2019/02/react-native.png' },
+            { title: 'Flutter', subTitle: '5 courses', source: 'https://itcraftapps.com/wp-content/uploads/2019/03/Flutter-Cover.png' },
+            { title: 'VueJS', subTitle: '2 courses', source: 'https://dragondev.vn/images/posts/q/1/F/q1FiADdO-vuejs-cta-main.jpg' },
+        ]
+        this.topAuthor = [
+            { name: 'Mark Zuckerberg', avatar: 'https://devmaster.edu.vn/uploads/images/2020/01/mark-zuckerberg-cung-chia-se-ve-nhung-thay-doi-cua-facebook-trong-thoi-gian-toi-696x522.jpg' },
+            { name: 'Obama', avatar: 'https://releaf.co/wp-content/uploads/2012/09/images-18.jpg' },
+            { name: 'Elon Musk', avatar: 'https://peaklife.in/wp-content/uploads/2019/06/elon-musk-image.jpg' },
+            { name: 'Rooney', avatar: 'https://resize-parismatch.lanmedia.fr/img/var/news/storage/images/paris-match/people-a-z/wayne-rooney/6152180-9-fre-FR/Wayne-Rooney.jpg' },
+            { name: 'Putin', avatar: 'https://nld.mediacdn.vn/2020/11/7/putin-1604707713843601612296.jpg' },
+        ]
     }
 
     componentDidMount() {
@@ -150,57 +190,39 @@ export class HomeView extends Component {
 
     renderNotLogin = () => {
         return (
-            <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>Let's get you started</Text>
-                <View style={{ marginTop: Constants.MARGIN_XX_LARGE * 2, alignItems: 'center' }}>
-                    <Image source={ic_grid_white} />
-                    <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>Browser new and popular course</Text>
-                </View>
-                <View style={{ marginTop: Constants.MARGIN_X_LARGE * 3, alignItems: 'center' }}>
-                    <Image source={ic_search_white} />
-                    <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>Search the library</Text>
-                </View>
+            <View style={{ flexGrow: 1, marginBottom: Constants.MARGIN_X_LARGE }}>
+                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE, marginHorizontal: Constants.MARGIN_X_LARGE + 8 }]}>Sign in to skill up today</Text>
+                <Text style={[commonStyles.text, { marginHorizontal: Constants.MARGIN_X_LARGE + 8 }]}>Keep your skills uo-to-date with access to thousands of courses by industry experts</Text>
+                <Button style={{ marginHorizontal: Constants.MARGIN_X_LARGE + 8 }} title={"SIGN IN TO START WATCHING"} titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_WHITE }} backgroundColor={Colors.COLOR_PRIMARY} />
             </View>
         )
     }
 
-    renderListCourses = () => {
+    renderCategory = () => {
         return (
-            <View>
-                <View style={{ marginBottom: Constants.MARGIN_X_LARGE }}>
-                    <Image source={img_iron_man} style={{ width: 120, height: 150, alignSelf: 'flex-end' }} resizeMode={'contain'} />
-                    <View style={{ position: 'absolute', bottom: 20, left: 16 }}>
-                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM }}>Welcome to Pluralsight !</Text>
-                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM, marginTop: 20, width: Constants.MAX_WIDTH *0.8 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Text>
-                    </View>
-                </View>
-                {this.renderList(this.data[0]?.title, this.data[0]?.data)}
-                {this.renderList(this.data[1]?.title, this.data[1]?.data)}
-            </View>
+            <CategoryListView
+                dataCat={this.dataCat}
+                navigation={this.props.navigation}
+            />
         )
     }
 
-    renderList = (title, data) => {
+    renderPopularSkill = () => {
         return (
             <View>
-                <View style={styles.titleList}>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>{title}</Text>
-                    <Pressable style={{}} onPress={() => this.props.navigation.navigate('CourseList')}>
-                        <Text style={[commonStyles.textSmall]}>{'See all >'}</Text>
-                    </Pressable>
-                </View>
+                <Text style={styles.txtPopularSkill}>Popular Skills</Text>
                 <FlatListCustom
                     onRef={(ref) => { this.flatListRef = ref }}
                     contentContainerStyle={{
                     }}
                     style={{
                     }}
-                    data={data}
-                    renderItem={this.renderItem}
+                    data={this.dataPopularSkill}
+                    renderItem={this.renderItemPopular}
                     keyExtractor={item => item.id}
                     showsHorizontalScrollIndicator={false}
                     horizontal={true}
-                    isShowEmpty={data == 0}
+                    isShowEmpty={this.dataPopularSkill.length == 0}
                     isShowImageEmpty={true}
                     textForEmpty={""}
                 />
@@ -208,16 +230,58 @@ export class HomeView extends Component {
         )
     }
 
-    renderItem = (item, index, data) => {
+    renderPaths = () => {
         return (
-            <ItemCourse
-                key={index}
-                index={index}
-                item={item}
-                horizontal={true}
-                length={data.length}
-                onPress={()=>this.props.navigation.navigate("CourseDetail")}
+            <PathListView
+                dataPath={this.dataPath}
+                navigation={this.props.navigation}
             />
+        )
+    }
+
+    renderItemPopular = (item, index) => {
+        return (
+            <Pressable style={[styles.itemPopular, { marginRight: Constants.MARGIN_LARGE, marginLeft: index == 0 ? Constants.MARGIN_X_LARGE : 0 }]}>
+                <Text style={styles.txtItemPopular}>{item.title}</Text>
+            </Pressable>
+        )
+    }
+
+    renderTopAuthors = () => {
+        return (
+            <View>
+                <Text style={styles.txtTopAuthor}>Top Authors</Text>
+                <FlatListCustom
+                    onRef={(ref) => { this.flatListRef = ref }}
+                    contentContainerStyle={{
+                    }}
+                    style={{
+                    }}
+                    data={this.topAuthor}
+                    renderItem={this.renderItemTopAuthor}
+                    keyExtractor={item => item.id}
+                    showsHorizontalScrollIndicator={false}
+                    horizontal={true}
+                    isShowEmpty={this.topAuthor.length == 0}
+                    isShowImageEmpty={true}
+                    textForEmpty={""}
+                />
+            </View>
+        )
+    }
+
+    renderItemTopAuthor = (item, index) => {
+        return (
+            <Pressable style={[styles.itemTopAuthor, { marginRight: Constants.MARGIN_X_LARGE, marginLeft: index == 0 ? Constants.MARGIN_X_LARGE : 0 }]}>
+                <ImageLoader path={item.avatar}
+                    resizeModeType={'cover'}
+                    style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: Constants.BORDER_RADIUS
+                    }} />
+                <Text style={styles.txtItemAuthor}>{item.name}</Text>
+            </Pressable>
         )
     }
 
@@ -225,7 +289,7 @@ export class HomeView extends Component {
         return (
             <View style={{ flex: 1 }}>
                 <Header
-                    title={"Home"}
+                    title={"Browse"}
                     visibleBack={false}
                     visibleAccount={true}
                     user={{ name: 'abc', avatar: null }}
@@ -235,7 +299,11 @@ export class HomeView extends Component {
                     navigation={this.props.navigation}
                 />
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                    {Utils.isNull(this.state.user) ? this.renderNotLogin() : this.renderListCourses()}
+                    {Utils.isNull(this.state.user) ? this.renderNotLogin() : null}
+                    {this.renderCategory()}
+                    {this.renderPopularSkill()}
+                    {this.renderPaths()}
+                    {this.renderTopAuthors()}
                 </ScrollView>
             </View>
         )
@@ -250,4 +318,4 @@ const mapDispatchToProps = {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeView)
+export default connect(mapStateToProps, mapDispatchToProps)(BrowseView)
