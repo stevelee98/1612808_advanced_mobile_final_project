@@ -82,7 +82,7 @@ class BaseView extends Component {
         return false;
     }
 
-    render () {
+    render() {
         return (
             <View></View>
         );
@@ -94,7 +94,7 @@ class BaseView extends Component {
      * @param {*} duration 
      * @param {*} type 
      */
-    showMessage (message, duration = 30000, type = 'warning') {
+    showMessage(message, duration = 30000, type = 'warning') {
         try {
             if (Platform.OS === 'ios') {
                 if (!global.isShowMessageError) {
@@ -105,7 +105,10 @@ class BaseView extends Component {
                     });
                 }
             } else {
-                ToastAndroid.showWithGravity(message, ToastAndroid.LONG, ToastAndroid.CENTER);
+                if (!global.isShowMessageError) {
+                    global.isShowMessageError = true;
+                    ToastAndroid.showWithGravity(message, ToastAndroid.LONG, ToastAndroid.CENTER);
+                }
             }
             setTimeout(() => {
                 global.isShowMessageError = false
@@ -116,15 +119,15 @@ class BaseView extends Component {
         }
     }
 
-    showLoginView (route) {
+    showLoginView(route) {
         if (!Utils.isNull(route)) {
-            
+
         } else {
             this.props.navigation.navigate('Login')
         }
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
     }
 
     handlerBackButton = () => {
@@ -139,7 +142,7 @@ class BaseView extends Component {
         return true
     }
 
-    onBackPressed () {
+    onBackPressed() {
         return false
     }
 
@@ -149,11 +152,11 @@ class BaseView extends Component {
         }
     }
 
-    goHomeScreen () {
+    goHomeScreen() {
         this.props.navigation.dispatch(resetAction)
     }
 
-    goLoginScreen () {
+    goLoginScreen() {
         this.props.navigation.dispatch(resetActionLogin)
     }
 
@@ -166,8 +169,8 @@ class BaseView extends Component {
             <Hr color={Colors.COLOR_GREY_LIGHT} width={1} style={{ opacity: 0.4 }} />
         )
     }
-    
-    logout () {
+
+    logout() {
         StorageUtil.deleteItem(StorageUtil.USER_PROFILE);
         StorageUtil.storeItem(StorageUtil.USER_PROFILE, null);
         StorageUtil.deleteItem(StorageUtil.USER_TOKEN);
@@ -183,23 +186,23 @@ class BaseView extends Component {
      * Handle error
      * @param {} errorCode 
      */
-    handleError (errorCode, error) {
+    handleError(errorCode, error) {
         switch (errorCode) {
             case ErrorCode.ERROR_COMMON:
-                this.showMessage(localizes("error_in_process"))
+                this.showMessage('Có lỗi xảy ra, vui lòng thử lại')
                 break
             case ErrorCode.NO_CONNECTION:
                 NetInfo.fetch().then(state => {
                     console.log("Connection type", state.type);
                     console.log("Is connected?", state.isConnected);
                     if (state.isConnected) {
-                        this.showMessage(localizes("error_connect_to_server"))
+                        this.showMessage('Không kết nối được máy chủ, vui lòng kiểm tra lại')
                     } else {
-                        this.showMessage(localizes("error_network"))
+                        this.showMessage('Không kết nối được mạng, vui lòng kiểm tra lại')
                     }
                 });
                 break
-            
+
             default:
         }
     }
@@ -217,7 +220,7 @@ class BaseView extends Component {
      */
     showLoadingBar(isShow) {
         return isShow ?
-            <View style={{ ...commonStyles.viewCenter, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}>
                 <Spinner style={{}} color={Colors.COLOR_PRIMARY}>
 
                 </Spinner>
@@ -225,7 +228,7 @@ class BaseView extends Component {
     }
 
 
-    async componentDidMount () {
+    async componentDidMount() {
         this.checkPermission();
     }
 
@@ -244,7 +247,7 @@ class BaseView extends Component {
         return user;
     }
 
-    async checkPermission () {
+    async checkPermission() {
         const enabled = await firebase.messaging().hasPermission();
         if (enabled) {
         } else {
@@ -252,7 +255,7 @@ class BaseView extends Component {
         }
     }
 
-    async requestPermission () {
+    async requestPermission() {
         try {
             await firebase.messaging().requestPermission();
         } catch (error) {

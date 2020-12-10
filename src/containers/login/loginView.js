@@ -6,6 +6,7 @@ import {
 import { connect } from 'react-redux'
 import { Constants } from 'values/constants';
 import { Colors } from 'values/colors';
+import * as userActions from 'actions/userActions';
 import TextInputCustom from 'components/textInputCustom';
 import Header from 'components/header';
 import ic_eye_grey from 'images/ic_eye_grey.png';
@@ -14,6 +15,9 @@ import styles from './styles';
 import Button from 'components/button';
 import BaseView from 'containers/base/baseView';
 import StorageUtil from 'utils/storageUtil';
+import Utils from 'utils/utils';
+import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
+import { ErrorCode } from 'config/errorCode';
 
 class LoginView extends BaseView {
 
@@ -22,7 +26,7 @@ class LoginView extends BaseView {
         this.state = {
             hidePassword: true,
             password: '',
-            userName: '',
+            email: '',
             user: null,
             errorSignIn: null,
         };
@@ -31,6 +35,36 @@ class LoginView extends BaseView {
 
     async componentDidMount() {
     }
+
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props !== nextProps) {
+            this.props = nextProps;
+            this.handleData();
+        }
+    }
+
+    handleData = () => {
+        let data = this.props.data;
+        if (this.props.errorCode != ErrorCode.ERROR_INIT) {
+            if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
+                if (this.props.action == getActionSuccess(ActionEvent.LOGIN)) {
+                    console.log("Data login", data)
+                    if (data != null) {
+                        StorageUtil.storeItem(StorageUtil.USER_PROFILE, data.userInfo);
+                        StorageUtil.storeItem(StorageUtil.USER_TOKEN, data.token);
+                        global.token = data.token;
+                        this.goHomeScreen()
+                    }
+                }
+            } else if (this.props.errorCode == ErrorCode.ERROR_400) {
+                this.showMessage("Email hoặc mật khẩu không hợp lệ hoặc chưa kích hoạt tài khoản")
+            } else {
+                this.handleError(this.props.errorCode, this.props.error);
+            }
+        }
+    }
+
 
     managePasswordVisibility = () => {
         const last = this.state.password;
@@ -41,14 +75,25 @@ class LoginView extends BaseView {
     };
 
     validateData() {
-        const { userName, password } = this.state;
-        return true;
-    }
-
-    login() {
-        if (this.validateData()) {
-            //TODO: login
+        const { email, password } = this.state;
+        if (email == null) {
+            this.showMessage("Please fill your email");
+            this.email.focus()
+            return false;
+        } else if (email.trim() == '') {
+            this.showMessage("Please fill your email");
+            this.email.focus()
+            return false;
+        } else if (!Utils.validateEmail(email.trim())) {
+            this.showMessage("Please fill right email format");
+            this.email.focus()
+            return false;
+        } else if (Utils.isNull(password)) {
+            this.showMessage("Please fill password");
+            this.password.focus();
+            return false;
         }
+        return true;
     }
 
     onChangePassword = (password) => {
@@ -57,21 +102,21 @@ class LoginView extends BaseView {
         });
     }
 
-    onChangeEmailOrPhone = (userName) => {
+    onChangeEmailOrPhone = (email) => {
         this.setState({
-            userName,
+            email,
         });
     }
 
     login = async () => {
-        let user ={
-            id: 1,
-            name: 'Obama',
-            avatar: 'https://vcdn-vnexpress.vnecdn.net/2020/11/08/556318717088a-Obama-9977-1604774594.jpg'
+        let { email, password } = this.state
+        if (this.validateData()) {
+            let user = {
+                email: email,
+                password: password
+            }
+            this.props.login(user)
         }
-        let stored = StorageUtil.storeItem(StorageUtil.USER_PROFILE, user)
-        this.goHomeScreen()
-        this.showMessage("Login success")
     }
 
     render() {
@@ -85,30 +130,32 @@ class LoginView extends BaseView {
                     {this.renderForm()}
                     {this.renderButton()}
                 </Content>
+                {this.showLoadingBar(this.props.isLoading)}
             </View>
         )
     }
 
     renderForm = () => {
-        let { userName, password, validateUserName, validatePass } = this.state;
+        let { email, password, validateEmail, validatePass } = this.state;
         return (
             <View style={{ marginTop: Constants.MARGIN_XX_LARGE }}>
                 <TextInputCustom
-                    onRef={(r) => (this.userName = r)}
+                    onRef={(r) => (this.email = r)}
                     oneLine={true}
-                    label={'Username (or Email)'}
-                    placeholder={'Username (or Email)'}
-                    warnLabel={validateUserName}
-                    value={userName}
+                    label={'Email'}
+                    placeholder={'Email'}
+                    warnLabel={validateEmail}
+                    value={email}
                     onChangeText={(txt) => {
-                        this.setState({ userName: txt, validateUserName: null });
+                        this.setState({ email: txt, validateEmail: null });
                     }}
                     onSubmitEditing={() => {
                         this.password.focus();
                     }}
+                    keyboardType={"email-address"}
                     returnKeyType={'next'}
                     onBlur={() => {
-                        this.setState({ validateUserName: null });
+                        this.setState({ validateEmail: null });
                     }}
                 />
                 <TextInputCustom
@@ -156,11 +203,14 @@ class LoginView extends BaseView {
 }
 
 const mapStateToProps = (state) => ({
-
+    data: state.login.data,
+    isLoading: state.login.isLoading,
+    errorCode: state.login.errorCode,
+    action: state.login.action,
 })
 
 const mapDispatchToProps = {
-
+    ...userActions
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginView)

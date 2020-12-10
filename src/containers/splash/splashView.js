@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
     View, StatusBar, StyleSheet,
-    Alert
+    Alert, Image
 } from "react-native";
 import { Container, Header, Root } from "native-base";
 import { Colors } from "values/colors";
@@ -9,6 +9,7 @@ import SplashScreen from 'react-native-splash-screen';
 import { Constants } from "values/constants";
 import commonStyles from "styles/commonStyles";
 import { Fonts } from "values/fonts";
+import ic_logo_splash from 'images/ic_logo_splash.png'
 // import styles from './styles';
 
 class SplashView extends Component {
@@ -22,7 +23,7 @@ class SplashView extends Component {
     render() {
             return (
                 <Container style={{justifyContent:'center', alignItems: 'center'}}>
-                    <View style={{alignSelf:'center', width: 100, height: 100, borderRadius: 65, backgroundColor: 'orange'}}></View>
+                    <Image source ={ic_logo_splash} />
                 </Container>
             );
     }

@@ -342,7 +342,7 @@ export default class DateUtil {
         var diff = (((currentDateTime.getTime() - date.getTime()) / 1000));
         var day_diff = Math.floor(diff / 86400);
         if (isNaN(day_diff) || day_diff < 0)
-            return localizes('notificationView.just')
+            return 'vừa'
         // return day_diff == 0 && (
         //     diff < 60 && localizes('notificationView.just') ||
         //     diff < 120 && localizes('notificationView.oneMinuteAgo') ||

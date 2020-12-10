@@ -12,8 +12,12 @@ import ic_eye_grey from 'images/ic_eye_grey.png';
 import ic_eye_lock_grey from 'images/ic_eye_lock_grey.png';
 import styles from './styles';
 import Button from 'components/button';
+import BaseView from 'containers/base/baseView';
+import Utils from 'utils/utils';
+import { ErrorCode } from 'config/errorCode';
+import * as userActions from 'actions/userActions'
 
-class RegisterView extends Component {
+class RegisterView extends BaseView {
 
     constructor(props) {
         super(props);
@@ -33,6 +37,8 @@ class RegisterView extends Component {
             validatePhone: '',
             country: '',
             validateCountry: '',
+            rePasswor: '',
+            userName: '',
             user: null,
             errorSignIn: null,
         };
@@ -42,7 +48,7 @@ class RegisterView extends Component {
     async componentDidMount() {
     }
 
-    managePasswordVisibility = () => {
+    isVisiblePass = () => {
         const last = this.state.password;
         this.setState({ hidePassword: !this.state.hidePassword, password: '' });
         setTimeout(() => {
@@ -55,9 +61,29 @@ class RegisterView extends Component {
         return true;
     }
 
-    login() {
-        if (this.validateData()) {
-            //TODO: login
+ 
+    componentWillReceiveProps(nextProps) {
+        if (this.props !== nextProps) {
+            this.props = nextProps;
+            this.handleData();
+        }
+    }
+
+    handleData = () => {
+        let data = this.props.data;
+        if (this.props.errorCode != ErrorCode.ERROR_INIT) {
+            if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
+                if (this.props.action == getActionSuccess(ActionEvent.LOGIN)) {
+                    console.log("Register data", data)
+                    if (data != null) {
+                        this.showMessage("Đăng ký thành công")
+                    }
+                }
+            } else if (this.props.errorCode == ErrorCode.ERROR_400) {
+                this.showMessage("Email hoặc số điện thoại đã được sử dụng")
+            } else {
+                this.handleError(this.props.errorCode, this.props.error);
+            }
         }
     }
 
@@ -78,12 +104,80 @@ class RegisterView extends Component {
         )
     }
 
+    validate() {
+        const { userName, password, phone, email, rePassword } = this.state;
+        if (Utils.isNull(userName)) {
+            this.showMessage("Please fill your name");
+            this.userName.focus();
+        } else if (userName.trim() == "" || userName.trim() == null) {
+            this.showMessage("Please fill your name");
+            this.userName.focus();
+        } else if (StringUtil.validSpecialCharacter(name)) {
+            this.showMessage('User name must not contain special character');
+            this.userName.focus();
+        } else if (userName.length > 60) {
+            this.showMessage('User name must have less than 60 character');
+            this.userName.focus();
+        } else if (Utils.isNull(phone)) {
+            this.showMessage('Please fill your phone');
+            this.phone.focus();
+        } else if (phone.length != 10 || phone.charAt(0) != "0") {
+            this.showMessage('Phone not have right format');
+            this.phone.focus();
+        } else if (!Utils.validatePhone(phone)) {
+            this.showMessage('Phone not have right format');
+            this.phone.focus();
+        } else if (email == null) {
+            this.showMessage('Please fill your email');
+            this.email.focus()
+        } else if (email.trim() == '') {
+            this.showMessage('Please fill your email');
+            this.email.focus()
+        } else if (!Utils.validateEmail(email.trim())) {
+            this.showMessage('Email not have right format');
+            this.email.focus()
+        } else if (Utils.isNull(password)) {
+            this.showMessage('Please fill your password');
+            this.password.focus();
+        } else if (password.length < 8) {
+            this.showMessage('Password must have at least 8 character');
+            this.password.focus();
+        } else if (Utils.isNull(rePassword)) {
+            this.showMessage('Please re-type password');
+            this.rePassword.focus();
+        } else if (password != repeatPassword) {
+            this.showMessage('Password and re-password miss match');
+            this.rePassword.focus();
+        } else {
+            let data = {
+                userName: this.state.userName.trim(),
+                phone: this.state.phone,
+                password: this.state.password,
+                email: this.state.email.trim().toLowerCase(),
+            };
+            this.props.register(data)
+        }
+    }
+
     renderForm = () => {
-        let { email, firstName, lastName, phone, company, country, password, validateEmail, validatePass,
-            validateFirstName, validateCompany, validateCountry,
-            validateLastName, validatePhone } = this.state;
+        let { email, userName, phone, password, rePassword } = this.state;
         return (
             <View style={{ marginTop: Constants.MARGIN_XX_LARGE }}>
+                <TextInputCustom
+                    onRef={(r) => (this.firstName = r)}
+                    oneLine={true}
+                    label={'User name *'}
+                    placeholder={'Please input user name'}
+                    value={userName}
+                    onChangeText={(userName) => {
+                        this.setState({ firstName });
+                    }}
+                    onSubmitEditing={() => {
+                        this.email.focus();
+                    }}
+                    keyboardType={"email-address"}
+                    returnKeyType={'next'}
+                />
                 <TextInputCustom
                     onRef={(r) => (this.email = r)}
                     oneLine={true}
@@ -91,106 +185,63 @@ class RegisterView extends Component {
                     placeholder={'Please input email'}
                     warnLabel={validateEmail}
                     value={email}
-                    onChangeText={(txt) => {
-                        this.setState({ email: txt, validateEmail: null });
-                    }}
-                    onSubmitEditing={() => {
-                        this.firstName.focus();
-                    }}
-                    returnKeyType={'next'}
-                    onBlur={() => {
-                        this.setState({ validateEmail: null });
-                    }}
-                />
-                <TextInputCustom
-                    onRef={(r) => (this.firstName = r)}
-                    oneLine={true}
-                    label={'First name *'}
-                    placeholder={'Please input fist name'}
-                    warnLabel={validateFirstName}
-                    value={firstName}
-                    onChangeText={(txt) => {
-                        this.setState({ firstName: txt, validateFirstName: null });
-                    }}
-                    onSubmitEditing={() => {
-                        this.lastName.focus();
-                    }}
-                    returnKeyType={'next'}
-                    onBlur={() => {
-                        this.setState({ validateFirstName: null });
-                    }}
-                />
-                <TextInputCustom
-                    onRef={(ref) => (this.lastName = ref)}
-                    oneLine={true}
-                    label={'Last name *'}
-                    warnLabel={validateLastName}
-                    placeholder={'Please input last name'}
-                    value={lastName}
-                    onChangeText={(txt) => {
-                        this.setState({ lastName: txt, validateLastName: null });
-                    }}
-                    onSubmitEditing={() => {
-                        this.company.focus();
-                    }}
-                    returnKeyType={'next'}
-                    onBlur={() => {
-                        this.setState({ validateLastName: null });
-                    }}
-                />
-                <TextInputCustom
-                    onRef={(ref) => (this.company = ref)}
-                    oneLine={true}
-                    label={'Company *'}
-                    warnLabel={validateCompany}
-                    placeholder={'Please input your company'}
-                    value={company}
-                    onChangeText={(txt) => {
-                        this.setState({ company: txt, validateCompany: null });
+                    onChangeText={(email) => {
+                        this.setState({ email });
                     }}
                     onSubmitEditing={() => {
                         this.phone.focus();
                     }}
                     returnKeyType={'next'}
-                    onBlur={() => {
-                        this.setState({ validateCompany: null });
-                    }}
                 />
                 <TextInputCustom
                     onRef={(ref) => (this.phone = ref)}
                     oneLine={true}
                     label={'Phone *'}
-                    warnLabel={validatePhone}
                     placeholder={'Please input your phone'}
                     value={phone}
-                    onChangeText={(txt) => {
-                        this.setState({ phone: txt, validatePhone: null });
+                    onChangeText={(phone) => {
+                        this.setState({ phone });
                     }}
+                    keyboardType="numeric"
                     onSubmitEditing={() => {
-                        this.country.focus();
+                        this.password.focus();
                     }}
                     returnKeyType={'next'}
-                    onBlur={() => {
-                        this.setState({ validatePhone: null });
-                    }}
                 />
                 <TextInputCustom
-                    onRef={(ref) => (this.phone = ref)}
+                    onRef={(ref) => (this.password = ref)}
                     oneLine={true}
-                    label={'Country *'}
-                    warnLabel={validateCountry}
-                    placeholder={'Please input your country'}
-                    value={country}
-                    onChangeText={(txt) => {
-                        this.setState({ country: txt, validateCountry: null });
+                    label={'Password *'}
+                    placeholder={'Please fill your password'}
+                    value={password}
+                    secureTextEntry={this.state.hidePassword}
+                    onChangeText={(password) => {
+                        this.setState({ password });
                     }}
                     onSubmitEditing={() => {
-                        this.country.focus();
+                        this.rePassword.focus()
                     }}
                     returnKeyType={'next'}
-                    onBlur={() => {
-                        this.setState({ validateCountry: null });
+                    contentRight={this.state.hidePassword ? ic_eye_lock_grey : ic_eye_grey}
+                    onPressRight={this.isVisiblePass}
+                />
+                <TextInputCustom
+                    onRef={(ref) => (this.rePassword = ref)}
+                    oneLine={true}
+                    label={'Retype Password *'}
+                    warnLabel={rePassword}
+                    placeholder={'Please retype password'}
+                    value={rePassword}
+                    secureTextEntry={this.state.hidePassword}
+                    onChangeText={(rePassword) => {
+                        this.setState({ rePassword });
                     }}
+                    onSubmitEditing={() => {
+                        Keyboard.dismiss();
+                    }}
+                    returnKeyType={'done'}
+                    contentRight={this.state.hidePassword ? ic_eye_lock_grey : ic_eye_grey}
+                    onPressRight={this.isVisiblePass}
                 />
             </View>
         );
@@ -206,11 +257,14 @@ class RegisterView extends Component {
 }
 
 const mapStateToProps = (state) => ({
-
+    data: state.login.data,
+    isLoading: state.login.isLoading,
+    errorCode: state.login.errorCode,
+    action: state.login.action,
 })
 
 const mapDispatchToProps = {
-
+    ...userActions
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegisterView)

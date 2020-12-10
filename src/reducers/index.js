@@ -2,6 +2,7 @@ import { ErrorCode } from 'config/errorCode';
 import {combineReducers} from 'redux';
 import loginReducer from './loginReducer';
 import homeReducer from './homeReducer';
+import registerReducer from './registerReducer';
 
 export const initialState = {
     data: null,
@@ -14,4 +15,5 @@ export const initialState = {
 export default combineReducers({
     login: loginReducer,
     home: homeReducer,
+    register: registerReducer,
 });

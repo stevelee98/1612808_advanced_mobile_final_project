@@ -101,18 +101,6 @@ export default class Utils {
     }
 
     /**
-     * Get language
-     * @param {*} deviceLocale 
-     */
-    static isEnglishLanguage(deviceLocale) {
-        if (deviceLocale == 'vi' || deviceLocale == 'vi-VN') {
-            return false
-        } else if (deviceLocale == 'en-US' || deviceLocale == 'en' || deviceLocale == 'en-UK') {
-            return true
-        }
-    }
-
-    /**
      * Format bytes
      * @param {*} bytes 
      * @param {*} decimals 
