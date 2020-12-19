@@ -3,10 +3,12 @@ import { combineEpics } from 'redux-observable';
 import { from } from 'rxjs';
 import {
     loginEpic,
-    registerEpic
+    registerEpic,
+    getProfileEpic,
 } from './userEpic';
 
 export default combineEpics(
     loginEpic,
-    registerEpic
+    registerEpic,
+    getProfileEpic,
 );

@@ -5,7 +5,7 @@ import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 
 export default function (state = initialState, action) {
     switch (action.type) {
-        case ActionEvent.LOGIN:
+        case ActionEvent.REGISTER:
             return {
                 ...state,
                 isLoading: true,
@@ -13,7 +13,7 @@ export default function (state = initialState, action) {
                 action: action.type,
                 errorCode: null,
             }
-        case getActionSuccess(ActionEvent.LOGIN):
+        case getActionSuccess(ActionEvent.REGISTER):
             return {
                 ...state,
                 isLoading: false,

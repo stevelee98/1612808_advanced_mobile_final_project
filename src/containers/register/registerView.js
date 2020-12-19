@@ -16,6 +16,8 @@ import BaseView from 'containers/base/baseView';
 import Utils from 'utils/utils';
 import { ErrorCode } from 'config/errorCode';
 import * as userActions from 'actions/userActions'
+import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
+import StringUtil from 'utils/stringUtil';
 
 class RegisterView extends BaseView {
 
@@ -37,7 +39,7 @@ class RegisterView extends BaseView {
             validatePhone: '',
             country: '',
             validateCountry: '',
-            rePasswor: '',
+            rePassword: '',
             userName: '',
             user: null,
             errorSignIn: null,
@@ -61,7 +63,7 @@ class RegisterView extends BaseView {
         return true;
     }
 
- 
+
     componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
             this.props = nextProps;
@@ -73,10 +75,10 @@ class RegisterView extends BaseView {
         let data = this.props.data;
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
-                if (this.props.action == getActionSuccess(ActionEvent.LOGIN)) {
+                if (this.props.action == getActionSuccess(ActionEvent.REGISTER)) {
                     console.log("Register data", data)
                     if (data != null) {
-                        this.showMessage("Đăng ký thành công")
+                        this.showMessage("Đăng ký thành công. Chúng tôi đã gửi email kích hoạt tài khoản cho bạn, vui lòng kích hoạt tài khoản để đăng nhập")
                     }
                 }
             } else if (this.props.errorCode == ErrorCode.ERROR_400) {
@@ -104,7 +106,7 @@ class RegisterView extends BaseView {
         )
     }
 
-    validate() {
+    validate = () => {
         const { userName, password, phone, email, rePassword } = this.state;
         if (Utils.isNull(userName)) {
             this.showMessage("Please fill your name");
@@ -112,21 +114,12 @@ class RegisterView extends BaseView {
         } else if (userName.trim() == "" || userName.trim() == null) {
             this.showMessage("Please fill your name");
             this.userName.focus();
-        } else if (StringUtil.validSpecialCharacter(name)) {
+        } else if (StringUtil.validSpecialCharacter(userName)) {
             this.showMessage('User name must not contain special character');
             this.userName.focus();
         } else if (userName.length > 60) {
             this.showMessage('User name must have less than 60 character');
             this.userName.focus();
-        } else if (Utils.isNull(phone)) {
-            this.showMessage('Please fill your phone');
-            this.phone.focus();
-        } else if (phone.length != 10 || phone.charAt(0) != "0") {
-            this.showMessage('Phone not have right format');
-            this.phone.focus();
-        } else if (!Utils.validatePhone(phone)) {
-            this.showMessage('Phone not have right format');
-            this.phone.focus();
         } else if (email == null) {
             this.showMessage('Please fill your email');
             this.email.focus()
@@ -136,6 +129,15 @@ class RegisterView extends BaseView {
         } else if (!Utils.validateEmail(email.trim())) {
             this.showMessage('Email not have right format');
             this.email.focus()
+        } else if (Utils.isNull(phone)) {
+            this.showMessage('Please fill your phone');
+            this.phone.focus();
+        } else if (phone.length != 10 || phone.charAt(0) != "0") {
+            this.showMessage('Phone not have right format');
+            this.phone.focus();
+        } else if (!Utils.validatePhone(phone)) {
+            this.showMessage('Phone not have right format');
+            this.phone.focus();
         } else if (Utils.isNull(password)) {
             this.showMessage('Please fill your password');
             this.password.focus();
@@ -145,12 +147,12 @@ class RegisterView extends BaseView {
         } else if (Utils.isNull(rePassword)) {
             this.showMessage('Please re-type password');
             this.rePassword.focus();
-        } else if (password != repeatPassword) {
+        } else if (password != rePassword) {
             this.showMessage('Password and re-password miss match');
             this.rePassword.focus();
         } else {
             let data = {
-                userName: this.state.userName.trim(),
+                username: this.state.userName.trim(),
                 phone: this.state.phone,
                 password: this.state.password,
                 email: this.state.email.trim().toLowerCase(),
@@ -164,13 +166,13 @@ class RegisterView extends BaseView {
         return (
             <View style={{ marginTop: Constants.MARGIN_XX_LARGE }}>
                 <TextInputCustom
-                    onRef={(r) => (this.firstName = r)}
+                    onRef={(r) => (this.userName = r)}
                     oneLine={true}
                     label={'User name *'}
                     placeholder={'Please input user name'}
                     value={userName}
                     onChangeText={(userName) => {
-                        this.setState({ firstName });
+                        this.setState({ userName });
                     }}
                     onSubmitEditing={() => {
                         this.email.focus();
@@ -183,7 +185,6 @@ class RegisterView extends BaseView {
                     oneLine={true}
                     label={'Email *'}
                     placeholder={'Please input email'}
-                    warnLabel={validateEmail}
                     value={email}
                     onChangeText={(email) => {
                         this.setState({ email });
@@ -229,7 +230,6 @@ class RegisterView extends BaseView {
                     onRef={(ref) => (this.rePassword = ref)}
                     oneLine={true}
                     label={'Retype Password *'}
-                    warnLabel={rePassword}
                     placeholder={'Please retype password'}
                     value={rePassword}
                     secureTextEntry={this.state.hidePassword}
@@ -250,17 +250,21 @@ class RegisterView extends BaseView {
     renderButton = () => {
         return (
             <View style={{ marginTop: Constants.MARGIN }}>
-                <Button title={"SIGN UP"} titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }} backgroundColor={Colors.COLOR_DRK_GREY} />
+                <Button
+                    title={"SIGN UP"}
+                    titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }}
+                    backgroundColor={Colors.COLOR_DRK_GREY}
+                    onPress={this.validate} />
             </View>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    data: state.login.data,
-    isLoading: state.login.isLoading,
-    errorCode: state.login.errorCode,
-    action: state.login.action,
+    data: state.register.data,
+    isLoading: state.register.isLoading,
+    errorCode: state.register.errorCode,
+    action: state.register.action,
 })
 
 const mapDispatchToProps = {

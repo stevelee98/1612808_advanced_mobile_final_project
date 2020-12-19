@@ -1,6 +1,6 @@
 import { initialState } from './index'
 import { ErrorCode } from 'config/errorCode';
-import { ActionEvent,getActionSuccess } from 'actions/actionEvent';
+import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 
 
 export default function (state = initialState, action) {
@@ -12,6 +12,22 @@ export default function (state = initialState, action) {
                 error: null,
                 errorCode: ErrorCode.ERROR_SUCCESS,
                 data: null,
+                action: action.type,
+            }
+        case ActionEvent.GET_PROFILE:
+            return {
+                ...state,
+                isLoading: true,
+                data: null,
+                action: action.type,
+                errorCode: null,
+            }
+        case getActionSuccess(ActionEvent.GET_PROFILE):
+            return {
+                ...state,
+                isLoading: false,
+                data: action.payload,
+                errorCode: action.payload.status ? action.payload.status : ErrorCode.ERROR_SUCCESS,
                 action: action.type,
             }
         case ActionEvent.REQUEST_FAIL:

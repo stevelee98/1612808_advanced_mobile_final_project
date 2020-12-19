@@ -16,10 +16,20 @@ export const notifyLoginSuccess = () => ({
 })
 
 export const register = data => ({
-    type: getActionSuccess(ActionEvent.REGISTER),
+    type: ActionEvent.REGISTER,
     payload: data
 });
 
-export const registerSuccess = () => ({
-    type: ActionEvent.REGISTER
+export const registerSuccess = (data) => ({
+    type: getActionSuccess(ActionEvent.REGISTER),
+    payload: data
+})
+
+export const getProfile = () => ({
+    type: ActionEvent.GET_PROFILE,
+});
+
+export const getProfileSuccess = (data) => ({
+    type: getActionSuccess(ActionEvent.GET_PROFILE),
+    payload: data
 })

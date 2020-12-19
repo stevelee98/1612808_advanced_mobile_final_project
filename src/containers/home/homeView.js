@@ -17,6 +17,10 @@ import ic_search_white from 'images/ic_search_white.png';
 import ic_grid_white from 'images/ic_grid_white.png';
 import ItemCourse from 'containers/courses/list/itemCourse';
 import img_iron_man from 'images/img_iron_man.jpg';
+import * as userActions from 'actions/userActions'
+import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
+import BaseView from 'containers/base/baseView';
+import StorageUtil from 'utils/storageUtil';
 console.disableYellowBox = true;
 const LIST_MENU = [
     {
@@ -30,7 +34,7 @@ const LIST_MENU = [
         value: 2
     }
 ]
-export class HomeView extends Component {
+export class HomeView extends BaseView {
     constructor(props) {
         super(props);
         this.state = {
@@ -141,11 +145,36 @@ export class HomeView extends Component {
     }
 
     componentDidMount() {
-
+        super.componentDidMount()
+        console.log("global token: ", global.token)
+        this.props.getProfile()
     }
 
     componentDidUpdate(prevProps, prevState) {
 
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props !== nextProps) {
+            this.props = nextProps;
+            this.handleData();
+        }
+    }
+
+    handleData = () => {
+        let data = this.props.data;
+        if (this.props.errorCode != ErrorCode.ERROR_INIT) {
+            if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
+                if (this.props.action == getActionSuccess(ActionEvent.GET_PROFILE)) {
+                    console.log("GET_PROFILE data", data)
+                    if (data != null && data.payload != null) {
+                        StorageUtil.storeItem(StorageUtil.USER_PROFILE, data.payload);
+                    }
+                }
+            } else {
+                this.handleError(this.props.errorCode, this.props.error);
+            }
+        }
     }
 
     renderNotLogin = () => {
@@ -171,7 +200,7 @@ export class HomeView extends Component {
                     <Image source={img_iron_man} style={{ width: 120, height: 150, alignSelf: 'flex-end' }} resizeMode={'contain'} />
                     <View style={{ position: 'absolute', bottom: 20, left: 16 }}>
                         <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM }}>Welcome to Pluralsight !</Text>
-                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM, marginTop: 20, width: Constants.MAX_WIDTH *0.8 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Text>
+                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM, marginTop: 20, width: Constants.MAX_WIDTH * 0.8 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Text>
                     </View>
                 </View>
                 {this.renderList(this.data[0]?.title, this.data[0]?.data)}
@@ -216,7 +245,7 @@ export class HomeView extends Component {
                 item={item}
                 horizontal={true}
                 length={data.length}
-                onPress={()=>this.props.navigation.navigate("CourseDetail")}
+                onPress={() => this.props.navigation.navigate("CourseDetail")}
             />
         )
     }
@@ -243,11 +272,14 @@ export class HomeView extends Component {
 }
 
 const mapStateToProps = (state) => ({
-
+    data: state.home.data,
+    isLoading: state.home.isLoading,
+    errorCode: state.home.errorCode,
+    action: state.home.action,
 })
 
 const mapDispatchToProps = {
-
+    ...userActions
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeView)

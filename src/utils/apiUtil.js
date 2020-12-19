@@ -7,10 +7,10 @@ export default class ApiUtil {
         let header = new Headers({
             "Accept": "application/json",
             'Content-Type': 'application/json',
-            'X-APITOKEN': global.token,
+            'Authorization': 'Bearer ' + global.token,
             'X-CLIENT-TIME': DateUtil.parseNow(DateUtil.FORMAT_DATE_TIME_ZONE),
-            'X-PLATFORM' : Platform.OS,
-            'X-APP-TYPE' : global.bundleId    
+            'X-PLATFORM': Platform.OS,
+            'X-APP-TYPE': global.bundleId
         })
         return header
     }

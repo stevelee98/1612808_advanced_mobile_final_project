@@ -43,9 +43,9 @@ export const loginEpic = action$ =>
 
 export const registerEpic = action$ =>
     action$.pipe(
-        ofType(ActionEvent.LOGIN),
+        ofType(ActionEvent.REGISTER),
         switchMap((action) =>
-            fetch(ServerPath.API_URL + 'user/register', { 
+            fetch(ServerPath.API_URL + 'user/register', {
                 method: 'POST',
                 headers: ApiUtil.getHeader(),
                 body: JSON.stringify(action.payload)
@@ -60,7 +60,33 @@ export const registerEpic = action$ =>
                 return userActions.registerSuccess(responseJson);
             })
                 .catch((error) => {
-                    consoleLogEpic("LOGIN USER_EPIC:", ActionEvent.LOGIN, error)
+                    consoleLogEpic("REGISTER USER_EPIC:", ActionEvent.REGISTER, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const getProfileEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_PROFILE),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + 'user/me', {
+                method: 'GET',
+                headers: ApiUtil.getHeader(),
+            }).then((response) => {
+                console.log("GET_PROFILE epic: ", response)
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                console.log("GET_PROFILE epic 22: ", responseJson)
+                return userActions.getProfileSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_PROFILE USER_EPIC:", ActionEvent.GET_PROFILE, error)
                     return handleConnectErrors(error)
                 })
         )

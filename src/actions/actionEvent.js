@@ -3,7 +3,8 @@ export const ActionEvent = {
     REQUEST_FAIL: 'requestFail',
     NOTIFY_LOGIN_SUCCESS: 'notifyLoginSuccess',
     SAVE_EXCEPTION: 'saveException',
-    REGISTER: 'register'
+    REGISTER: 'register',
+    GET_PROFILE: 'getProfile'
 };
 
 export function getActionSuccess(action) {
