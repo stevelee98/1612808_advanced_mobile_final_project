@@ -15,6 +15,7 @@ export default styles = {
         elevation: 16
     },
     viewInfo: {
+        flexGrow: 1,
         backgroundColor: Colors.COLOR_GREY_BLUE,
     },
     avtArthur: {
@@ -153,5 +154,13 @@ export default styles = {
         marginBottom: Constants.MARGIN_X_LARGE,
         flex: 1,
         backgroundColor: Colors.COLOR_BLACK
+    },
+    buttonSignIn: {
+        paddingHorizontal: Constants.PADDING_X_LARGE,
+        paddingVertical: Constants.PADDING_LARGE - 2,
+        borderRadius: Constants.CORNER_RADIUS,
+        backgroundColor:Colors.COLOR_BLUE,
+        marginVertical: Constants.MARGIN_XX_LARGE,
+        alignSelf: 'center',
     }
 };
