@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, BackHandler, Image, Pressable } from 'react-native';
+import { View, Text, BackHandler, Image, Pressable, RefreshControl } from 'react-native';
 import {
     Container, Content, Root
 } from "native-base";
@@ -17,6 +17,10 @@ import styles from "./styles";
 import Header from 'components/header'
 import ItemCourse from './itemCourse';
 import BaseView from 'containers/base/baseView';
+import * as userActions from 'actions/userActions'
+import * as courseActions from 'actions/courseActions'
+import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
+
 
 class CourseListView extends BaseView {
 
@@ -28,137 +32,116 @@ class CourseListView extends BaseView {
             enableRefresh: true,
             refreshing: false
         }
-        this.data = [
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 }
-            },
-        ]
+        let { categoryId, categoryTitle } = this.props.route.params;
+        this.categoryId = categoryId;
+        this.categoryTitle = categoryTitle
+        this.data = []
         this.course = {
             id: 1,
             title: 'Software Development'
         }
+
+        this.filter = {
+            limit: Constants.PAGE_SIZE,
+            page: 0
+        }
+        this.filterSearch = {
+            limit: Constants.PAGE_SIZE,
+            offset: 0,
+            keyword: '',
+            opt: {
+                sort: {
+                    attribute: 'updatedAt',
+                    rule: 'DESC'
+                },
+                category: [
+                    this.categoryId
+                ],
+                time: [
+                    {
+                        min: 0,
+                        max: 1000
+                    }
+                ],
+                price: [
+                    {
+                        min: 0,
+                        max: 100000000
+                    }
+                ]
+            }
+        }
     }
 
     componentDidMount = () => {
+        this.handleGetCourse()
     }
 
-    componentWillReceiveProps = (nextProps) => {
+    handleGetCourse = () => {
+        switch (this.categoryId) {
+            case Constants.NEW_RELEASE:
+                this.props.getNewCourses(this.filter);
+                return;
+            default:
+                console.log("filter search, ", this.filterSearch);
+                this.props.search(this.filterSearch);
+                return;
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
             this.props = nextProps;
+            this.handleData();
+        }
+    }
+
+    handleData = () => {
+        let data = this.props.data;
+        if (this.props.errorCode != ErrorCode.ERROR_INIT) {
+            if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
+                if (this.props.action == getActionSuccess(ActionEvent.GET_NEW_COURSES)) {
+                    console.log("GET_NEW_COURSES data", data)
+                    if (data.data && data.data.payload) {
+                        let payload = data.data.payload
+                        if (payload.length > 0) {
+                            this.state.enableLoadMore = !(payload.length < Constants.PAGE_SIZE)
+                            payload.forEach(element => {
+                                this.data.push({ ...element })
+                            });
+                            this.showNoData = false
+                        } else {
+                            this.state.enableLoadMore = false
+                            this.showNoData = true;
+                        }
+                    } else {
+                        this.state.enableLoadMore = false
+                        this.showNoData = true;
+                    }
+                } else if (this.props.action == getActionSuccess(ActionEvent.SEARCH)) {
+                    console.log("SEARCH DATA ", data)
+                    if (data.data && data.data.payload.rows) {
+                        let payload = data.data.payload.rows
+                        if (payload.length > 0) {
+                            this.state.enableLoadMore = !(payload.length < Constants.PAGE_SIZE)
+                            payload.forEach(element => {
+                                this.data.push({ ...element })
+                            });
+                            this.showNoData = false
+                        } else {
+                            this.state.enableLoadMore = false
+                            this.showNoData = true;
+                        }
+                    } else {
+                        this.state.enableLoadMore = false
+                        this.showNoData = true;
+                    }
+                }
+                this.state.refreshing = false
+                this.state.isLoadingMore = false
+            } else {
+                this.handleError(this.props.errorCode, this.props.error);
+            }
         }
     }
 
@@ -176,8 +159,41 @@ class CourseListView extends BaseView {
                 key={index}
                 item={item}
                 length={this.data.length}
+                onPress={this.onPress}
             />
         )
+    }
+
+    onPress = (item) => {
+        this.props.navigation.navigate('CourseDetail', { id: item.id })
+    }
+
+    onLoadMore = () => {
+        if (this.data.length % Constants.PAGE_SIZE == 0 && this.state.enableLoadMore) {
+            this.state.isLoadingMore = true;
+            this.updateFilter()
+            this.handleGetCourse()
+        }
+    }
+
+    updateFilter = () => {
+        switch (this.categoryId) {
+            case Constants.NEW_RELEASE:
+                this.filter.page = Math.round(this.data.length / Constants.PAGE_SIZE)
+                return;
+            default:
+                this.filterSearch.offset = Math.round(this.data.length / Constants.PAGE_SIZE)
+                return;
+        }
+    }
+
+    handleRefresh = () => {
+        this.state.refreshing = true
+        this.data = []
+        this.filter = {
+            limit: Constants.PAGE_SIZE,
+            page: 0
+        }
     }
 
     render() {
@@ -187,32 +203,49 @@ class CourseListView extends BaseView {
                     title={""}
                     onBack={this.onBack}
                 />
-                <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, paddingVertical: Constants.MARGIN_XX_LARGE }}><Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_X_LARGE }]}>{this.course.title}</Text></View>
+                <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, paddingVertical: Constants.MARGIN_XX_LARGE }}><Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_X_LARGE }]}>{this.categoryTitle}</Text></View>
                 <FlatListCustom
                     onRef={(ref) => { this.flatListRef = ref }}
                     contentContainerStyle={{
-                        marginHorizontal: Constants.MARGIN_LARGE
+                        marginHorizontal: Constants.MARGIN_LARGE,
+                        flexGrow: 1
                     }}
                     style={{
+                        flex: 1
                     }}
                     data={this.data}
                     renderItem={this.renderItem}
                     enableLoadMore={this.state.enableLoadMore}
                     keyExtractor={item => item.id}
-                    showsHorizontalScrollIndicator={false}
-                    isShowEmpty={this.data == 0}
+                    onLoadMore={() => { this.onLoadMore() }}
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl
+                            progressViewOffset={Constants.HEIGHT_HEADER_OFFSET_REFRESH}
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.handleRefresh}
+                        />
+                    }
+                    isShowEmpty={!this.props.isLoading && this.data == []}
                     isShowImageEmpty={true}
-                    textForEmpty={""}
+                    textForEmpty={''}
                 />
+                {!this.state.refreshing && !this.state.isLoadingMore && this.showLoadingBar(this.props.isLoading)}
             </View>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
+    data: state.course.data,
+    isLoading: state.course.isLoading,
+    errorCode: state.course.errorCode,
+    action: state.course.action,
 })
 
 const mapDispatchToProps = {
+    ...userActions,
+    ...courseActions
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CourseListView);

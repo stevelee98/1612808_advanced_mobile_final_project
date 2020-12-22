@@ -9,6 +9,8 @@ import ImageLoader from 'components/imageLoader';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import img_background_gradient from 'images/img_background_gradient.png';
 import styles from './styles';
+import StringUtil from 'utils/stringUtil';
+import DateUtil from 'utils/dateUtil';
 
 class ItemCourse extends PureComponent {
     constructor(props) {
@@ -29,7 +31,7 @@ class ItemCourse extends PureComponent {
         const { item, index, length, onPress, horizontal } = this.props;
         return (
             <Pressable
-                onPress={onPress}
+                onPress={() => { onPress(item) }}
                 style={horizontal && {
                     width: Constants.MAX_WIDTH * 0.6,
                     marginRight: Constants.MARGIN_LARGE,
@@ -41,7 +43,7 @@ class ItemCourse extends PureComponent {
                     paddingVertical: Constants.PADDING_LARGE + 2,
                 }}>
                     <View>
-                        <ImageLoader path={item.resource} resizeModeType={'cover'}
+                        <ImageLoader path={item.imageUrl} resizeModeType={'cover'}
                             style={{
                                 width: horizontal ? Constants.MAX_WIDTH * 0.6 : 110,
                                 height: horizontal ? Constants.MAX_WIDTH * 0.4 : 60,
@@ -52,9 +54,9 @@ class ItemCourse extends PureComponent {
                     </View>
                     <View style={{ flex: 1, marginTop: horizontal ? 4 : -4, marginHorizontal: horizontal ? 8 : 8 }}>
                         {!horizontal && <Text numberOfLines={2} style={styles.titleVertical}>{item.title}</Text>}
-                        <Text style={styles.txtArthur}>{item.arthur}</Text>
+                        <Text style={styles.txtArthur}>{item['instructor.user.name'] != null ? item['instructor.user.name'] : item.name}</Text>
                         <Text style={[commonStyles.textSmall, { color: Colors.COLOR_TEXT_HOLDER, marginRight: Constants.MARGIN_X_LARGE }]}>
-                            {item.level}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'}</Text>  {item.createdAt}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {item.long}
+                            {item.price != null && StringUtil.formatStringCashNoUnit(item.price)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'}</Text>  {DateUtil.convertFromFormatToFormat(item.createdAt, DateUtil.FORMAT_DATE_TIME_ZONE_T, DateUtil.FORMAT_DATE_V2)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {StringUtil.convertNumberHourToStringTime(item.totalHours)}
                         </Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <AirbnbRating
