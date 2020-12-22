@@ -78,7 +78,8 @@ class RegisterView extends BaseView {
                 if (this.props.action == getActionSuccess(ActionEvent.REGISTER)) {
                     console.log("Register data", data)
                     if (data != null) {
-                        this.showMessage("Đăng ký thành công. Chúng tôi đã gửi email kích hoạt tài khoản cho bạn, vui lòng kích hoạt tài khoản để đăng nhập")
+                        this.showMessage("Đăng ký thành công. Vui lòng kích hoạt tài khoản để đăng nhập qua email đã đăng ký")
+                        setTimeout(() => { this.onBack() })
                     }
                 }
             } else if (this.props.errorCode == ErrorCode.ERROR_400) {
