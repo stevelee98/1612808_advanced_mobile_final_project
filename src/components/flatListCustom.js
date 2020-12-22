@@ -68,19 +68,16 @@ export default class FlatListCustom extends Component {
                 onEndReached={({ distanceFromEnd }) => {
                     if (!this.onEndReachedCalledDuringMomentum && this.props.enableLoadMore) {
                         if (this.props.onLoadMore != null) {
-                            // this.setState({
-                            //     isLoadMore: true
-                            // })
                             this.props.onLoadMore();
                         }
                         this.onEndReachedCalledDuringMomentum = true;
                     }
                 }}
                 refreshControl={this.props.enableRefresh ? this.props.refreshControl : null}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={0.1}
                 removeClippedSubviews={false}
-                initialNumToRender={5}
-                maxToRenderPerBatch={5}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
                 keyboardShouldPersistTaps='always'
             />
         )
@@ -91,10 +88,18 @@ export default class FlatListCustom extends Component {
      */
     renderEmptyComponent = (style) => {
         return (
-            <View style={[commonStyles.viewCenter, { height: "100%" }, style]}>
-                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_MEDIUM }]}>
+            <View style={{ height: "100%" }}>
+                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_MEDIUM, textAlign: 'center' }]}>
                     {this.props.textForEmpty}
                 </Text>
+                {this.props.isShowImageEmpty && <View>
+                    <Image source={img_error_404} style={{
+                        width: Constants.MAX_WIDTH * 0.8,
+                        height: Constants.MAX_WIDTH * 0.4,
+                        resizeMode: 'contain', alignSelf: 'center',
+                        marginTop: Constants.MARGIN_XX_LARGE
+                    }} />
+                </View>}
             </View>
         )
     }

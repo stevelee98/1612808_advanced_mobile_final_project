@@ -5,6 +5,7 @@ import React from 'react'
 export default class DateUtil {
 
     static FORMAT_DATE = "DD/MM/YYYY"
+    static FORMAT_DATE_V2 = "DD-MM-YYYY"
     static FORMAT_DATE_SQL = "YYYY-MM-DD"
     static FORMAT_DATE_TIME_ZONE = "YYYY-MM-DD HH:mm:ss.SSSZZZ"
     static FORMAT_DATE_TIME_ZONE_T = "YYYY-MM-DDTHH:mm:ss.sssZ"

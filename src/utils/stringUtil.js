@@ -97,7 +97,7 @@ export default class StringUtil {
         return string.replace(/\s\s+/g, ' ');
     }
 
-    static formatStringCash (cash, formatType = '.') {
+    static formatStringCash(cash, formatType = '.') {
         cash = cash.toString();
         let arrCash = cash.split('');
         arrCash = arrCash.reverse();
@@ -115,7 +115,7 @@ export default class StringUtil {
         return result;
     }
 
-    static formatStringCashNoUnit (cash, formatType = '.') {
+    static formatStringCashNoUnit(cash, formatType = '.') {
         cash = cash.toString();
         let arrCash = cash.split('');
         arrCash = arrCash.reverse();
@@ -132,13 +132,13 @@ export default class StringUtil {
         return result;
     }
 
-    static randomString (length, chars) {
+    static randomString(length, chars) {
         var result = '';
         for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
         return result;
     }
 
-    static formatNumScore (score) {
+    static formatNumScore(score) {
         return score == 0 || score == null ? 0 : score.toFixed(2)
     }
 
@@ -168,7 +168,7 @@ export default class StringUtil {
      * @param {*} indexStart // begin from 0.
      * @param {*} indexEnd // index end
      */
-    static subString (str, indexStart, indexEnd) {
+    static subString(str, indexStart, indexEnd) {
         if (!Utils.isNull(str)) {
             return String(str).trim().substring(indexStart, indexEnd)
         } else {
@@ -180,7 +180,7 @@ export default class StringUtil {
      * format licence plate
      * @param {*} str 
      */
-    static formatLicencePlate (str) {
+    static formatLicencePlate(str) {
         var result = str.toUpperCase().trim().split('-').join("").split('.').join("").split(' ').join("")
         return result
     }
@@ -189,7 +189,7 @@ export default class StringUtil {
      * format phone space
      * @param {*} str 
      */
-    static formatPhoneSpace (str) {
+    static formatPhoneSpace(str) {
         var one = ""
         var two = ""
         var there = ""
@@ -209,7 +209,7 @@ export default class StringUtil {
      * Get format type price
      * @param {*} deviceLocale 
      */
-    static getFormatTypePrice (deviceLocale) {
+    static getFormatTypePrice(deviceLocale) {
         if (deviceLocale == 'vi' || deviceLocale == 'vi-VN') {
             return ','
         } else if (deviceLocale == 'en-US' || deviceLocale == 'en' || deviceLocale == 'en-UK') {
@@ -222,7 +222,7 @@ export default class StringUtil {
      * @param {*} origin
      * @param {*} destination
      */
-    static distanceCalculation (origin, destination) {
+    static distanceCalculation(origin, destination) {
         Number.prototype.toRad = function () {
             return this * Math.PI / 180
         }
@@ -264,4 +264,11 @@ export default class StringUtil {
     static specialCharacter = /^(\s)*[^a-z0-9A-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]*((\s)?((\'|\-|\.)?([A-Za-z])+))*(\s)*$/
     // static specialCharacter = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/
     static regexName = /^[A - Z]'?[- a-zA-Z]( [a-zA-Z])*$/
+
+    static convertNumberHourToStringTime = (num) => {
+        let numHour = Math.floor(num);
+        let numMinute = Math.floor((num - numHour) * 60);
+        let numSecond = Math.round(((num - numHour) * 60 - numMinute) * 60);
+        return `${numHour > 0 ? numHour + 'h' : ''}` + `${numMinute > 0 ? numMinute + 'm' : ''}` + numSecond + 's';
+    }
 }   

@@ -6,9 +6,27 @@ import {
     registerEpic,
     getProfileEpic,
 } from './userEpic';
+import {
+    getCategoriesEpic
+} from './categoryEpic';
+import {
+    getNewCoursesEpic,
+    search,
+    getLecturesEpic,
+    getCourseDetailEpic,
+    getLectureEpic,
+    getLessonsEpic
+} from './courseEpic'
 
 export default combineEpics(
     loginEpic,
     registerEpic,
     getProfileEpic,
+    getCategoriesEpic,
+    getNewCoursesEpic,
+    search,
+    getLecturesEpic,
+    getCourseDetailEpic,
+    getLectureEpic,
+    getLessonsEpic
 );

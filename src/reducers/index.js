@@ -3,6 +3,8 @@ import {combineReducers} from 'redux';
 import loginReducer from './loginReducer';
 import homeReducer from './homeReducer';
 import registerReducer from './registerReducer';
+import browseReducer from './browseReducer';
+import courseReducer from './courseReducer';
 
 export const initialState = {
     data: null,
@@ -16,4 +18,6 @@ export default combineReducers({
     login: loginReducer,
     home: homeReducer,
     register: registerReducer,
+    browse: browseReducer,
+    course: courseReducer
 });
