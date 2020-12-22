@@ -29,6 +29,12 @@ import CategoryListView from './list/category/categoryListView';
 import { PathListView } from './list/paths/pathListView';
 import ImageLoader from 'components/imageLoader';
 import Button from 'components/button';
+import BaseView from 'containers/base/baseView';
+import * as userActions from 'actions/userActions'
+import * as courseActions from 'actions/courseActions'
+import * as categoryActions from 'actions/categoryActions'
+import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
+import StorageUtil from 'utils/storageUtil';
 
 const LIST_MENU = [
     {
@@ -42,11 +48,12 @@ const LIST_MENU = [
         value: 2
     }
 ]
-export class BrowseView extends Component {
+export class BrowseView extends BaseView {
     constructor(props) {
         super(props);
         this.state = {
-            user: null
+            user: null,
+            dataCat: []
         }
         this.data = [
             {
@@ -149,14 +156,15 @@ export class BrowseView extends Component {
             }
         ];
 
-        this.dataCat = [
-            { title: "CONFERENCES", source: cat3 },
-            { title: "CERTIFICATIONS", source: cat4 },
-            { title: `<Software>${'\n'}Development`, source: cat5 },
-            { title: `IT${'\n'}OPS`, source: cat6 },
-            { title: `Information${'\n'}AND${'\n'}CYBER SECURITY`, source: cat7 },
-            { title: `DATA${'\n'}PROFESSIONAL`, source: cat8 },
-        ]
+        // this.dataCat = [
+        //     { title: "CONFERENCES", source: cat3 },
+        //     { title: "CERTIFICATIONS", source: cat4 },
+        //     { title: `<Software>${'\n'}Development`, source: cat5 },
+        //     { title: `IT${'\n'}OPS`, source: cat6 },
+        //     { title: `Information${'\n'}AND${'\n'}CYBER SECURITY`, source: cat7 },
+        //     { title: `DATA${'\n'}PROFESSIONAL`, source: cat8 },
+        // ]
+        this.dataCat = []
         this.dataPopularSkill = [
             { title: "Angular" },
             { title: "JavaScript" },
@@ -171,21 +179,43 @@ export class BrowseView extends Component {
             { title: 'Flutter', subTitle: '5 courses', source: 'https://itcraftapps.com/wp-content/uploads/2019/03/Flutter-Cover.png' },
             { title: 'VueJS', subTitle: '2 courses', source: 'https://dragondev.vn/images/posts/q/1/F/q1FiADdO-vuejs-cta-main.jpg' },
         ]
-        this.topAuthor = [
-            { name: 'Mark Zuckerberg', avatar: 'https://devmaster.edu.vn/uploads/images/2020/01/mark-zuckerberg-cung-chia-se-ve-nhung-thay-doi-cua-facebook-trong-thoi-gian-toi-696x522.jpg' },
-            { name: 'Obama', avatar: 'https://releaf.co/wp-content/uploads/2012/09/images-18.jpg' },
-            { name: 'Elon Musk', avatar: 'https://peaklife.in/wp-content/uploads/2019/06/elon-musk-image.jpg' },
-            { name: 'Rooney', avatar: 'https://resize-parismatch.lanmedia.fr/img/var/news/storage/images/paris-match/people-a-z/wayne-rooney/6152180-9-fre-FR/Wayne-Rooney.jpg' },
-            { name: 'Putin', avatar: 'https://nld.mediacdn.vn/2020/11/7/putin-1604707713843601612296.jpg' },
-        ]
+        this.topAuthor = []
     }
 
     componentDidMount() {
-
+        this.props.getCategories()
+        this.props.getLectures()
     }
 
-    componentDidUpdate(prevProps, prevState) {
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props !== nextProps) {
+            this.props = nextProps;
+            this.handleData();
+        }
+    }
+
+    handleData = () => {
+        let data = this.props.data;
+        if (this.props.errorCode != ErrorCode.ERROR_INIT) {
+            if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
+                if (this.props.action == getActionSuccess(ActionEvent.GET_CATEGORIES)) {
+                    console.log("GET_CATEGORIES data", data)
+                    if (data.data && data.data.payload) {
+                        this.state.dataCat = []
+                        this.state.dataCat = data.data.payload;
+                    }
+                } else if (this.props.action == getActionSuccess(ActionEvent.GET_LECTURES)) {
+                    console.log("GET_LECTURES data", data)
+                    if (data.data && data.data.payload) {
+                        this.topAuthor = []
+                        this    .topAuthor = data.data.payload;
+                    }
+                }
+            } else {
+                this.handleError(this.props.errorCode, this.props.error);
+            }
+        }
     }
 
     renderNotLogin = () => {
@@ -206,7 +236,7 @@ export class BrowseView extends Component {
     renderCategory = () => {
         return (
             <CategoryListView
-                dataCat={this.dataCat}
+                dataCat={this.state.dataCat}
                 navigation={this.props.navigation}
             />
         )
@@ -268,7 +298,7 @@ export class BrowseView extends Component {
                     showsHorizontalScrollIndicator={false}
                     horizontal={true}
                     isShowEmpty={this.topAuthor.length == 0}
-                    isShowImageEmpty={true}
+                    isShowImageEmpty={false}
                     textForEmpty={""}
                 />
             </View>
@@ -278,14 +308,14 @@ export class BrowseView extends Component {
     renderItemTopAuthor = (item, index) => {
         return (
             <Pressable style={[styles.itemTopAuthor, { marginRight: Constants.MARGIN_X_LARGE, marginLeft: index == 0 ? Constants.MARGIN_X_LARGE : 0 }]}>
-                <ImageLoader path={item.avatar}
+                <ImageLoader path={item['user.avatar']}
                     resizeModeType={'cover'}
                     style={{
                         width: 80,
                         height: 80,
                         borderRadius: Constants.BORDER_RADIUS
                     }} />
-                <Text style={styles.txtItemAuthor}>{item.name}</Text>
+                <Text style={styles.txtItemAuthor}>{item['user.name']}</Text>
             </Pressable>
         )
     }
@@ -316,11 +346,16 @@ export class BrowseView extends Component {
 }
 
 const mapStateToProps = (state) => ({
-
+    data: state.browse.data,
+    isLoading: state.browse.isLoading,
+    errorCode: state.browse.errorCode,
+    action: state.browse.action,
 })
 
 const mapDispatchToProps = {
-
+    ...userActions,
+    ...categoryActions,
+    ...courseActions,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BrowseView)

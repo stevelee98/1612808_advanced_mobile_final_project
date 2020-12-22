@@ -65,12 +65,11 @@ export class CategoryList extends BaseView {
         )
     }
 
-    onPress = () => {
-
+    onPress = (item) => {
+        this.props.navigation.navigate('CourseList', { categoryId: item.id, categoryTitle: item.name })
     }
 
     render() {
-        console.log("this data", this.props.dataCat)
         return (
             <View>
                 <ImageBackground
@@ -79,7 +78,7 @@ export class CategoryList extends BaseView {
                     style={styles.itemCategory}
                 >
                     <Pressable
-                        onPress={() => { }}
+                        onPress={() => { this.props.navigation.navigate('CourseList', { categoryId: Constants.NEW_RELEASE, categoryTitle: 'New release' }) }}
                         android_ripple={Constants.ANDROID_RIPPLE}
                         style={styles.btnCat}>
                         <Text numberOfLines={2} style={styles.txtCat}>NEW{'\n'}RELEASES</Text>
@@ -94,7 +93,7 @@ export class CategoryList extends BaseView {
                         onPress={() => { }}
                         android_ripple={Constants.ANDROID_RIPPLE}
                         style={styles.btnCat}>
-                        <Text numberOfLines={2} style={styles.txtCat}>NEW{'\n'}RELEASES</Text>
+                        <Text numberOfLines={2} style={styles.txtCat}>RECOMMEND{'\n'}FOR YOU</Text>
                     </Pressable>
                 </ImageBackground>
                 <FlatListCustom
