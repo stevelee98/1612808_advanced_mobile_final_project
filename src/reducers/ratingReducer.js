@@ -5,13 +5,7 @@ import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 
 export default function (state = initialState, action) {
     switch (action.type) {
-        case ActionEvent.SEARCH:
-        case ActionEvent.GET_LECTURE:
-        case ActionEvent.GET_COURSE_DETAIL:
-        case ActionEvent.GET_NEW_COURSES:
-        case ActionEvent.REGISTER_FREE_COURSE:
-        case ActionEvent.GET_LESSONS:
-        case ActionEvent.GET_COURSE_DETAIL_V2:
+        case ActionEvent.GET_COURSE_RATING:
             return {
                 ...state,
                 isLoading: true,
@@ -19,13 +13,7 @@ export default function (state = initialState, action) {
                 action: action.type,
                 errorCode: null,
             }
-        case getActionSuccess(ActionEvent.SEARCH):
-        case getActionSuccess(ActionEvent.GET_LECTURE):
-        case getActionSuccess(ActionEvent.GET_COURSE_DETAIL):
-        case getActionSuccess(ActionEvent.REGISTER_FREE_COURSE):
-        case getActionSuccess(ActionEvent.GET_NEW_COURSES):
-        case getActionSuccess(ActionEvent.GET_LESSONS):
-        case getActionSuccess(ActionEvent.GET_COURSE_DETAIL_V2):
+        case getActionSuccess(ActionEvent.GET_COURSE_RATING):
             return {
                 ...state,
                 isLoading: false,
@@ -37,8 +25,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.payload.error,
-                errorCode: action.payload.errorCode,
                 action: action.type
             }
         default:

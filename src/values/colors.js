@@ -20,5 +20,6 @@ export const Colors = {
     COLOR_SHADOW: '#F2F2F6',
     COLOR_TEXT_INPUT_BG: '#151b22',
     COLOR_GREEN: '#52af52',
-    COLOR_GREY_BLUE_LIGHT: '#3f5665'
+    COLOR_GREY_BLUE_LIGHT: '#3f5665',
+    COLOR_YELLOW: '#F1C40F'
 }

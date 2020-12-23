@@ -5,6 +5,8 @@ import homeReducer from './homeReducer';
 import registerReducer from './registerReducer';
 import browseReducer from './browseReducer';
 import courseReducer from './courseReducer';
+import ratingReducer from './ratingReducer';
+import paymentReducer from './paymentReducer';
 
 export const initialState = {
     data: null,
@@ -19,5 +21,7 @@ export default combineReducers({
     home: homeReducer,
     register: registerReducer,
     browse: browseReducer,
-    course: courseReducer
+    course: courseReducer,
+    rating: ratingReducer ,
+    payment: paymentReducer
 });

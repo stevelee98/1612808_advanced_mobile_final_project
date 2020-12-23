@@ -41,7 +41,7 @@ export const getCourseDetailSuccess = data => ({
 
 export const getLecture = (id) => ({
     type: ActionEvent.GET_LECTURE,
-    payload: {id}
+    payload: { id }
 })
 
 export const getLectureSuccess = data => ({
@@ -51,10 +51,30 @@ export const getLectureSuccess = data => ({
 
 export const getLessons = (id) => ({
     type: ActionEvent.GET_LESSONS,
-    payload: {id}
+    payload: { id }
 })
 
 export const getLessonsSuccess = data => ({
     type: getActionSuccess(ActionEvent.GET_LESSONS),
+    payload: { data }
+})
+
+export const getCourseRating = (id) => ({
+    type: ActionEvent.GET_COURSE_RATING,
+    payload: { id }
+})
+
+export const getCourseRatingSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_COURSE_RATING),
+    payload: { data }
+})
+
+export const getCourseDetailV2 = (id, userId) => ({
+    type: ActionEvent.GET_COURSE_DETAIL_V2,
+    payload: { id, userId }
+})
+
+export const getCourseDetailV2Success = data => ({
+    type: getActionSuccess(ActionEvent.GET_COURSE_DETAIL_V2),
     payload: { data }
 })

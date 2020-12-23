@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, BackHandler, Image, Pressable, ScrollView, StatusBar } from 'react-native';
 import {
-    Container, Content, Root
+    Container, Content, Root, Tabs, ScrollableTab, Tab
 } from "native-base";
 import { connect } from 'react-redux';
 import { ErrorCode } from "config/errorCode";
@@ -29,11 +29,13 @@ import ic_menu_vertical from 'images/ic_menu_vertical.png';
 import * as userActions from 'actions/userActions'
 import * as courseActions from 'actions/courseActions'
 import * as categoryActions from 'actions/categoryActions'
+import * as paymentActions from 'actions/paymentActions'
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import DateUtil from 'utils/dateUtil';
 import Button from 'components/button';
+import RatingListView from './rating/ratingListView';
 
-class CourseDetailView extends BaseView {
+export class CourseDetailView extends BaseView {
 
     constructor(props) {
         super(props)
@@ -47,94 +49,48 @@ class CourseDetailView extends BaseView {
             enableScrollViewScroll: true,
             tabActive: 0,
             chapPlaying: { chap: 0, session: 0 },
-            user: null
+            user: null,
+            permission: false
         }
         let { id } = this.props.route.params;
         this.id = id
         this.dataCourse = null
-        this.data = [
-            {
-                resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                title: "React-native: from zero to hero",
-                arthur: "Mark Zuckerberg",
-                level: "Beginner",
-                createdAt: 'Feb 2020',
-                long: '3h 45m',
-                rating: { star: 4, count: 512 },
-                description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-            },
-        ]
-        this.course = {
-            id: 1,
-            title: 'Software Development',
-            arthur: [
-                { name: 'Mark Zuckerberg', avatar: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                { name: 'Mark Zuckerberg', avatar: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-            ],
-            level: 'Beginner',
-            createdAt: 'Feb 2020',
-            long: '3h 45m',
-            rating: { star: 4, count: 512 },
-            description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-        }
-        this.listLesson = [
-            {
-                title: 'Overview', session: 1, duration: '48m50',
-                listChap: [
-                    { title: 'Getting started', learned: true, duration: '1m40', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                ]
-            },
-            {
-                title: 'Keep Concept and core service', session: 2, duration: '48m50',
-                listChap: [
-                    { title: 'What we will cover', learned: true, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: true, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                ]
-            },
-            {
-                title: 'Keep Concept and core service', session: 3, duration: '10m50',
-                listChap: [
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                ]
-            },
-            {
-                title: 'Keep Concept and core service', session: 4, duration: '8m50',
-                listChap: [
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'What we will cover', learned: false, duration: '2m20', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                    { title: 'Audit Logging with cloudtrail', learned: false, duration: '4m09', source: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg" },
-                ]
-            },
-        ]
+        this.sections = [];
+        this.ratings = null;
+        this.tabs = [
+            { id: 1, name: 'BÀI HỌC', user: false, },
+            { id: 2, name: 'CÂU HỎI', user: true, },
+            { id: 3, name: 'GHI CHÚ', user: true, },
+            { id: 3, name: 'BÀI TẬP', user: true, },
+            { id: 3, name: 'ĐÁNH GIÁ', user: false, },
+        ];
     }
 
     componentDidMount = () => {
-        this.setState({ resource: this.listLesson[0].listChap[0].source })
-        this.props.getCourseDetail(this.id)
         this.getProfile()
+    }
+
+    getCourseDetail = () => {
+        this.props.getCourseDetail(this.id)
+    }
+
+    getCourseDetailV2 = (userId) => {
+        this.props.getCourseDetailV2(this.id, userId)
     }
 
     getProfile = async () => {
         let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
+        console.log("user course detail", user);
+        if (user != null) {
+            this.getCourseDetailV2(user.id)
+        } else {
+            this.getCourseDetail()
+        }
         this.setState({ user: user })
+    }
+
+    getCourseRating = () => {
+        this.props.getCourseRating(this.id)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -155,19 +111,48 @@ class CourseDetailView extends BaseView {
                         this.lectureId = this.dataCourse.instructorId
                         this.props.getLecture(this.lectureId)
                     }
-                    this.props.getLessons(this.id)
+                    if (this.state.user) this.props.getLessons(this.id)
+                } else if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_DETAIL_V2)) {
+                    console.log("GET_COURSE_DETAIL_V2 data", data)
+                    if (data.data && data.data.payload) {
+                        this.dataCourse = data.data.payload
+                        this.lectureId = this.dataCourse.instructorId
+                        this.dataLecture = this.dataCourse.instructor
+                        this.state.permission = true
+                        this.sections = []
+                        this.sections = this.dataCourse.section;
+                        this.ratings = this.dataCourse.ratings;
+                    }
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_LECTURE)) {
                     console.log("GET_LECTURE data", data)
                     if (data.data && data.data.payload) {
                         this.dataLecture = data.data.payload
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_LESSONS)) {
-                    console.log("GET_LESSONS data", data)
-                    if (data.data && data.data.payload) {
-                        // this.dataLecture = data.data.payload
+                    console.log("GET_LESSONS GET LESSONS data", data)
+                    if (data.data && data.data.payload && data.data.payload.section) {
+                        this.sections = []
+                        this.sections = data.data.payload.section;
+                        this.state.permission = true
                     }
                     if (data.data && data.data.errorCode == 401) {
-                        this.showMessage("mày phải login")
+                        this.state.permission = false
+                    }
+                } else if (this.props.action == getActionSuccess(ActionEvent.REGISTER_FREE_COURSE)) {
+                    console.log("REGISTER_FREE_COURSE data", data)
+                    if (data.data && data.data.messsage == 'OK') {
+                        this.showMessage("Đăng ký thành công")
+                    }
+                    if (data.data && data.data.errorCode) {
+                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                    }
+                } else if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_RATING)) {
+                    console.log("REGISTER_FREE_COURSE data", data)
+                    if (data.data && data.data.messsage == 'OK') {
+                        this.showMessage("Đăng ký thành công")
+                    }
+                    if (data.data && data.data.errorCode) {
+                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
                     }
                 }
                 this.state.refreshing = false
@@ -175,6 +160,10 @@ class CourseDetailView extends BaseView {
                 this.handleError(this.props.errorCode, this.props.error);
             }
         }
+    }
+
+    handleRefresh = () => {
+
     }
 
     onPressItem = (id) => {
@@ -189,7 +178,7 @@ class CourseDetailView extends BaseView {
                     style={styles.btnBack}>
                     <Image source={ic_back_white} style={{}} />
                 </Pressable>
-                <ImageLoader path={this.state.resource} resizeModeType={'cover'} style={styles.courseResource} />
+                <ImageLoader path={this.dataCourse != null ? this.dataCourse.imageUrl : ''} resizeModeType={'cover'} style={styles.courseResource} />
                 <ScrollView style={styles.viewInfo} contentContainerStyle={{ flexGrow: 1 }}>
                     {this.renderCourseInfo()}
                     {/* {this.renderButton()} */}
@@ -267,13 +256,13 @@ class CourseDetailView extends BaseView {
                             <Text style={[commonStyles.textSmall, { marginTop: Constants.MARGIN_LARGE }]}>{DateUtil.convertFromFormatToFormat(this.dataCourse?.createdAt, DateUtil.FORMAT_DATE_TIME_ZONE_T, DateUtil.FORMAT_DATE_V2)} <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {this.dataCourse && StringUtil.convertNumberHourToStringTime(this.dataCourse.totalHours)}
                             </Text>
                             <View style={styles.viewRating}>
-                                <AirbnbRating
+                                {/* <AirbnbRating
                                     count={5}
                                     showRating={false}
                                     isDisabled={true}
                                     defaultRating={2.5}
                                     size={10}
-                                />
+                                /> */}
                                 <Text style={commonStyles.textSmall}>(403)</Text>
                             </View>
                         </View>
@@ -370,27 +359,87 @@ class CourseDetailView extends BaseView {
         let { tabActive } = this.state;
         return (
             <View style={styles.bottom}>
-                <View style={styles.tabView}>
-                    <Pressable
-                        onPress={() => { this.onChangeTab(0) }}
-                        android_ripple={Constants.ANDROID_RIPPLE}
-                        style={[styles.tab, { borderBottomColor: tabActive == 0 ? Colors.COLOR_PRIMARY : 'transparent' }]}>
-                        <Text style={{ ...commonStyles.text, flex: 1 }}>CONTENT</Text>
-                    </Pressable>
-                    <Pressable
-                        onPress={() => { this.onChangeTab(1) }}
-                        android_ripple={Constants.ANDROID_RIPPLE}
-                        style={[styles.tab, { borderBottomColor: tabActive == 1 ? Colors.COLOR_PRIMARY : 'transparent' }]}>
-                        <Text style={{ ...commonStyles.text, flex: 1 }}>TRANSCRIPT</Text>
-                    </Pressable>
-                </View>
-                {this.renderListSession()}
-                {this.renderTranscript()}
+                <Tabs
+                    initialPage={0}
+                    renderTabBar={() => (
+                        <ScrollableTab
+                            tabsContainerStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                            style={{
+                                borderWidth: 0,
+                                backgroundColor: Colors.COLOR_BLACK,
+                                elevation: 0
+                            }}
+                        />
+                    )}
+                    locked={false}
+                    tabContainerStyle={{ elevation: 4, borderBottomWidth: 0, backgroundColor: Colors.COLOR_BLACK }}
+                    tabBarUnderlineStyle={{ height: 3, backgroundColor: Colors.COLOR_BLUE, borderRadius: Constants.CORNER_RADIUS }}
+                    onChangeTab={(event) => this.onChangeTab(event)}
+                    onScroll={(event) => this.onChangeTab(event)}
+                >
+                    <Tab
+                        heading={'BÀI HỌC'}
+                        tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        textStyle={{ color: Colors.COLOR_DRK_GREY }}
+                        activeTextStyle={{ color: Colors.COLOR_TEXT }}
+                    >
+                        <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
+                            {this.renderListSession()}
+                        </View>
+                    </Tab>
+                    <Tab
+                        heading={'ĐÁNH GIÁ'}
+                        tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        textStyle={{ color: Colors.COLOR_DRK_GREY }}
+                        activeTextStyle={{ color: Colors.COLOR_TEXT }}
+                    >
+                        <View style={{ backgroundColor: Colors.COLOR_BLACK, flex: 1 }}>
+                            {this.renderRating()}
+                        </View>
+                    </Tab>
+                    <Tab
+                        heading={'CÂU HỎI'}
+                        tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        textStyle={{ color: Colors.COLOR_DRK_GREY }}
+                        activeTextStyle={{ color: Colors.COLOR_TEXT }}
+                    >
+                        <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
+                            {this.renderListSession()}
+                        </View>
+                    </Tab>
+                    <Tab
+                        heading={'GHI CHÚ'}
+                        tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        textStyle={{ color: Colors.COLOR_DRK_GREY }}
+                        activeTextStyle={{ color: Colors.COLOR_TEXT }}
+                    >
+                        <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
+                            {this.renderListSession()}
+                        </View>
+                    </Tab>
+                    <Tab
+                        heading={'BÀI TẬP'}
+                        tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        textStyle={{ color: Colors.COLOR_DRK_GREY }}
+                        activeTextStyle={{ color: Colors.COLOR_TEXT }}
+                    >
+                        <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
+                            {this.renderListSession()}
+                        </View>
+                    </Tab>
+
+                </Tabs>
             </View>
         )
     }
 
     onChangeTab = (tab) => {
+        console.log("onchange tab", tab);
         this.setState({ tabActive: tab })
     }
 
@@ -398,24 +447,44 @@ class CourseDetailView extends BaseView {
         console.log("this.user", this.state.user);
         if (this.state.user == null) {
             return (
-                this.state.tabActive == 0 && <Pressable style={styles.buttonSignIn} onPress={() => {
-                    this.showLoginView()
+                <Pressable style={styles.buttonSignIn} onPress={() => {
+                    this.showLoginView({ fromScreen: 'CourseDetail', id: this.id, callBack: this.getProfile })
                 }}>
                     <Text style={[commonStyles.text]}>SIGN IN</Text>
                 </Pressable>
             )
+        } else if (!this.state.permission) {
+            return (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: Constants.PADDING_XX_LARGE }}>
+                    <Pressable
+                        style={styles.buttonSignIn}
+                        onPress={() => {
+                            if (this.dataCourse)
+                                if (this.dataCourse.price === 0) {
+                                    this.props.registerFreeCourse({ courseId: this.id })
+                                }
+                        }}>
+                        {this.dataCourse ?
+                            this.dataCourse.price === 0 ?
+                                <Text style={commonStyles.text}>THAM GIA KHÓA HỌC</Text> :
+                                <Text style={commonStyles.text}>Mua khóa học với giá {StringUtil.formatStringCashNoUnit(this.dataCourse.price)}</Text>
+                            : null}
+                    </Pressable>
+                </View>
+            )
         }
         return (
-            this.state.tabActive == 0 && <FlatListCustom
+            <FlatListCustom
                 onRef={(ref) => { this.flatListRef = ref }}
                 contentContainerStyle={{
                     flexGrow: 1,
+                    backgroundColor: Colors.COLOR_BLACK,
                     marginHorizontal: Constants.MARGIN_X_LARGE
                 }}
                 style={{
                     flex: 1,
                 }}
-                data={this.listLesson}
+                data={this.sections}
                 renderItem={this.renderItem}
                 enableLoadMore={this.state.enableLoadMore}
                 keyExtractor={item => item.id}
@@ -440,6 +509,18 @@ class CourseDetailView extends BaseView {
         )
     }
 
+    renderRating = () => {
+        return (
+            <RatingListView
+                onRef={input => {
+                    this.ratingView = input;
+                }}
+                courseId={this.id}
+                dataRatings={this.ratings}
+            />
+        )
+    }
+
     /**
      * Render item
      * @param {*} item
@@ -450,11 +531,11 @@ class CourseDetailView extends BaseView {
             <View>
                 <View style={styles.itemSession}>
                     <View style={styles.sessionNum}>
-                        <Text style={commonStyles.text}>{item.session}</Text>
+                        <Text style={commonStyles.text}>{item.numberOrder}</Text>
                     </View>
                     <View style={styles.sessionInfo}>
-                        <Text style={styles.sessionTitle}>{item.title}</Text>
-                        <Text style={styles.sessionDuration}>{item.duration}</Text>
+                        <Text style={styles.sessionTitle}>{item.name}</Text>
+                        <Text style={styles.sessionDuration}>{StringUtil.convertNumberHourToStringTime(item.sumHours)}</Text>
                     </View>
                     <Image source={ic_menu_vertical} />
                 </View>
@@ -463,7 +544,7 @@ class CourseDetailView extends BaseView {
                     contentContainerStyle={{
                         flexGrow: 1,
                     }}
-                    data={item.listChap}
+                    data={item.lesson}
                     renderItem={this.renderItemChap}
                     keyExtractor={item => item.id}
                     showsHorizontalScrollIndicator={false}
@@ -482,8 +563,8 @@ class CourseDetailView extends BaseView {
                     ...styles.chapLearned,
                     backgroundColor: item.learned ? Colors.COLOR_GREEN : Colors.COLOR_DRK_GREY
                 }} />
-                <Text style={[[styles.chapTitle, { color: this.state.chapPlaying.chap == index ? Colors.COLOR_GREEN : Colors.COLOR_TEXT }]]}>{item.title}</Text>
-                <Text style={commonStyles.textSmall}>{item.duration}</Text>
+                <Text style={[[styles.chapTitle, { color: this.state.chapPlaying.chap == index ? Colors.COLOR_GREEN : Colors.COLOR_TEXT }]]}>{item.name}</Text>
+                <Text style={commonStyles.textSmall}>{StringUtil.convertNumberHourToStringTime(item.hours)}</Text>
             </Pressable>
         )
     }
@@ -500,6 +581,7 @@ const mapDispatchToProps = {
     ...userActions,
     ...categoryActions,
     ...courseActions,
+    ...paymentActions
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CourseDetailView);

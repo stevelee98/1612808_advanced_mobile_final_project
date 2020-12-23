@@ -12,7 +12,10 @@ export const ActionEvent = {
     GET_LECTURES: 'getLectures',
     GET_COURSE_DETAIL: 'getCourseDetail',
     GET_LECTURE: 'getLecture',
-    GET_LESSONS: 'getLessons'
+    GET_LESSONS: 'getLessons',
+    REGISTER_FREE_COURSE: 'registerFreeCourse',
+    GET_COURSE_RATING: 'getCourseRating',
+    GET_COURSE_DETAIL_V2: 'getCourseDetailV2'
 };
 
 export function getActionSuccess(action) {

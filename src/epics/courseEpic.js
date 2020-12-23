@@ -162,3 +162,51 @@ export const getLessonsEpic = action$ =>
                 })
         )
     );
+
+export const getCourseRatingEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_COURSE_RATING),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `course/get-rating/${action.payload.id}`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader()
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                return courseActions.getCourseRatingSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_COURSE_RATING EPIC:", ActionEvent.GET_COURSE_RATING, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const getCourseDetailV2Epic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_COURSE_DETAIL_V2),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `course/get-course-detail/${action.payload.id}/${action.payload.userId}`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader()
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                return courseActions.getCourseDetailV2Success(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_COURSE_DETAIL_V2 EPIC:", ActionEvent.GET_COURSE_DETAIL_V2, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );

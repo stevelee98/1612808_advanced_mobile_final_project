@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, BackHandler } from 'react-native'
+import { View, Text, BackHandler, StatusBar } from 'react-native'
 import {
     Container, Content, Root,
 } from 'native-base'
@@ -54,7 +54,12 @@ class LoginView extends BaseView {
                         StorageUtil.storeItem(StorageUtil.USER_PROFILE, data.userInfo);
                         StorageUtil.storeItem(StorageUtil.USER_TOKEN, data.token);
                         global.token = data.token;
-                        this.goHomeScreen()
+                        if (this.props.route.params && this.props.route.params.fromScreen) {
+                            this.props.navigation.pop(2)
+                            setTimeout(() => { this.props.navigation.navigate(this.props.route.params.fromScreen, this.props.route.params.param.id && { id: this.props.route.params.param.id }) })
+                        } else {
+                            this.goHomeScreen()
+                        }
                     }
                 }
             } else if (this.props.errorCode == ErrorCode.ERROR_400) {
@@ -130,6 +135,7 @@ class LoginView extends BaseView {
                     {this.renderForm()}
                     {this.renderButton()}
                 </Content>
+                <StatusBar translucent={false} backgroundColor='black' />
                 {this.showLoadingBar(this.props.isLoading)}
             </View>
         )

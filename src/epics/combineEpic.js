@@ -15,8 +15,14 @@ import {
     getLecturesEpic,
     getCourseDetailEpic,
     getLectureEpic,
-    getLessonsEpic
+    getLessonsEpic,
+    getCourseRatingEpic,
+    getCourseDetailV2Epic
 } from './courseEpic'
+
+import {
+    registerFreeCourseEpic,
+} from './paymentEpic'
 
 export default combineEpics(
     loginEpic,
@@ -28,5 +34,8 @@ export default combineEpics(
     getLecturesEpic,
     getCourseDetailEpic,
     getLectureEpic,
-    getLessonsEpic
+    getLessonsEpic,
+    registerFreeCourseEpic,
+    getCourseRatingEpic,
+    getCourseDetailV2Epic
 );

@@ -121,7 +121,7 @@ class BaseView extends Component {
 
     showLoginView(route) {
         if (!Utils.isNull(route)) {
-
+            this.props.navigation.navigate('Login', { fromScreen: route.fromScreen, param: { ...route } })
         } else {
             this.props.navigation.navigate('Login')
         }
