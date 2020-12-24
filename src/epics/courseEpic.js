@@ -210,3 +210,82 @@ export const getCourseDetailV2Epic = action$ =>
                 })
         )
     );
+
+export const getQuestionsEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_QUESTIONS),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `forum/question/all?page=${action.payload.page}&pageSize=${action.payload.pageSize}&courseId=${action.payload.courseId}`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader()
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+
+                console.log("get QUESTIONS EPIC", responseJson);
+                return courseActions.getQuestionsSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_QUESTIONS EPIC:", ActionEvent.GET_QUESTIONS, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const getNotesEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_NOTES),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `user-note-lesson/get-by-course/${action.payload.courseId}`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader()
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+
+                console.log("get GET_NOTES EPIC", responseJson);
+                return courseActions.getNotesSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_NOTES EPIC:", ActionEvent.GET_NOTES, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const addNoteEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.ADD_NOTE),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `user-note-lesson/create`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader(),
+                body: JSON.stringify(action.payload)
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+
+                console.log("get ADD_NOTE EPIC", responseJson);
+                return courseActions.addNoteSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("ADD_NOTE EPIC:", ActionEvent.ADD_NOTE, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );

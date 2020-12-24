@@ -78,3 +78,33 @@ export const getCourseDetailV2Success = data => ({
     type: getActionSuccess(ActionEvent.GET_COURSE_DETAIL_V2),
     payload: { data }
 })
+
+export const getQuestions = (page, pageSize, courseId, lessonId = null) => ({
+    type: ActionEvent.GET_QUESTIONS,
+    payload: { page, pageSize, courseId, lessonId }
+})
+
+export const getQuestionsSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_QUESTIONS),
+    payload: { data }
+})
+
+export const getNotes = (courseId) => ({
+    type: ActionEvent.GET_NOTES,
+    payload: { courseId }
+})
+
+export const getNotesSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_NOTES),
+    payload: { data }
+})
+
+export const addNote = (filter) => ({
+    type: ActionEvent.ADD_NOTE,
+    payload: { ...filter }
+})
+
+export const addNoteSuccess = data => ({
+    type: getActionSuccess(ActionEvent.ADD_NOTE),
+    payload: { data }
+})

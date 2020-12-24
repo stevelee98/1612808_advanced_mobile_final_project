@@ -1,5 +1,5 @@
 import { ErrorCode } from 'config/errorCode';
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 import loginReducer from './loginReducer';
 import homeReducer from './homeReducer';
 import registerReducer from './registerReducer';
@@ -7,6 +7,8 @@ import browseReducer from './browseReducer';
 import courseReducer from './courseReducer';
 import ratingReducer from './ratingReducer';
 import paymentReducer from './paymentReducer';
+import questionReducer from './questionReducer';
+import noteReducer from './noteReducer';
 
 export const initialState = {
     data: null,
@@ -22,6 +24,8 @@ export default combineReducers({
     register: registerReducer,
     browse: browseReducer,
     course: courseReducer,
-    rating: ratingReducer ,
-    payment: paymentReducer
+    rating: ratingReducer,
+    payment: paymentReducer,
+    question: questionReducer,
+    note: noteReducer,
 });
