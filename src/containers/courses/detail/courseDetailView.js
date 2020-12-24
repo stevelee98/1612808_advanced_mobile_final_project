@@ -34,6 +34,7 @@ import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import DateUtil from 'utils/dateUtil';
 import Button from 'components/button';
 import RatingListView from './rating/ratingListView';
+import QuestionListView from './question/questionListView';
 
 export class CourseDetailView extends BaseView {
 
@@ -172,12 +173,6 @@ export class CourseDetailView extends BaseView {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <Pressable
-                    onPress={this.onBack}
-                    android_ripple={Constants.ANDROID_RIPPLE}
-                    style={styles.btnBack}>
-                    <Image source={ic_back_white} style={{}} />
-                </Pressable>
                 <ImageLoader path={this.dataCourse != null ? this.dataCourse.imageUrl : ''} resizeModeType={'cover'} style={styles.courseResource} />
                 <ScrollView style={styles.viewInfo} contentContainerStyle={{ flexGrow: 1 }}>
                     {this.renderCourseInfo()}
@@ -190,7 +185,7 @@ export class CourseDetailView extends BaseView {
                         <View style={{ marginTop: Constants.MARGIN, flexDirection: 'row', flexWrap: 'wrap' }}>
                             {this.dataCourse && this.dataCourse.learnWhat ? this.dataCourse.learnWhat.map((item, index) => {
                                 return (
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginRight: Constants.MARGIN_LARGE, marginTop: Constants.MARGIN }}>
+                                    <View  key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', marginRight: Constants.MARGIN_LARGE, marginTop: Constants.MARGIN }}>
                                         <Pressable
                                             style={{
                                                 backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT,
@@ -212,7 +207,7 @@ export class CourseDetailView extends BaseView {
                         <View style={{ marginTop: Constants.MARGIN, flexDirection: 'row', flexWrap: 'wrap' }}>
                             {this.dataCourse && this.dataCourse.requirement ? this.dataCourse.requirement.map((item, index) => {
                                 return (
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginRight: Constants.MARGIN_LARGE, marginTop: Constants.MARGIN }}>
+                                    <View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', marginRight: Constants.MARGIN_LARGE, marginTop: Constants.MARGIN }}>
                                         <Pressable
                                             style={{
                                                 backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT,
@@ -233,6 +228,12 @@ export class CourseDetailView extends BaseView {
                         {this.renderTabs()}
                     </View>
                 </ScrollView>
+                <Pressable
+                    onPress={() => { this.onBack() }}
+                    android_ripple={Constants.ANDROID_RIPPLE}
+                    style={styles.btnBack}>
+                    <Image source={ic_back_white} style={{}} />
+                </Pressable>
                 <StatusBar translucent backgroundColor='transparent' />
             </View>
         )
@@ -389,6 +390,17 @@ export class CourseDetailView extends BaseView {
                         </View>
                     </Tab>
                     <Tab
+                        heading={'CÂU HỎI'}
+                        tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        textStyle={{ color: Colors.COLOR_DRK_GREY }}
+                        activeTextStyle={{ color: Colors.COLOR_TEXT }}
+                    >
+                        <View style={{ flex: 1, backgroundColor: Colors.COLOR_BLACK }}>
+                            {this.renderQuestions()}
+                        </View>
+                    </Tab>
+                    <Tab
                         heading={'ĐÁNH GIÁ'}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
@@ -397,17 +409,6 @@ export class CourseDetailView extends BaseView {
                     >
                         <View style={{ backgroundColor: Colors.COLOR_BLACK, flex: 1 }}>
                             {this.renderRating()}
-                        </View>
-                    </Tab>
-                    <Tab
-                        heading={'CÂU HỎI'}
-                        tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
-                        activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
-                        textStyle={{ color: Colors.COLOR_DRK_GREY }}
-                        activeTextStyle={{ color: Colors.COLOR_TEXT }}
-                    >
-                        <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
-                            {this.renderListSession()}
                         </View>
                     </Tab>
                     <Tab
@@ -439,12 +440,10 @@ export class CourseDetailView extends BaseView {
     }
 
     onChangeTab = (tab) => {
-        console.log("onchange tab", tab);
         this.setState({ tabActive: tab })
     }
 
     renderListSession = () => {
-        console.log("this.user", this.state.user);
         if (this.state.user == null) {
             return (
                 <Pressable style={styles.buttonSignIn} onPress={() => {
@@ -517,6 +516,17 @@ export class CourseDetailView extends BaseView {
                 }}
                 courseId={this.id}
                 dataRatings={this.ratings}
+            />
+        )
+    }
+
+    renderQuestions = () => {
+        return (
+            <QuestionListView
+                onRef={input => {
+                    this.questionList = input;
+                }}
+                courseId={this.id}
             />
         )
     }

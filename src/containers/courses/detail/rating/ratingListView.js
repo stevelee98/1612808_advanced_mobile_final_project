@@ -86,7 +86,7 @@ class RatingListView extends BaseView {
             <ItemRating
                 key={index}
                 item={item}
-                length={this.data.length}
+                length={this.props.dataRatings.ratingList.length}
                 onPress={this.onPress}
             />
         )
@@ -106,14 +106,32 @@ class RatingListView extends BaseView {
     }
 
     renderHeaderRating = () => {
+        let dataRating = this.data != null && this.data.stars != null ? this.data.stars.slice().reverse() : [];
+
         return (
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <View>
-                    <Text style={{ ...commonStyles.textBold, fontSize: Fonts.FONT_SIZE_XX_LARGE }}>{this.data && this.calculateStar()}</Text>
-                    <Text style={commonStyles.text}>{this.data != null && this.data.ratingList != null ? this.data.ratingList.length : 0} đánh giá</Text>
+            <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginHorizontal: Constants.MARGIN_X_LARGE,
+                marginTop: Constants.MARGIN_X_LARGE
+            }}>
+                <View style={{}}>
+                    <View style={{
+                        backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT,
+                        borderRadius: Constants.BORDER_RADIUS,
+                        alignItems: 'center',
+                        width: 70, height: 70,
+                        justifyContent: 'center',
+                        paddingVertical: Constants.PADDING_X_LARGE,
+                        paddingHorizontal: Constants.PADDING_X_LARGE
+                    }}>
+                        <Text style={{ ...commonStyles.textBold, fontSize: Fonts.FONT_SIZE_XX_LARGE }}>{this.data && this.calculateStar()}</Text>
+                    </View>
+                    <Text style={[commonStyles.textSmall, { textAlign: 'center', marginTop: Constants.MARGIN_LARGE }]}>{this.data != null && this.data.ratingList != null ? this.data.ratingList.length : 0} đánh giá</Text>
                 </View>
                 <View style={{ flex: 1, marginLeft: Constants.MARGIN_XX_LARGE }}>
-                    {this.data != null && this.data.stars != null && this.data.stars.reverse().map((item, index) => {
+                    {dataRating.map((item, index) => {
                         return (
                             <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Text style={{ ...commonStyles.text, color: Colors.COLOR_YELLOW, alignItems: 'center' }}>{Math.abs(index - 5)} <Image source={ic_star_yellow} /></Text>
@@ -121,14 +139,12 @@ class RatingListView extends BaseView {
                                     <View style={{
                                         height: 6, width: `${item}%`,
                                         backgroundColor: Colors.COLOR_GREY_LIGHT,
-                                        borderBottomLeftRadius: Constants.CORNER_RADIUS,
-                                        borderTopLeftRadius: Constants.CORNER_RADIUS
+                                        borderRadius: Constants.CORNER_RADIUS
                                     }} />
                                     <View style={{
                                         height: 6, width: `${100 - item}%`,
                                         backgroundColor: Colors.COLOR_DRK_GREY,
-                                        borderBottomRightRadius: Constants.CORNER_RADIUS,
-                                        borderTopRightRadius: Constants.CORNER_RADIUS
+                                        borderRadius: Constants.CORNER_RADIUS
                                     }} />
                                 </View>
                                 <Text style={{ ...commonStyles.textSmall, color: Colors.COLOR_GREEN, width: 30 }}>{this.data != null && this.data.stars != null ? item + '%' : '0%'}</Text>
@@ -152,22 +168,16 @@ class RatingListView extends BaseView {
                         flexGrow: 1
                     }}
                     style={{
-                        flex: 1
+                        flex: 1,
+                        marginTop: Constants.MARGIN_XX_LARGE
                     }}
-                    data={this.data && this.data.listRating ? this.data.listRating : []}
+                    data={this.props.dataRatings && this.props.dataRatings.ratingList ? this.props.dataRatings.ratingList : []}
                     renderItem={this.renderItem}
                     enableLoadMore={this.state.enableLoadMore}
                     keyExtractor={item => item.id}
                     onLoadMore={() => { this.onLoadMore() }}
                     showsVerticalScrollIndicator={false}
-                    refreshControl={
-                        <RefreshControl
-                            progressViewOffset={Constants.HEIGHT_HEADER_OFFSET_REFRESH}
-                            refreshing={this.state.refreshing}
-                            onRefresh={this.handleRefresh}
-                        />
-                    }
-                    isShowEmpty={!this.props.isLoading && this.data == []}
+                    isShowEmpty={!this.props.isLoading && this.props.dataRatings && this.props.dataRatings.ratingList.length == []}
                     isShowImageEmpty={true}
                     textForEmpty={''}
                 />

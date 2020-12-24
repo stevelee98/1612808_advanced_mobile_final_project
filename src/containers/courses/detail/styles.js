@@ -12,7 +12,7 @@ export default styles = {
         padding: Constants.PADDING,
         position: 'absolute',
         top: 32, left: 16,
-        elevation: 16
+        elevation: 20
     },
     viewInfo: {
         flexGrow: 1,
