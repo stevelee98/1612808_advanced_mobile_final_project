@@ -53,5 +53,26 @@ export default styles = {
         height: 260,
         borderRadius: Constants.CORNER_RADIUS * 3,
         marginHorizontal: Constants.MARGIN_LARGE
+    },
+    imgGradient: {
+        position: 'absolute',
+        bottom: 0,
+        width: "100%",
+        height: "100%",
+        opacity: 0.7
+    },
+    titleHorizontal: {
+        ...commonStyles.text,
+        fontSize: Fonts.FONT_SIZE_X_MEDIUM,
+        position: 'absolute',
+        bottom: 8, left: 8
+    },
+    titleVertical: {
+        ...commonStyles.text,
+        fontSize: Fonts.FONT_SIZE_X_MEDIUM
+    },
+    txtArthur: {
+        ...commonStyles.textSmall,
+        color: Colors.COLOR_TEXT_HOLDER
     }
 };

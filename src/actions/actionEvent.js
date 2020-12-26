@@ -23,7 +23,7 @@ export const ActionEvent = {
     GET_COURSE_TOP_RATE: 'getCourseTopRate',
     GET_COURSE_SAVE: 'getCourseSave',
     SAVE_COURSE: 'saveCourse',
-    GET_SAVE_COURSE_STATUS: 'getSaveCourseStatus'
+    GET_SAVE_COURSE_STATUS: 'getSaveCourseStatus',
 };
 
 export function getActionSuccess(action) {

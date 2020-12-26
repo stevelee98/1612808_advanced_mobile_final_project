@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, ScrollView, Image, Pressable } from 'react-native'
+import { View, Text, ScrollView, Image, Pressable, RefreshControl } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { ErrorCode } from "config/errorCode";
@@ -24,7 +24,7 @@ import * as userActions from 'actions/userActions'
 import * as courseActions from 'actions/courseActions'
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import BaseView from 'containers/base/baseView';
-import ItemCourse from '../courses/list/itemCourse'
+import ItemCourseSave from './itemCourseSave'
 import StorageUtil from 'utils/storageUtil';
 
 const LIST_MENU = [
@@ -58,7 +58,7 @@ export class DownloadView extends BaseView {
     getProfile = async () => {
         let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
         if (user) {
-            this.setState({user: user})
+            this.setState({ user: user })
             this.props.getCourseSave()
         }
     }
@@ -101,7 +101,8 @@ export class DownloadView extends BaseView {
         }
     }
 
-    onPress = (id) => {
+    onPress = (item) => {
+        this.props.navigation.navigate("CourseDetail", { id: item.id })
     }
 
     /**
@@ -111,7 +112,7 @@ export class DownloadView extends BaseView {
      */
     renderItem = (item, index) => {
         return (
-            <ItemCourse
+            <ItemCourseSave
                 key={index}
                 item={item}
                 length={this.data.length}
@@ -151,31 +152,34 @@ export class DownloadView extends BaseView {
         )
     }
 
-    renderList = (title, data) => {
+    renderList = () => {
         return (
-            <View>
-                <View style={styles.titleList}>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>{title}</Text>
-                    <Pressable style={{}} onPress={() => this.props.navigation.navigate('CourseList')}>
-                        <Text style={[commonStyles.textSmall]}>{'See all >'}</Text>
-                    </Pressable>
-                </View>
-                <FlatListCustom
-                    onRef={(ref) => { this.flatListRef = ref }}
-                    contentContainerStyle={{
-                    }}
-                    style={{
-                    }}
-                    data={data}
-                    renderItem={this.renderItem}
-                    keyExtractor={item => item.id}
-                    showsHorizontalScrollIndicator={false}
-                    horizontal={true}
-                    isShowEmpty={data == 0}
-                    isShowImageEmpty={true}
-                    textForEmpty={""}
-                />
-            </View>
+            <FlatListCustom
+                onRef={(ref) => { this.flatListRef = ref }}
+                contentContainerStyle={{
+                    marginHorizontal: Constants.MARGIN_LARGE,
+                    flexGrow: 1
+                }}
+                style={{
+                    flex: 1
+                }}
+                data={this.data}
+                renderItem={this.renderItem}
+                enableLoadMore={this.state.enableLoadMore}
+                keyExtractor={item => item.id}
+                onLoadMore={() => { this.onLoadMore() }}
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        progressViewOffset={Constants.HEIGHT_HEADER_OFFSET_REFRESH}
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.handleRefresh}
+                    />
+                }
+                isShowEmpty={!this.props.isLoading && this.data == []}
+                isShowImageEmpty={true}
+                textForEmpty={''}
+            />
         )
     }
 
@@ -227,10 +231,20 @@ export class DownloadView extends BaseView {
                     menus={LIST_MENU}
                     navigation={this.props.navigation}
                 />
-                {this.data.length == 0 && <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                {this.data.length == 0 && <ScrollView
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    refreshControl={
+                        <RefreshControl
+                            progressViewOffset={Constants.HEIGHT_HEADER_OFFSET_REFRESH}
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.handleRefresh}
+                        />
+                    }>
                     {this.renderHeaderDownload()}
                     {this.renderDownloadGuide()}
                 </ScrollView>}
+                {this.data.length > 0 && this.renderList()}
+                {this.showLoadingBar(this.props.isLoading)}
             </View>
         )
     }

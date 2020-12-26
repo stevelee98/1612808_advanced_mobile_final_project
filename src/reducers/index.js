@@ -9,7 +9,8 @@ import ratingReducer from './ratingReducer';
 import paymentReducer from './paymentReducer';
 import questionReducer from './questionReducer';
 import noteReducer from './noteReducer';
-import downloadReducer from './downloadReducer'
+import downloadReducer from './downloadReducer';
+import searchReducer from './searchReducer';
 
 export const initialState = {
     data: null,
@@ -30,4 +31,5 @@ export default combineReducers({
     question: questionReducer,
     note: noteReducer,
     download: downloadReducer,
+    search: searchReducer,
 });

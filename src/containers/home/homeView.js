@@ -288,7 +288,7 @@ export class HomeView extends BaseView {
                 item={item}
                 horizontal={true}
                 length={data.length}
-                onPress={(item) => this.props.navigation.navigate("CourseDetail", {id: item.id})}
+                onPress={(item) => this.props.navigation.navigate("CourseDetail", { id: item.id })}
             />
         )
     }
@@ -309,6 +309,7 @@ export class HomeView extends BaseView {
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     {Utils.isNull(this.state.user) ? this.renderNotLogin() : this.renderListCourses()}
                 </ScrollView>
+                {this.showLoadingBar(this.props.isLoading)}
             </View>
         )
     }

@@ -17,19 +17,24 @@ import ic_grid_white from 'images/ic_grid_white.png';
 import ic_cancel_white from 'images/ic_cancel_white.png';
 import Button from 'components/button';
 import BaseView from 'containers/base/baseView';
+import * as userActions from 'actions/userActions'
+import * as courseActions from 'actions/courseActions'
+import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
+import ItemCourse from 'containers/courses/list/itemCourse';
 
 export class SearchView extends BaseView {
 
     constructor(props) {
         super(props);
         this.state = {
-            user: {
-                name: 'Obama'
-            },
+            user: null,
             stringSearch: null,
             typing: false,
             typingTimeout: 500,
-            showSearchList: false
+            showSearchList: false,
+            enableLoadMore: false,
+            enableRefresh: true,
+            refreshing: false
         }
         this.dataSearch = [
             { value: 'Obama' },
@@ -41,11 +46,73 @@ export class SearchView extends BaseView {
             { value: 'Rooney' },
             { value: 'Bill Gate' },
         ]
+        this.data = []
+        this.filterSearch = {
+            limit: Constants.PAGE_SIZE,
+            offset: 0,
+            keyword: this.state.stringSearch,
+            opt: {
+                sort: {
+                    attribute: 'updatedAt',
+                    rule: 'DESC'
+                },
+                time: [
+                    {
+                        min: 0,
+                        max: 1000
+                    }
+                ],
+                price: [
+                    {
+                        min: 0,
+                        max: 100000000
+                    }
+                ]
+            }
+        }
     }
 
     componentDidMount() {
         if (this.search) {
             this.search.focus()
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props !== nextProps) {
+            this.props = nextProps;
+            this.handleData();
+        }
+    }
+
+    handleData = () => {
+        let data = this.props.data;
+        if (this.props.errorCode != ErrorCode.ERROR_INIT) {
+            if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
+                if (this.props.action == getActionSuccess(ActionEvent.SEARCH)) {
+                    console.log("SEARCH DATA ", data)
+                    if (data.data && data.data.payload.rows) {
+                        let payload = data.data.payload.rows
+                        if (payload.length > 0) {
+                            this.state.enableLoadMore = !(payload.length < Constants.PAGE_SIZE)
+                            payload.forEach(element => {
+                                this.data.push({ ...element })
+                            });
+                            this.showNoData = false
+                        } else {
+                            this.state.enableLoadMore = false
+                            this.showNoData = true;
+                        }
+                    } else {
+                        this.state.enableLoadMore = false
+                        this.showNoData = true;
+                    }
+                }
+                this.state.refreshing = false
+                this.state.isLoadingMore = false
+            } else {
+                this.handleError(this.props.errorCode, this.props.error);
+            }
         }
     }
 
@@ -64,10 +131,12 @@ export class SearchView extends BaseView {
         if (self.state.typingTimeout) {
             clearTimeout(self.state.typingTimeout)
         }
+        this.filterSearch.keyword = stringSearch
         self.setState({
             stringSearch: stringSearch == "" ? null : stringSearch,
             typing: false,
             typingTimeout: setTimeout(() => {
+                this.props.search(this.filterSearch)
                 this.setState({ showSearchList: stringSearch == null || stringSearch.trim() == "" ? false : true })
             }, 500)
         });
@@ -75,16 +144,25 @@ export class SearchView extends BaseView {
 
     renderItem = (item, index) => {
         return (
-            <Pressable
-                android_ripple={Constants.ANDROID_RIPPLE}
-                style={styles.itemSearch}>
-                <Image source={ic_search_white} style={{ marginRight: Constants.MARGIN_LARGE }} />
-                <Text style={[commonStyles.text, { flex: 1 }]}>{item.value}</Text>
-            </Pressable>
+            <ItemCourse
+                key={index}
+                item={item}
+                length={this.data.length}
+                onPress={this.onPress}
+            />
         )
     }
 
+    onPress = (item) => {
+        this.props.navigation.navigate('CourseDetail', { id: item.id })
+    }
+
+    onLoadMore = () => {
+        
+    }
+
     render() {
+        console.log("this.state.stringSearch", this.state.showSearchList);
         return (
             <View style={{ flex: 1 }}>
                 <Header style={{ ...commonStyles.header }}>
@@ -123,14 +201,21 @@ export class SearchView extends BaseView {
                 {this.state.showSearchList && <FlatListCustom
                     onRef={(ref) => { this.flatListRef = ref }}
                     contentContainerStyle={{
+                        marginHorizontal: Constants.MARGIN_LARGE,
+                        flexGrow: 1
                     }}
                     style={{
+                        flex: 1
                     }}
-                    data={this.dataSearch}
+                    data={this.data}
                     renderItem={this.renderItem}
+                    enableLoadMore={this.state.enableLoadMore}
+                    onLoadMore={() => { this.onLoadMore() }}
                     keyExtractor={item => item.id}
                     showsVerticalScrollIndicator={false}
-                    textForEmpty={""}
+                    isShowEmpty={!this.props.isLoading && this.data.length == []}
+                    isShowImageEmpty={true}
+                    textForEmpty={''}
                 />}
                 <StatusBar
                     animated={true}
@@ -138,17 +223,22 @@ export class SearchView extends BaseView {
                     barStyle={'light-content'}
                     backgroundColor={Colors.COLOR_TAB}
                 />
+                {this.showLoadingBar(this.props.isLoading)}
             </View>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-
+    data: state.search.data,
+    isLoading: state.search.isLoading,
+    errorCode: state.search.errorCode,
+    action: state.search.action,
 })
 
 const mapDispatchToProps = {
-
+    ...userActions,
+    ...courseActions
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchView)

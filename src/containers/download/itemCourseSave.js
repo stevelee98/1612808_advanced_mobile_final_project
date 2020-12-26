@@ -12,7 +12,7 @@ import styles from './styles';
 import StringUtil from 'utils/stringUtil';
 import DateUtil from 'utils/dateUtil';
 
-class ItemCourse extends PureComponent {
+class ItemCourseSave extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -29,7 +29,6 @@ class ItemCourse extends PureComponent {
 
     render() {
         const { item, index, length, onPress, horizontal } = this.props;
-        console.log("horizontal" , horizontal);
         return (
             <Pressable
                 onPress={() => { onPress(item) }}
@@ -41,11 +40,10 @@ class ItemCourse extends PureComponent {
                 <View style={{
                     flexDirection: horizontal ? 'column' : 'row',
                     alignItems: 'flex-start',
-                    flex: 1,
                     paddingVertical: Constants.PADDING_LARGE + 2,
                 }}>
                     <View>
-                        <ImageLoader path={item.imageUrl} resizeModeType={'cover'}
+                        <ImageLoader path={item.courseImage} resizeModeType={'cover'}
                             style={{
                                 width: horizontal ? Constants.MAX_WIDTH * 0.6 : 110,
                                 height: horizontal ? Constants.MAX_WIDTH * 0.4 : 60,
@@ -55,33 +53,30 @@ class ItemCourse extends PureComponent {
                         {horizontal && <Text numberOfLines={2} style={styles.titleHorizontal}>{item.title}</Text>}
                     </View>
                     <View style={{ flex: 1, marginTop: horizontal ? 4 : -4, marginHorizontal: horizontal ? 8 : 8 }}>
-                        {!horizontal && <Text numberOfLines={2} style={styles.titleVertical}>{item.title}</Text>}
-                        <Text style={styles.txtArthur}>{item['instructor.user.name'] != null ? item['instructor.user.name'] : item.name}</Text>
+                        {!horizontal && <Text numberOfLines={2} style={styles.titleVertical}>{item.courseTitle}</Text>}
+                        <Text style={styles.txtArthur}>{item.instructorName}</Text>
                         <Text style={[commonStyles.textSmall, { color: Colors.COLOR_TEXT_HOLDER, marginRight: Constants.MARGIN_X_LARGE }]}>
-                            {item.price != null && StringUtil.formatStringCashNoUnit(item.price)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'}</Text>  {DateUtil.convertFromFormatToFormat(item.createdAt, DateUtil.FORMAT_DATE_TIME_ZONE_T, DateUtil.FORMAT_DATE_V2)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {StringUtil.convertNumberHourToStringTime(item.totalHours)}
+                            {item.coursePrice != null && StringUtil.formatStringCashNoUnit(item.coursePrice)}
                         </Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 6 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <AirbnbRating
                                 count={5}
                                 showRating={false}
                                 isDisabled={true}
-                                defaultRating={2.5}
+                                defaultRating={item.courseAveragePoint}
                                 size={10}
                             />
-                            <Text style={commonStyles.textSmall}>{item.ratedNumber && `(${item.ratedNumber})`}</Text>
+                            {/* <Text style={commonStyles.textSmall}>(403)</Text> */}
                         </View>
-                        {item.soldNumber && <Text style={{ ...commonStyles.textSmall, textAlign: 'right', alignSelf: 'flex-end' }}>đã bán: {item.soldNumber}</Text>}
                     </View>
                     <Pressable onPress={() => { }} style={[{ elevation: 16 }, horizontal && { position: 'absolute', top: 16, right: 4 }]}>
                         <Image source={ic_menu_vertical} />
                     </Pressable>
                 </View>
-                { !horizontal && (index == 2 || index == 12 || index == 13) && <View style={{ backgroundColor: Colors.COLOR_DRK_GREY, height: 1, width: Constants.MAX_WIDTH }} />}
+                {(index == 2 || index == 12 || index == 13) && <View style={{ backgroundColor: Colors.COLOR_DRK_GREY, height: 1, width: Constants.MAX_WIDTH }} />}
             </Pressable>
         );
     }
 }
 
-export default ItemCourse;
+export default ItemCourseSave;

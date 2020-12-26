@@ -145,9 +145,6 @@ class CourseListView extends BaseView {
         }
     }
 
-    onPressItem = (id) => {
-    }
-
     /**
      * Render item
      * @param {*} item
@@ -226,7 +223,7 @@ class CourseListView extends BaseView {
                             onRefresh={this.handleRefresh}
                         />
                     }
-                    isShowEmpty={!this.props.isLoading && this.data == []}
+                    isShowEmpty={!this.props.isLoading && this.data.length == []}
                     isShowImageEmpty={true}
                     textForEmpty={''}
                 />
