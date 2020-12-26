@@ -12,7 +12,7 @@ import styles from './styles';
 import StringUtil from 'utils/stringUtil';
 import DateUtil from 'utils/dateUtil';
 
-class ItemCourse extends PureComponent {
+class ItemCourseSearch extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,8 +27,10 @@ class ItemCourse extends PureComponent {
         }
     }
 
-    render() {
+    render() { 
         const { item, index, length, onPress, horizontal } = this.props;
+        console.log("horizontal" , item.title);
+        console.log("horizontal" , horizontal);
         return (
             <Pressable
                 onPress={() => { onPress(item) }}
@@ -51,28 +53,27 @@ class ItemCourse extends PureComponent {
                                 borderRadius: 6
                             }} />
                         {horizontal && <Image source={img_background_gradient} style={styles.imgGradient} />}
-                        {horizontal && <Text numberOfLines={2} style={styles.titleHorizontal}>{item.title}</Text>}
+                        {horizontal && <Text numberOfLines={2} style={styles.titleHorizontal}>{item.title}</Text>}  
                     </View>
-                    <View style={{ marginTop: horizontal ? 4 : -4, marginHorizontal: horizontal ? 8 : 8, flex: 1 }}>
+                    <View style={{ flex: 1, marginTop: horizontal ? 4 : -4, marginHorizontal: horizontal ? 8 : 8 }}>
                         {!horizontal && <Text numberOfLines={2} style={styles.titleVertical}>{item.title}</Text>}
                         <Text style={styles.txtArthur}>{item['instructor.user.name'] != null ? item['instructor.user.name'] : item.name}</Text>
                         <Text style={[commonStyles.textSmall, { color: Colors.COLOR_TEXT_HOLDER, marginRight: Constants.MARGIN_X_LARGE }]}>
                             {item.price != null && StringUtil.formatStringCashNoUnit(item.price)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'}</Text>  {DateUtil.convertFromFormatToFormat(item.createdAt, DateUtil.FORMAT_DATE_TIME_ZONE_T, DateUtil.FORMAT_DATE_V2)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {StringUtil.convertNumberHourToStringTime(item.totalHours)}
                         </Text>
-
-                        {/* <View style={{ alignItems: 'center', }}> */}
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 6 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                             <AirbnbRating
                                 count={5}
                                 showRating={false}
                                 isDisabled={true}
-                                defaultRating={item.courseAveragePoint ? item.courseAveragePoint : 4}
+                                defaultRating={2.5}
                                 size={10}
                             />
-                            <Text style={commonStyles.textSmall}>{item.ratedNumber ? `(${item.ratedNumber})` : null}</Text>
-                            {/* </View> */}
-                            {/* {item.soldNumber  != null&& <Text style={{ ...commonStyles.textSmall, textAlign: 'right', alignSelf: 'flex-end' }}>đã bán: {item.soldNumber}</Text>} */}
+                            <Text style={commonStyles.textSmall}>{item.ratedNumber && `(${item.ratedNumber})`}</Text>
                         </View>
+                        {item.soldNumber && <Text style={{ ...commonStyles.textSmall, textAlign: 'right', alignSelf: 'flex-end' }}>đã bán: {item.soldNumber}</Text>}
                     </View>
                     <Pressable onPress={() => { }} style={[{ elevation: 16 }, horizontal && { position: 'absolute', top: 16, right: 4 }]}>
                         <Image source={ic_menu_vertical} />
@@ -84,4 +85,4 @@ class ItemCourse extends PureComponent {
     }
 }
 
-export default ItemCourse;
+export default ItemCourseSearch;

@@ -20,7 +20,7 @@ import BaseView from 'containers/base/baseView';
 import * as userActions from 'actions/userActions'
 import * as courseActions from 'actions/courseActions'
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
-import ItemCourse from 'containers/courses/list/itemCourse';
+import ItemCourseSearch from './itemCourseSearch';
 
 export class SearchView extends BaseView {
 
@@ -31,21 +31,11 @@ export class SearchView extends BaseView {
             stringSearch: null,
             typing: false,
             typingTimeout: 500,
-            showSearchList: false,
+            showSearchList: true,
             enableLoadMore: false,
             enableRefresh: true,
             refreshing: false
         }
-        this.dataSearch = [
-            { value: 'Obama' },
-            { value: 'Putin' },
-            { value: 'React' },
-            { value: 'Javascript' },
-            { value: 'Flutter' },
-            { value: 'Biden' },
-            { value: 'Rooney' },
-            { value: 'Bill Gate' },
-        ]
         this.data = []
         this.filterSearch = {
             limit: Constants.PAGE_SIZE,
@@ -144,9 +134,10 @@ export class SearchView extends BaseView {
 
     renderItem = (item, index) => {
         return (
-            <ItemCourse
+            <ItemCourseSearch
                 key={index}
                 item={item}
+                horizontal={false}
                 length={this.data.length}
                 onPress={this.onPress}
             />
@@ -158,13 +149,13 @@ export class SearchView extends BaseView {
     }
 
     onLoadMore = () => {
-        
+
     }
 
     render() {
         console.log("this.state.stringSearch", this.state.showSearchList);
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flexGrow: 1 }}>
                 <Header style={{ ...commonStyles.header }}>
                     <View style={{
                         flex: 1,
@@ -198,25 +189,25 @@ export class SearchView extends BaseView {
                         </Pressable>}
                     </View>
                 </Header>
-                {this.state.showSearchList && <FlatListCustom
-                    onRef={(ref) => { this.flatListRef = ref }}
-                    contentContainerStyle={{
-                        marginHorizontal: Constants.MARGIN_LARGE,
-                        flexGrow: 1
-                    }}
-                    style={{
-                        flex: 1
-                    }}
-                    data={this.data}
-                    renderItem={this.renderItem}
-                    enableLoadMore={this.state.enableLoadMore}
-                    onLoadMore={() => { this.onLoadMore() }}
-                    keyExtractor={item => item.id}
-                    showsVerticalScrollIndicator={false}
-                    isShowEmpty={!this.props.isLoading && this.data.length == []}
-                    isShowImageEmpty={true}
-                    textForEmpty={''}
-                />}
+                {this.state.showSearchList &&
+                    <FlatListCustom
+                        contentContainerStyle={{
+                            marginHorizontal: Constants.MARGIN_LARGE,
+                            flexGrow: 1
+                        }}
+                        style={{
+                            flex: 1
+                        }}
+                        data={this.data}
+                        renderItem={this.renderItem}
+                        enableLoadMore={this.state.enableLoadMore}
+                        keyExtractor={item => item.id}
+                        onLoadMore={() => { this.onLoadMore() }}
+                        showsVerticalScrollIndicator={false}
+                        isShowEmpty={!this.props.isLoading && this.data.length == []}
+                        isShowImageEmpty={true}
+                        textForEmpty={''}
+                    />}
                 <StatusBar
                     animated={true}
                     hidden={false}

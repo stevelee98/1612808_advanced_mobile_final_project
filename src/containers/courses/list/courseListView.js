@@ -155,6 +155,7 @@ class CourseListView extends BaseView {
             <ItemCourse
                 key={index}
                 item={item}
+                horizontal={false}
                 length={this.data.length}
                 onPress={this.onPress}
             />
