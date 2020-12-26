@@ -12,6 +12,8 @@ export default function (state = initialState, action) {
         case ActionEvent.REGISTER_FREE_COURSE:
         case ActionEvent.GET_LESSONS:
         case ActionEvent.GET_COURSE_DETAIL_V2:
+        case ActionEvent.GET_SAVE_COURSE_STATUS:
+        case ActionEvent.SAVE_COURSE:
             return {
                 ...state,
                 isLoading: true,
@@ -26,6 +28,8 @@ export default function (state = initialState, action) {
         case getActionSuccess(ActionEvent.GET_NEW_COURSES):
         case getActionSuccess(ActionEvent.GET_LESSONS):
         case getActionSuccess(ActionEvent.GET_COURSE_DETAIL_V2):
+        case getActionSuccess(ActionEvent.GET_SAVE_COURSE_STATUS):
+        case getActionSuccess(ActionEvent.SAVE_COURSE):
             return {
                 ...state,
                 isLoading: false,

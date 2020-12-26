@@ -268,7 +268,7 @@ export const addNoteEpic = action$ =>
         ofType(ActionEvent.ADD_NOTE),
         switchMap((action) =>
             fetch(ServerPath.API_URL + `user-note-lesson/create`, {
-                method: 'GET',
+                method: 'POST',
                 headers: ApiUtil.getHeader(),
                 body: JSON.stringify(action.payload)
             }).then((response) => {
@@ -285,6 +285,139 @@ export const addNoteEpic = action$ =>
             })
                 .catch((error) => {
                     consoleLogEpic("ADD_NOTE EPIC:", ActionEvent.ADD_NOTE, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const getCourseTopSellEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_COURSE_TOP_SELL),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `course/top-sell`, {
+                method: 'POST',
+                headers: ApiUtil.getHeader(),
+                body: JSON.stringify(action.payload)
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+
+                console.log("get GET_COURSE_TOP_SELL EPIC", responseJson);
+                return courseActions.getCourseTopSellSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_COURSE_TOP_SELL EPIC:", ActionEvent.GET_COURSE_TOP_SELL, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const getCourseTopRateEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_COURSE_TOP_RATE),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `course/top-rate`, {
+                method: 'POST',
+                headers: ApiUtil.getHeader(),
+                body: JSON.stringify(action.payload)
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+
+                console.log("get GET_COURSE_TOP_RATE EPIC", responseJson);
+                return courseActions.getCourseTopRateSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_COURSE_TOP_RATE EPIC:", ActionEvent.GET_COURSE_TOP_RATE, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const getCourseSaveEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_COURSE_SAVE),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `user/get-favorite-courses`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader()
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+
+                console.log("get GET_COURSE_SAVE EPIC", responseJson);
+                return courseActions.getCourseSaveSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_COURSE_SAVE EPIC:", ActionEvent.GET_COURSE_SAVE, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const getSaveCourseStatusEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_SAVE_COURSE_STATUS),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `user/get-course-like-status/${action.payload.courseId}`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader(),
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+
+                console.log("get GET_SAVE_COURSE_STATUS EPIC", responseJson);
+                return courseActions.getSaveCourseStatusSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_SAVE_COURSE_STATUS EPIC:", ActionEvent.GET_SAVE_COURSE_STATUS, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const saveCourseEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.SAVE_COURSE),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `user/like-course`, {
+                method: 'POST',
+                headers: ApiUtil.getHeader(),
+                body: JSON.stringify(action.payload)
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+
+                console.log("get SAVE_COURSE EPIC", responseJson);
+                return courseActions.saveCourseSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("SAVE_COURSE EPIC:", ActionEvent.SAVE_COURSE, error)
                     return handleConnectErrors(error)
                 })
         )

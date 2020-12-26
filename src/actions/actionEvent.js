@@ -18,7 +18,12 @@ export const ActionEvent = {
     GET_COURSE_DETAIL_V2: 'getCourseDetailV2',
     GET_QUESTIONS: 'getQuestions',
     GET_NOTES: 'getNotes',
-    ADD_NOTE: 'addNote'
+    ADD_NOTE: 'addNote',
+    GET_COURSE_TOP_SELL: 'getCourseTopSell',
+    GET_COURSE_TOP_RATE: 'getCourseTopRate',
+    GET_COURSE_SAVE: 'getCourseSave',
+    SAVE_COURSE: 'saveCourse',
+    GET_SAVE_COURSE_STATUS: 'getSaveCourseStatus'
 };
 
 export function getActionSuccess(action) {

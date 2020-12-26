@@ -46,7 +46,7 @@ const BottomTabNavigator = () => {
 				}}
 			/>
 			<Tab.Screen
-				name="TabDownload"
+				name="Downloads"
 				component={DownloadView}
 				options={{
 					title: "Downloads",
@@ -57,7 +57,7 @@ const BottomTabNavigator = () => {
 				}}
 			/>
 			<Tab.Screen
-				name="TabBrowser"
+				name="Browser"
 				component={BrowseView}
 				options={{
 					title: "Browser",

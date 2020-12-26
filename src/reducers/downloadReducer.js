@@ -5,18 +5,7 @@ import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 
 export default function (state = initialState, action) {
     switch (action.type) {
-        case ActionEvent.NOTIFY_LOGIN_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                error: null,
-                errorCode: ErrorCode.ERROR_SUCCESS,
-                data: null,
-                action: action.type,
-            }
-        case ActionEvent.GET_PROFILE:
-        case ActionEvent.GET_COURSE_TOP_RATE:
-        case ActionEvent.GET_COURSE_TOP_SELL:
+        case ActionEvent.GET_COURSE_SAVE:
             return {
                 ...state,
                 isLoading: true,
@@ -24,9 +13,7 @@ export default function (state = initialState, action) {
                 action: action.type,
                 errorCode: null,
             }
-        case getActionSuccess(ActionEvent.GET_PROFILE):
-        case getActionSuccess(ActionEvent.GET_COURSE_TOP_RATE):
-        case getActionSuccess(ActionEvent.GET_COURSE_TOP_SELL):
+        case getActionSuccess(ActionEvent.GET_COURSE_SAVE):
             return {
                 ...state,
                 isLoading: false,
@@ -38,8 +25,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.payload.error,
-                errorCode: action.payload.errorCode,
                 action: action.type
             }
         default:

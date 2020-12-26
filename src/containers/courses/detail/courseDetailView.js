@@ -23,6 +23,7 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import ic_download_white from 'images/ic_download_white.png';
 import ic_book_mark from 'images/ic_book_mark.png';
 import ic_online from 'images/ic_online.png';
+import ic_bookmark_yellow from 'images/ic_bookmark_yellow.png';
 import ic_dropdown_white from 'images/ic_dropdown_white.png';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ic_menu_vertical from 'images/ic_menu_vertical.png';
@@ -35,6 +36,7 @@ import DateUtil from 'utils/dateUtil';
 import Button from 'components/button';
 import RatingListView from './rating/ratingListView';
 import QuestionListView from './question/questionListView';
+import NoteListView from './note/noteListView';
 
 export class CourseDetailView extends BaseView {
 
@@ -51,7 +53,8 @@ export class CourseDetailView extends BaseView {
             tabActive: 0,
             chapPlaying: { chap: 0, session: 0 },
             user: null,
-            permission: false
+            permission: false,
+            likeStatus: false
         }
         let { id } = this.props.route.params;
         this.id = id
@@ -69,6 +72,7 @@ export class CourseDetailView extends BaseView {
 
     componentDidMount = () => {
         this.getProfile()
+        this.getCourseSaveStatus()
     }
 
     getCourseDetail = () => {
@@ -92,6 +96,10 @@ export class CourseDetailView extends BaseView {
 
     getCourseRating = () => {
         this.props.getCourseRating(this.id)
+    }
+
+    getCourseSaveStatus = () => {
+        this.props.getSaveCourseStatus(this.id)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -140,7 +148,6 @@ export class CourseDetailView extends BaseView {
                         this.state.permission = false
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.REGISTER_FREE_COURSE)) {
-                    console.log("REGISTER_FREE_COURSE data", data)
                     if (data.data && data.data.messsage == 'OK') {
                         this.showMessage("Đăng ký thành công")
                     }
@@ -151,6 +158,28 @@ export class CourseDetailView extends BaseView {
                     console.log("REGISTER_FREE_COURSE data", data)
                     if (data.data && data.data.messsage == 'OK') {
                         this.showMessage("Đăng ký thành công")
+                    }
+                    if (data.data && data.data.errorCode) {
+                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                    }
+                } else if (this.props.action == getActionSuccess(ActionEvent.SAVE_COURSE)) {
+                    console.log("SAVE_COURSE data", data)
+                    if (data.data && data.data.message == 'OK') {
+                        this.state.likeStatus = data.data.likeStatus
+                        if (data.data.likeStatus) {
+                            this.showMessage("Lưu khóa học thành công")
+                        } else {
+                            this.showMessage("Bỏ lưu khóa học thành công")
+                        }
+                    }
+                    if (data.data && data.data.errorCode) {
+                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                    }
+                }
+                else if (this.props.action == getActionSuccess(ActionEvent.GET_SAVE_COURSE_STATUS)) {
+                    console.log("GET_SAVE_COURSE_STATUS data", data)
+                    if (data.data && data.data.message == 'OK') {
+                        this.state.likeStatus = data.data.likeStatus
                     }
                     if (data.data && data.data.errorCode) {
                         this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
@@ -185,7 +214,7 @@ export class CourseDetailView extends BaseView {
                         <View style={{ marginTop: Constants.MARGIN, flexDirection: 'row', flexWrap: 'wrap' }}>
                             {this.dataCourse && this.dataCourse.learnWhat ? this.dataCourse.learnWhat.map((item, index) => {
                                 return (
-                                    <View  key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', marginRight: Constants.MARGIN_LARGE, marginTop: Constants.MARGIN }}>
+                                    <View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', marginRight: Constants.MARGIN_LARGE, marginTop: Constants.MARGIN }}>
                                         <Pressable
                                             style={{
                                                 backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT,
@@ -268,14 +297,15 @@ export class CourseDetailView extends BaseView {
                             </View>
                         </View>
                     </View>
-                    <Pressable
-                        android_ripple={Constants.ANDROID_RIPPLE}
+                    <View
                         style={styles.btnAction}>
-                        <View style={styles.imgBtnAction}>
-                            <Image source={ic_book_mark} />
-                        </View>
+                        <Pressable
+                            onPress={() => { this.props.saveCourse({ courseId: this.id }) }}
+                            android_ripple={Constants.ANDROID_RIPPLE} style={styles.imgBtnAction}>
+                            <Image source={this.state.likeStatus ? ic_bookmark_yellow : ic_book_mark} />
+                        </Pressable>
                         <Text style={commonStyles.textSmall}>Lưu khóa học</Text>
-                    </Pressable>
+                    </View>
                 </View>
             </View>
         )
@@ -401,6 +431,17 @@ export class CourseDetailView extends BaseView {
                         </View>
                     </Tab>
                     <Tab
+                        heading={'GHI CHÚ'}
+                        tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
+                        textStyle={{ color: Colors.COLOR_DRK_GREY }}
+                        activeTextStyle={{ color: Colors.COLOR_TEXT }}
+                    >
+                        <View style={{ flex: 1, backgroundColor: Colors.COLOR_BLACK }}>
+                            {this.renderNotes()}
+                        </View>
+                    </Tab>
+                    <Tab
                         heading={'ĐÁNH GIÁ'}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
@@ -409,17 +450,6 @@ export class CourseDetailView extends BaseView {
                     >
                         <View style={{ backgroundColor: Colors.COLOR_BLACK, flex: 1 }}>
                             {this.renderRating()}
-                        </View>
-                    </Tab>
-                    <Tab
-                        heading={'GHI CHÚ'}
-                        tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
-                        activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
-                        textStyle={{ color: Colors.COLOR_DRK_GREY }}
-                        activeTextStyle={{ color: Colors.COLOR_TEXT }}
-                    >
-                        <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
-                            {this.renderListSession()}
                         </View>
                     </Tab>
                     <Tab
@@ -527,6 +557,35 @@ export class CourseDetailView extends BaseView {
                     this.questionList = input;
                 }}
                 courseId={this.id}
+            />
+        )
+    }
+
+    getListSections = () => {
+        let sections = []
+        this.sections.forEach(item => {
+            let lessons = []
+            item.lesson != null && item.lesson.forEach((e) => {
+                lessons.push({ id: e.id, name: e.name, numberOrder: e.numberOrder })
+            })
+
+            sections.push({
+                id: item.id,
+                numberOrder: item.numberOrder,
+                lessons: lessons
+            })
+        })
+        return sections
+    }
+
+    renderNotes = () => {
+        return (
+            <NoteListView
+                onRef={input => {
+                    this.noteList = input;
+                }}
+                courseId={this.id}
+                lessonId={this.state.lessonId}
             />
         )
     }

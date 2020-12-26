@@ -43,6 +43,7 @@ class NoteListView extends BaseView {
         if (!Utils.isNull(this.props.onRef)) {
             this.props.onRef(this);
         }
+        this.props.getNotes(this.props.courseId)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -56,17 +57,10 @@ class NoteListView extends BaseView {
         let data = this.props.data;
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
-                if (this.props.action == getActionSuccess(ActionEvent.GET_QUESTIONS)) {
-                    console.log("GET_QUESTIONS data", data)
+                if (this.props.action == getActionSuccess(ActionEvent.GET_NOTES)) {
+                    console.log("GET_NOTES data", data)
                     if (data.data && data.data.payload) {
-                        let payload = data.data.payload.questions;
-                        if (this.filter.page == 1) this.data = []
-                        this.state.enableLoadMore = !(payload.length < Constants.PAGE_SIZE)
-                        payload.forEach((e) => {
-                            this.data.push({ ...e })
-                        })
-                    } else {
-                        this.state.enableLoadMore = false
+                        this.data = data.data.payload;
                     }
                 }
                 this.state.refreshing = false
@@ -87,7 +81,7 @@ class NoteListView extends BaseView {
      */
     renderItem = (item, index) => {
         return (
-            <ItemQuestion
+            <ItemNote
                 key={index}
                 item={item}
                 length={this.data.length}

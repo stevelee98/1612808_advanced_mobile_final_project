@@ -16,7 +16,7 @@ export default styles = {
     },
     imgBackground: {
         borderRadius: Constants.CORNER_RADIUS,
-        opacity: 0.7,
+        opacity: 0.9,
         backgroundColor: Colors.COLOR_BLACK,
         marginHorizontal: Constants.MARGIN_X_LARGE
     },
@@ -28,7 +28,7 @@ export default styles = {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: Constants.PADDING_X_LARGE
+        padding: Constants.PADDING_X_LARGE + 4
     },
     txtCat: {
         textAlign: 'center',
@@ -43,7 +43,8 @@ export default styles = {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: Constants.PADDING_X_LARGE
+        padding: Constants.PADDING_X_LARGE,
+        paddingVertical: Constants.PADDING_X_LARGE + 8
     },
     txtItemCat: {
         textAlign: 'center',
@@ -52,7 +53,7 @@ export default styles = {
     },
     imgItemBackground:{
         borderRadius: Constants.CORNER_RADIUS,
-        opacity: 0.7,
+        opacity: 0.9,
         backgroundColor: Colors.COLOR_BLACK
     }
 };

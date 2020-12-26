@@ -9,6 +9,7 @@ import ratingReducer from './ratingReducer';
 import paymentReducer from './paymentReducer';
 import questionReducer from './questionReducer';
 import noteReducer from './noteReducer';
+import downloadReducer from './downloadReducer'
 
 export const initialState = {
     data: null,
@@ -28,4 +29,5 @@ export default combineReducers({
     payment: paymentReducer,
     question: questionReducer,
     note: noteReducer,
+    download: downloadReducer,
 });

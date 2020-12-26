@@ -54,7 +54,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Setting" component={SettingView} />
                 <Stack.Screen name="CourseList" component={CourseListView} />
                 <Stack.Screen name="CourseDetail" component={CourseDetailView} />
-                <Stack.Screen name="Browse" component={BrowseView} />
+                <Stack.Screen name="Browser" component={BrowseView} />
                 <Stack.Screen name="Search" component={SearchView} />
             </Stack.Navigator>
         </NavigationContainer>

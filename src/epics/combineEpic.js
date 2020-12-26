@@ -20,7 +20,12 @@ import {
     getCourseDetailV2Epic,
     getQuestionsEpic,
     getNotesEpic,
-    addNoteEpic
+    addNoteEpic,
+    getCourseTopRateEpic,
+    getCourseTopSellEpic,
+    getCourseSaveEpic,
+    saveCourseEpic,
+    getSaveCourseStatusEpic
 } from './courseEpic'
 
 import {
@@ -43,5 +48,10 @@ export default combineEpics(
     getCourseDetailV2Epic,
     getQuestionsEpic,
     getNotesEpic,
-    addNoteEpic
+    addNoteEpic,
+    getCourseTopRateEpic,
+    getCourseTopSellEpic,
+    getCourseSaveEpic,
+    saveCourseEpic,
+    getSaveCourseStatusEpic
 );

@@ -20,6 +20,12 @@ import img_download from 'images/img_download.png';
 import img_download_guide_1 from 'images/img_download_guide_1.png';
 import img_download_guide_2 from 'images/img_download_guide_2.png';
 import Button from 'components/button';
+import * as userActions from 'actions/userActions'
+import * as courseActions from 'actions/courseActions'
+import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
+import BaseView from 'containers/base/baseView';
+import ItemCourse from '../courses/list/itemCourse'
+import StorageUtil from 'utils/storageUtil';
 
 const LIST_MENU = [
     {
@@ -33,123 +39,87 @@ const LIST_MENU = [
         value: 2
     }
 ]
-export class DownloadView extends Component {
+export class DownloadView extends BaseView {
     constructor(props) {
         super(props);
         this.state = {
-            user: {
-                name: 'Obama'
+            user: null,
+            enableLoadMore: false,
+            enableRefresh: true,
+            refreshing: false
+        }
+        this.data = []
+    }
+
+    componentDidMount = () => {
+        this.getProfile()
+    }
+
+    getProfile = async () => {
+        let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
+        if (user) {
+            this.setState({user: user})
+            this.props.getCourseSave()
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props !== nextProps) {
+            this.props = nextProps;
+            this.handleData();
+        }
+    }
+
+    handleData = () => {
+        let data = this.props.data;
+        if (this.props.errorCode != ErrorCode.ERROR_INIT) {
+            if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
+                if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_SAVE)) {
+                    console.log("GET_COURSE_SAVE data", data)
+                    if (data.data && data.data.payload) {
+                        let payload = data.data.payload
+                        if (payload.length > 0) {
+                            this.state.enableLoadMore = !(payload.length < Constants.PAGE_SIZE)
+                            payload.forEach(element => {
+                                this.data.push({ ...element })
+                            });
+                            this.showNoData = false
+                        } else {
+                            this.state.enableLoadMore = false
+                            this.showNoData = true;
+                        }
+                    } else {
+                        this.state.enableLoadMore = false
+                        this.showNoData = true;
+                    }
+                }
+                this.state.refreshing = false
+                this.state.isLoadingMore = false
+            } else {
+                this.handleError(this.props.errorCode, this.props.error);
             }
         }
-        this.data = [
-            {
-                title: 'Software Development', data: [
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                ]
-            },
-            {
-                title: 'Software Development', data: [
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                    {
-                        resource: "https://vnappmob.sgp1.digitaloceanspaces.com/soro/lolivi/1536111242-A32995B2-43FF-4AF3-9C5C-15C54AE4921E.jpg",
-                        title: "React-native: from zero to hero",
-                        arthur: "Mark Zuckerberg",
-                        level: "Beginner",
-                        createdAt: 'Feb 2020',
-                        long: '3h 45m',
-                        rating: { star: 4, count: 512 }
-                    },
-                ]
-            }
-        ];
     }
 
-    componentDidMount() {
-
+    onPress = (id) => {
     }
 
-    componentDidUpdate(prevProps, prevState) {
-
+    /**
+     * Render item
+     * @param {*} item
+     * @param {*} index
+     */
+    renderItem = (item, index) => {
+        return (
+            <ItemCourse
+                key={index}
+                item={item}
+                length={this.data.length}
+                onPress={this.onPress}
+            />
+        )
     }
+
 
     renderNotLogin = () => {
         return (
@@ -209,43 +179,36 @@ export class DownloadView extends Component {
         )
     }
 
-    renderItem = (item, index, data) => {
-        return (
-            <ItemCourse
-                key={index}
-                index={index}
-                item={item}
-                horizontal={true}
-                length={data.length}
-                onPress={() => this.props.navigation.navigate("CourseDetail")}
-            />
-        )
-    }
-
     renderHeaderDownload = () => {
         return (
             <View>
                 <View style={styles.viewHeaderDownload}>
                     <Image source={img_download} style={styles.imgDownload} />
-                    <Text style={styles.titleDownload}>Watch your courses download on the go!</Text>
-                    <Text style={styles.txtContentDownload}>Download courses so you can continue to skill up-even when you're offline</Text>
+                    <Text style={styles.titleDownload}>Watch your courses save on the go!</Text>
+                    <Text style={styles.txtContentDownload}>Save courses so you can continue to skill up-even when you're offline</Text>
                 </View>
-                <Button
-                    onPress={()=>{this.props.navigation.navigate("Search")}}
+                {this.state.user ? <Button
+                    onPress={() => { this.props.navigation.navigate("Search") }}
                     title={"FIND A COURSE TO DOWNLOAD"}
                     titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_WHITE }}
-                    backgroundColor={Colors.COLOR_PRIMARY} />
+                    backgroundColor={Colors.COLOR_PRIMARY} /> :
+                    <Button
+                        onPress={() => { this.props.navigation.navigate("Login") }}
+                        title={"LOGIN OR REGISTER TO SAVE COURSE"}
+                        titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_WHITE }}
+                        backgroundColor={Colors.COLOR_PRIMARY}
+                    />}
             </View>
         )
     }
 
     renderDownloadGuide = () => {
-        return(
+        return (
             <View style={styles.viewHowTo}>
-                <Text style={styles.txtHowTo}>How to download course</Text>
+                <Text style={styles.txtHowTo}>How to save course</Text>
                 <View style={styles.viewDownloadGuide}>
                     <Image source={img_download_guide_1} style={styles.imgDownloadGuide} />
-                    <Image source={img_download_guide_2} style={styles.imgDownloadGuide}/>
+                    <Image source={img_download_guide_2} style={styles.imgDownloadGuide} />
                 </View>
             </View>
         )
@@ -264,21 +227,25 @@ export class DownloadView extends Component {
                     menus={LIST_MENU}
                     navigation={this.props.navigation}
                 />
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                {this.data.length == 0 && <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     {this.renderHeaderDownload()}
                     {this.renderDownloadGuide()}
-                </ScrollView>
+                </ScrollView>}
             </View>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-
+    data: state.download.data,
+    isLoading: state.download.isLoading,
+    errorCode: state.download.errorCode,
+    action: state.download.action,
 })
 
 const mapDispatchToProps = {
-
+    ...userActions,
+    ...courseActions
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadView)

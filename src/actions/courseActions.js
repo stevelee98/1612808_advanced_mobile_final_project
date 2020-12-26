@@ -108,3 +108,52 @@ export const addNoteSuccess = data => ({
     type: getActionSuccess(ActionEvent.ADD_NOTE),
     payload: { data }
 })
+
+export const getCourseTopSell = (filter) => ({
+    type: ActionEvent.GET_COURSE_TOP_SELL,
+    payload: { ...filter }
+})
+
+export const getCourseTopSellSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_COURSE_TOP_SELL),
+    payload: { data }
+})
+
+export const getCourseTopRate = (filter) => ({
+    type: ActionEvent.GET_COURSE_TOP_RATE,
+    payload: { ...filter }
+})
+
+export const getCourseTopRateSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_COURSE_TOP_RATE),
+    payload: { data }
+})
+
+export const getCourseSave = () => ({
+    type: ActionEvent.GET_COURSE_SAVE,
+})
+
+export const getCourseSaveSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_COURSE_SAVE),
+    payload: { data }
+})
+
+export const saveCourse = (filter) => ({
+    type: ActionEvent.SAVE_COURSE,
+    payload: { ...filter }
+})
+
+export const saveCourseSuccess = data => ({
+    type: getActionSuccess(ActionEvent.SAVE_COURSE),
+    payload: { data }
+})
+
+export const getSaveCourseStatus = (courseId) => ({
+    type: ActionEvent.GET_SAVE_COURSE_STATUS,
+    payload: { courseId }
+})
+
+export const getSaveCourseStatusSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_SAVE_COURSE_STATUS),
+    payload: { data }
+})

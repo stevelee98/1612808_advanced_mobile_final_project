@@ -183,6 +183,7 @@ export class BrowseView extends BaseView {
     }
 
     componentDidMount() {
+        super.componentDidMount()
         this.props.getCategories()
         this.props.getLectures()
     }

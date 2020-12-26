@@ -17,7 +17,8 @@ import ic_search_white from 'images/ic_search_white.png';
 import ic_grid_white from 'images/ic_grid_white.png';
 import ItemCourse from 'containers/courses/list/itemCourse';
 import img_iron_man from 'images/img_iron_man.jpg';
-import * as userActions from 'actions/userActions'
+import * as userActions from 'actions/userActions';
+import * as courseActions from 'actions/courseActions';
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import BaseView from 'containers/base/baseView';
 import StorageUtil from 'utils/storageUtil';
@@ -38,9 +39,7 @@ export class HomeView extends BaseView {
     constructor(props) {
         super(props);
         this.state = {
-            user: {
-                name: 'Obama'
-            }
+            user: null
         }
         this.data = [
             {
@@ -142,16 +141,48 @@ export class HomeView extends BaseView {
                 ]
             }
         ];
+
+        this.filterGetCourseTopRate = {
+            page: 1,
+            limit: Constants.PAGE_SIZE
+        }
+        this.filterGetCourseTopSell = {
+            page: 1,
+            limit: Constants.PAGE_SIZE
+        }
+        this.courseTopRate = []
+        this.courseTopSell = []
     }
 
     componentDidMount() {
         super.componentDidMount()
         console.log("global token: ", global.token)
-        this.props.getProfile()
+        this.getProfile()
+        this.getCourseTopRate();
+        setTimeout(() => { this.getCourseTopSell() })
+    }
+
+    getProfile = async () => {
+        let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
+        if (user) {
+            this.props.getProfile();
+        }
+    }
+
+    handleGetProfile = (user) => {
+        this.setState(user)
     }
 
     componentDidUpdate(prevProps, prevState) {
 
+    }
+
+    getCourseTopSell = () => {
+        this.props.getCourseTopSell(this.filterGetCourseTopSell);
+    }
+
+    getCourseTopRate = () => {
+        this.props.getCourseTopRate(this.filterGetCourseTopRate);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -166,9 +197,21 @@ export class HomeView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.GET_PROFILE)) {
-                    console.log("GET_PROFILE data", data)
                     if (data != null && data.payload != null) {
-                        StorageUtil.storeItem(StorageUtil.USER_PROFILE, data.payload);
+                        console.log("GET_PROFILE data", data.payload)
+                        this.state.user = data.payload
+                    }
+                }
+                if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_TOP_RATE)) {
+                    console.log("GET_COURSE_TOP_RATE data", data)
+                    if (data.data && data.data.payload) {
+                        this.courseTopRate = data.data.payload
+                    }
+                }
+                if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_TOP_SELL)) {
+                    console.log("GET_COURSE_TOP_SELL data", data)
+                    if (data.data && data.data.payload) {
+                        this.courseTopSell = data.data.payload
                     }
                 }
             } else {
@@ -181,14 +224,14 @@ export class HomeView extends BaseView {
         return (
             <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>Let's get you started</Text>
-                <View style={{ marginTop: Constants.MARGIN_XX_LARGE * 2, alignItems: 'center' }}>
+                <Pressable style={{ marginTop: Constants.MARGIN_XX_LARGE * 2, alignItems: 'center' }} onPress={() => { this.props.navigation.navigate('Browser') }}>
                     <Image source={ic_grid_white} />
                     <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>Browser new and popular course</Text>
-                </View>
-                <View style={{ marginTop: Constants.MARGIN_X_LARGE * 3, alignItems: 'center' }}>
+                </Pressable>
+                <Pressable style={{ marginTop: Constants.MARGIN_X_LARGE * 3, alignItems: 'center' }} onPress={() => { this.props.navigation.navigate('Search') }}>
                     <Image source={ic_search_white} />
                     <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>Search the library</Text>
-                </View>
+                </Pressable>
             </View>
         )
     }
@@ -203,8 +246,8 @@ export class HomeView extends BaseView {
                         <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM, marginTop: 20, width: Constants.MAX_WIDTH * 0.8 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Text>
                     </View>
                 </View>
-                {this.renderList(this.data[0]?.title, this.data[0]?.data)}
-                {this.renderList(this.data[1]?.title, this.data[1]?.data)}
+                {this.renderList('Khóa học được đánh giá cao', this.courseTopRate)}
+                {this.renderList('Khóa học bán chạy nhất', this.courseTopSell)}
             </View>
         )
     }
@@ -245,7 +288,7 @@ export class HomeView extends BaseView {
                 item={item}
                 horizontal={true}
                 length={data.length}
-                onPress={() => this.props.navigation.navigate("CourseDetail")}
+                onPress={(item) => this.props.navigation.navigate("CourseDetail", {id: item.id})}
             />
         )
     }
@@ -279,7 +322,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    ...userActions
+    ...userActions,
+    ...courseActions
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeView)
