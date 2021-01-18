@@ -19,9 +19,10 @@ import BaseView from 'containers/base/baseView';
 import * as userActions from 'actions/userActions';
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import storage from '@react-native-firebase/storage';
-import ImagePicker from "react-native-image-picker";
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DialogCustom from 'components/dialogCustom';
-import ic_camera_black from 'images/ic_camera_black.png';
+import ic_image from 'images/ic_image.png';
+import { ErrorCode } from 'config/errorCode';
 
 const CANCEL_INDEX = 2;
 const FILE_SELECTOR = ['Camera', 'Thư viện', 'Hủy'];
@@ -49,18 +50,57 @@ class UserProfileView extends BaseView {
     }
 
     componentDidMount = async () => {
-        let user = await this.getProfile();
-        this.setState({ user: user, name: user.name, phone: user.phone, email: user.email })
+        let user = await this.getProfile(); this.props.getProfile()
+        this.handleProfile(user)
+    }
+
+    handleProfile = (user) => {
+        this.setState({ user: user, name: user.name, phone: user.phone, email: user.email, avatar: user.avatar })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props !== nextProps) {
+            this.props = nextProps;
+            this.handleData();
+        }
+    }
+
+
+    handleData = () => {
+        let data = this.props.data;
+        if (this.props.errorCode != ErrorCode.ERROR_INIT) {
+            if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
+                if (this.props.action == getActionSuccess(ActionEvent.EDIT_PROFILE)) {
+                    console.log("EDIT_PROFILE data", data)
+                    if (data != null && data.payload != null) {
+                        this.showMessage("Chỉnh sửa thông tin thành công")
+                        this.state.isEdit = false
+                        this.props.getProfile(this.state.user.id)
+                    }
+                } else if (this.props.action == getActionSuccess(ActionEvent.GET_PROFILE)) {
+                    if (data != null && data.payload != null) {
+                        console.log("GET_PROFILE data", data.payload)
+                        this.state.user = data.payload
+                        this.handleProfile(data.payload)
+                        StorageUtil.storeItem(StorageUtil.USER_PROFILE, data.payload)
+                    }
+                }
+                this.state.refreshing = false
+                this.state.isLoading = false
+            } else {
+                this.handleError(this.props.errorCode, this.props.error);
+            }
+        }
     }
 
     validateData() {
         const { name, phone } = this.state;
         if (name == null) {
-            this.showMessage("Please fill your email");
+            this.showMessage("Please fill your name");
             this.name.focus()
             return false;
         } else if (name.trim() == '') {
-            this.showMessage("Please fill your email");
+            this.showMessage("Please fill your name");
             this.name.focus()
             return false;
         } else if (phone == null) {
@@ -88,16 +128,24 @@ class UserProfileView extends BaseView {
     }
 
     onEditData = (url = null) => {
-        let data = {
-            name: this.state.name,
-            phone: this.state.phone,
-            avatar: url ? url : this.state.avatar
+        if (this.validateData()) {
+            if (this.state.avatar == null || (this.state.avatar && this.state.avatar.indexOf('http') != -1)) {
+                let data = {
+                    name: this.state.name,
+                    phone: this.state.phone,
+                    avatar: url ? url : this.state.avatar
+                }
+                this.props.editProfile(data)
+            } else {
+                this.uploadImage(this.state.avatar)
+            }
         }
     }
 
     uploadImage = (uri) => {
         this.setState({
-            isLoading: true
+            isLoading: true,
+            isEdit: false
         })
         let fr = storage().ref(`user/${this.state.user.id}/avatar`);
         fr.putFile(uri, { contentType: 'image/jpeg' }).on(
@@ -107,7 +155,7 @@ class UserProfileView extends BaseView {
                 if (snapshot.state == "success") {
                     fr.getDownloadURL().then((url) => {
                         this.setState({
-                            avatar: { uri: url }
+                            avatar: url
                         }, () => {
                             this.onEditData(url)
                         })
@@ -165,24 +213,38 @@ class UserProfileView extends BaseView {
       */
     showDocumentPicker = async fileType => {
         const hasCameraPermission = await this.hasPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-        if (!hasCameraPermission) return;
-        ImagePicker.launchImageLibrary(optionsCamera, response => {
-            const { error, uri } = response;
+        console.log("hasCameraPermission", hasCameraPermission)
+        if (!hasCameraPermission) {
             this.hideDialog();
-            if (uri && !error) {
-                this.setState({
-                    avatar: uri
-                })
-            } else if (error) {
-                console.log("The photo picker error. Check ImagePicker.launchCamera func", error)
-            }
-        });
+            return;
+        }
+        try {
+            launchImageLibrary({
+                mediaType: 'photo',
+                quality: 1
+            }, response => {
+                const { error, uri } = response;
+                this.hideDialog();
+                if (uri && !error) {
+                    this.setState({
+                        avatar: uri
+                    })
+                } else if (error) {
+                    console.log("The photo picker error. Check ImagePicker.launchCamera func", error)
+                }
+            });
+        } catch (error) {
+            console.log("image picker", error);
+        }
     };
 
     takePhoto = async () => {
         const hasCameraPermission = await this.hasPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
         if (!hasCameraPermission) return;
-        ImagePicker.launchCamera(optionsCamera, response => {
+        launchCamera({
+            mediaType: 'photo',
+            quality: 1
+        }, response => {
             const { error, uri } = response;
             this.hideDialog();
             if (uri && !error) {
@@ -255,17 +317,19 @@ class UserProfileView extends BaseView {
         return (
             <View style={{ flex: 1, marginTop: Constants.MARGIN_X_LARGE }}>
                 <View style={{ alignItems: 'center', marginBottom: Constants.MARGIN_XX_LARGE }}>
-                    <ImageLoader path={user.avatar} style={{ width: 80, height: 80, borderRadius: Constants.BORDER_RADIUS }} resizeModeType={'cover'} />
-                    <View style={{
-                        backgroundColor: Colors.COLOR_DRK_GREY,
-                        position: 'absolute',
-                        bottom: - 12,
-                        right: Constants.MAX_WIDTH / 2 - 58,
-                        padding: 8,
-                        borderRadius: 56
-                    }}>
-                        <Image source={ic_camera_black} />
-                    </View>
+                    <ImageLoader path={this.state.avatar} style={{ width: 80, height: 80, borderRadius: Constants.BORDER_RADIUS }} resizeModeType={'cover'} />
+                    {this.state.isEdit && <Pressable
+                        onPress={() => { this.showDialog() }}
+                        style={{
+                            backgroundColor: Colors.COLOR_DRK_GREY,
+                            position: 'absolute',
+                            bottom: - 12,
+                            right: Constants.MAX_WIDTH / 2 - 58,
+                            padding: 8,
+                            borderRadius: 56
+                        }}>
+                        <Image source={ic_image} />
+                    </Pressable>}
                     {/* <Text style={[commonStyles.textBold, { fontSize: Fonts.FONT_SIZE_X_LARGE, flex: 1, marginVertical: Constants.MARGIN_X_LARGE }]}>{name} âlal</Text> */}
                 </View>
                 <TextInputCustom
@@ -315,7 +379,7 @@ class UserProfileView extends BaseView {
                 <View style={{ marginTop: Constants.MARGIN_X_LARGE }}>
                     {this.state.isEdit ?
                         <Button
-                            onPress={() => { this.setState({ isEdit: false }) }}
+                            onPress={() => { this.onEditData() }}
                             title={"SAVE"}
                             border={{ borderWidth: 1, borderColor: Colors.COLOR_BLUE }}
                             titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />

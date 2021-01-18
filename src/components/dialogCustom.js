@@ -7,7 +7,7 @@ import Dialog, { DIALOG_WIDTH } from 'components/dialog'
 import commonStyles from 'styles/commonStyles';
 import { Colors } from 'values/colors';
 // import { localizes } from 'locales/i18n';
-import ic_close from "images/ic_close.png";
+import ic_cancel_white from "images/ic_cancel_white.png";
 import Utils from 'utils/utils';
 import Hr from './hr';
 
@@ -70,7 +70,8 @@ class DialogCustom extends Component {
     renderTitle() {
         const { contentTitle, styleItemBtn, onPressX, styleTextTitle } = this.props;
         return (
-            <View style={[commonStyles.viewHorizontal, commonStyles.viewCenter, {
+            <View style={[commonStyles.viewCenter, {
+                flexDirection: 'row',
                 flex: 0, marginBottom: Constants.MARGIN_LARGE
             }]} >
                 <Text style={[commonStyles.text, {
@@ -81,7 +82,7 @@ class DialogCustom extends Component {
                         activeOpacity={Constants.ACTIVE_OPACITY}
                         block style={[styleItemBtn]} info
                         onPress={() => onPressX()}>
-                        <Image source={ic_close} />
+                        <Image source={ic_cancel_white} />
                     </TouchableOpacity> : null
                 }
             </View>
@@ -168,7 +169,7 @@ class DialogCustom extends Component {
                 visible={this.state.visible}
                 dialogStyle={[commonStyles.shadowOffset, {
                     borderRadius: Constants.CORNER_RADIUS,
-                    backgroundColor: Colors.COLOR_WHITE,
+                    backgroundColor: Colors.COLOR_TAB,
                 }]}
                 onTouchOutside={() => { this.setState({ isAlert: false }) }}
                 renderContent={
@@ -193,7 +194,7 @@ export default DialogCustom;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.COLOR_WHITE
+        backgroundColor: Colors.COLOR_TAB
     },
     card: {
         flex: 1,

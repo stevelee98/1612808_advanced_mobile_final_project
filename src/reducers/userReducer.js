@@ -6,6 +6,7 @@ import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 export default function (state = initialState, action) {
     switch (action.type) {
         case ActionEvent.EDIT_PROFILE:
+        case ActionEvent.GET_PROFILE:
             return {
                 ...state,
                 isLoading: true,
@@ -13,6 +14,7 @@ export default function (state = initialState, action) {
                 action: action.type,
                 errorCode: null,
             }
+        case getActionSuccess(ActionEvent.GET_PROFILE):
         case getActionSuccess(ActionEvent.EDIT_PROFILE):
             return {
                 ...state,

@@ -151,7 +151,7 @@ export const editProfileEpic = action$ =>
         ofType(ActionEvent.EDIT_PROFILE),
         switchMap((action) =>
             fetch(ServerPath.API_URL + 'user/update-profile', {
-                method: 'POST',
+                method: 'PUT',
                 headers: ApiUtil.getHeader(),
                 body: JSON.stringify(action.payload)
             }).then((response) => {
