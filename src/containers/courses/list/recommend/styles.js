@@ -8,21 +8,12 @@ export default styles = {
     container: {
         flexGrow: 1,
     },
-    inputSearch: {
-        ...commonStyles.text,
-        flex: 1
-    },
     imgGradient: {
         position: 'absolute',
         bottom: 0,
         width: "100%",
         height: "100%",
         opacity: 0.7
-    },
-    itemSearch: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: Constants.PADDING_X_LARGE
     },
     titleHorizontal: {
         ...commonStyles.text,
@@ -37,5 +28,12 @@ export default styles = {
     txtArthur: {
         ...commonStyles.textSmall,
         color: Colors.COLOR_TEXT_HOLDER
+    },    
+    buttonSignIn: {
+        paddingHorizontal: Constants.PADDING_X_LARGE,
+        paddingVertical: Constants.PADDING_LARGE - 2,
+        borderRadius: Constants.CORNER_RADIUS,
+        backgroundColor:Colors.COLOR_BLUE,
+        marginTop: Constants.MARGIN_X_LARGE
     }
 };

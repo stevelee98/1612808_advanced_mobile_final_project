@@ -78,7 +78,7 @@ export class SettingView extends BaseView {
             <View style={{ flex: 1 }}>
                 <Header
                     title={"Setting"}
-                    onBack={() => { }}
+                    onBack={() => { this.onBack() }}
                 />
                 <FlatListCustom
                     onRef={(ref) => { this.flatListRef = ref }}
@@ -92,7 +92,7 @@ export class SettingView extends BaseView {
                         if (this.state.user) {
                             return (
                                 <Button
-                                    onPress={() => { this.logout(); this.goHomeScreen();this.showMessage("Logout success") }}
+                                    onPress={() => { this.logout(); this.goHomeScreen(); this.showMessage("Logout success") }}
                                     title={"SING OUT"}
                                     titleStyle={{ color: Colors.COLOR_BLUE }}
                                     style={{ marginTop: Constants.MARGIN_X_LARGE }}

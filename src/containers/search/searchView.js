@@ -127,6 +127,7 @@ export class SearchView extends BaseView {
             typing: false,
             typingTimeout: setTimeout(() => {
                 this.props.search(this.filterSearch)
+                this.data=  []
                 this.setState({ showSearchList: stringSearch == null || stringSearch.trim() == "" ? false : true })
             }, 500)
         });

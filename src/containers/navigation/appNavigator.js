@@ -13,27 +13,52 @@ import { Colors } from 'values/colors';
 import ForgetPasswordView from "containers/forgetPass/forgetPasswordView";
 import VerifyPassWordView from "containers/verifyPass/verifyPassWordView";
 import UserProfileView from "containers/profile/userProfileView";
-import SettingView  from "containers/setting/settingView";
+import SettingView from "containers/setting/settingView";
 import CourseListView from 'containers/courses/list/courseListView';
 import CourseDetailView from "containers/courses/detail/courseDetailView";
 import BrowseView from "containers/browse/browseView";
 import SearchView from "containers/search/searchView";
+import RecommendListView from "containers/courses/list/recommend/recommendListView";
+import Analytics from 'containers/analytic/analytic'
+import watchingListView from "containers/courses/list/watching/watchingListView";
 
 enableScreens();
 
+const OS = Platform.OS
 const Stack = createStackNavigator();
 
 const MyTheme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        background : Colors.COLOR_BACKGROUND,
+        background: Colors.COLOR_BACKGROUND,
     },
 };
+const getActiveRouteName = (navigationState) => {
+    if (!navigationState) {
+        return null;
+    }
+    const route = navigationState.routes[navigationState.index];
+    // dive into nested navigators
+    if (route.routes) {
+        return getActiveRouteName(route);
+    }
+    return route.name;
+}
 
 const AppNavigator = () => {
     return (
-        <NavigationContainer theme={MyTheme}>
+        <NavigationContainer
+            ref={(navigationRef) => this.navigationRef = navigationRef}
+            onStateChange={async (state) => {
+                const previousRouteName = navigationRef.current;
+                const currentRouteName = getActiveRouteName(state);
+                if (previousRouteName !== currentRouteName) {
+                    Analytics.setCurrentScreen(currentRouteName);
+                    Analytics.logEvent(OS.toUpperCase() + "_SCREEN_" + currentRouteName.toUpperCase());
+                }
+            }}
+            theme={MyTheme}>
             <Stack.Navigator
                 initialRouteName={'Main'}
                 headerMode={'none'}
@@ -56,6 +81,8 @@ const AppNavigator = () => {
                 <Stack.Screen name="CourseDetail" component={CourseDetailView} />
                 <Stack.Screen name="Browser" component={BrowseView} />
                 <Stack.Screen name="Search" component={SearchView} />
+                <Stack.Screen name="RecommendList" component={RecommendListView} />
+                <Stack.Screen name="WatchingList" component={watchingListView} />
             </Stack.Navigator>
         </NavigationContainer>
     )

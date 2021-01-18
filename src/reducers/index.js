@@ -11,6 +11,7 @@ import questionReducer from './questionReducer';
 import noteReducer from './noteReducer';
 import downloadReducer from './downloadReducer';
 import searchReducer from './searchReducer';
+import forgotPasswordReducer from './forgotPasswordReducer';
 
 export const initialState = {
     data: null,
@@ -32,4 +33,5 @@ export default combineReducers({
     note: noteReducer,
     download: downloadReducer,
     search: searchReducer,
+    forgotPass: forgotPasswordReducer
 });

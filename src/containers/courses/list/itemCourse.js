@@ -74,9 +74,9 @@ class ItemCourse extends PureComponent {
                             {/* {item.soldNumber  != null&& <Text style={{ ...commonStyles.textSmall, textAlign: 'right', alignSelf: 'flex-end' }}>đã bán: {item.soldNumber}</Text>} */}
                         </View>
                     </View>
-                    <Pressable onPress={() => { }} style={[{ elevation: 16 }, horizontal && { position: 'absolute', top: 16, right: 4 }]}>
+                    {/* <Pressable onPress={() => { }} style={[{ elevation: 16 }, horizontal && { position: 'absolute', top: 16, right: 4 }]}>
                         <Image source={ic_menu_vertical} />
-                    </Pressable>
+                    </Pressable> */}
                 </View>
                 { !horizontal && (index == 2 || index == 12 || index == 13) && <View style={{ backgroundColor: Colors.COLOR_DRK_GREY, height: 1, width: Constants.MAX_WIDTH }} />}
             </Pressable>

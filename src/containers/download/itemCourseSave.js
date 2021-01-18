@@ -69,9 +69,9 @@ class ItemCourseSave extends PureComponent {
                             {/* <Text style={commonStyles.textSmall}>(403)</Text> */}
                         </View>
                     </View>
-                    <Pressable onPress={() => { }} style={[{ elevation: 16 }, horizontal && { position: 'absolute', top: 16, right: 4 }]}>
+                    {/* <Pressable onPress={() => { }} style={[{ elevation: 16 }, horizontal && { position: 'absolute', top: 16, right: 4 }]}>
                         <Image source={ic_menu_vertical} />
-                    </Pressable>
+                    </Pressable> */}
                 </View>
                 {(index == 2 || index == 12 || index == 13) && <View style={{ backgroundColor: Colors.COLOR_DRK_GREY, height: 1, width: Constants.MAX_WIDTH }} />}
             </Pressable>

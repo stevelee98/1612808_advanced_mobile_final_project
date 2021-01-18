@@ -15,7 +15,7 @@ export const Constants = {
     PADDING_LARGE: 8,
     PADDING_X_LARGE: 16,
     PADDING_XX_LARGE: 32,
-    PAGE_SIZE: 10,
+    PAGE_SIZE: 20,
     SHADOW: 4,
     SHADOW_BLUR: 16,
     SHADOW_OPACITY: 0.25,

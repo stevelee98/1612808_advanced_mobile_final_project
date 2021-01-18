@@ -1,10 +1,11 @@
 import { combineEpics } from 'redux-observable';
-// import { } from './commonEpic';
 import { from } from 'rxjs';
 import {
     loginEpic,
     registerEpic,
     getProfileEpic,
+    forgotPasswordEpic,
+    loginGoogleEpic,
 } from './userEpic';
 import {
     getCategoriesEpic
@@ -25,7 +26,9 @@ import {
     getCourseTopSellEpic,
     getCourseSaveEpic,
     saveCourseEpic,
-    getSaveCourseStatusEpic
+    getSaveCourseStatusEpic,
+    getCourseWatchingEpic,
+    getCourseRecommendEpic,
 } from './courseEpic'
 
 import {
@@ -53,5 +56,9 @@ export default combineEpics(
     getCourseTopSellEpic,
     getCourseSaveEpic,
     saveCourseEpic,
-    getSaveCourseStatusEpic
+    getSaveCourseStatusEpic,
+    forgotPasswordEpic,
+    getCourseWatchingEpic,
+    loginGoogleEpic,
+    getCourseRecommendEpic
 );

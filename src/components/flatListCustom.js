@@ -74,7 +74,7 @@ export default class FlatListCustom extends Component {
                     }
                 }}
                 refreshControl={this.props.enableRefresh ? this.props.refreshControl : null}
-                onEndReachedThreshold={0.1}
+                onEndReachedThreshold={0.2}
                 removeClippedSubviews={false}
                 initialNumToRender={10}
                 maxToRenderPerBatch={10}

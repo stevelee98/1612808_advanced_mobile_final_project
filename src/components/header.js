@@ -68,7 +68,9 @@ export default class Header extends React.Component {
 
     renderUser = () => {
         return (
-            <Pressable onPress={() => this.props.onPressAccount}>
+            <Pressable
+                android_ripple={Constants.ANDROID_RIPPLE}
+                onPress={() => { if (this.props.onPressAccount) this.props.onPressAccount() }}>
                 <ImageLoader
                     path={this.props.user?.avatar}
                     resizeModeType={'cover'}

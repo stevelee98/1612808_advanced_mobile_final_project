@@ -90,7 +90,7 @@ export class CategoryList extends BaseView {
                     style={styles.itemCategory}
                 >
                     <Pressable
-                        onPress={() => { }}
+                        onPress={() => { this.props.navigation.navigate('RecommendList') }}
                         android_ripple={Constants.ANDROID_RIPPLE}
                         style={styles.btnCat}>
                         <Text numberOfLines={2} style={styles.txtCat}>RECOMMEND{'\n'}FOR YOU</Text>

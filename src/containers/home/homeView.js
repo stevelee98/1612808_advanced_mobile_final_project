@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, ScrollView, Image, Pressable } from 'react-native'
+import { View, Text, ScrollView, Image, Pressable, RefreshControl } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { ErrorCode } from "config/errorCode";
@@ -22,6 +22,10 @@ import * as courseActions from 'actions/courseActions';
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import BaseView from 'containers/base/baseView';
 import StorageUtil from 'utils/storageUtil';
+import crashlytics from '@react-native-firebase/crashlytics';
+import ItemCourseWatching from 'containers/courses/list/watching/itemCourseWatching';
+import categoryId from 'enum/categoryId';
+
 console.disableYellowBox = true;
 const LIST_MENU = [
     {
@@ -39,7 +43,8 @@ export class HomeView extends BaseView {
     constructor(props) {
         super(props);
         this.state = {
-            user: null
+            user: null,
+            refreshing: false
         }
         this.data = [
             {
@@ -152,6 +157,7 @@ export class HomeView extends BaseView {
         }
         this.courseTopRate = []
         this.courseTopSell = []
+        this.courseWatching = []
     }
 
     componentDidMount() {
@@ -165,7 +171,9 @@ export class HomeView extends BaseView {
     getProfile = async () => {
         let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
         if (user) {
+            this.getCourseWatching()
             this.props.getProfile();
+            this.setState(user)
         }
     }
 
@@ -185,10 +193,28 @@ export class HomeView extends BaseView {
         this.props.getCourseTopRate(this.filterGetCourseTopRate);
     }
 
+    getCourseWatching = () => {
+        this.props.getCourseWatching()
+    }
+
     componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
             this.props = nextProps;
             this.handleData();
+        }
+    }
+
+    handleRefresh = async () => {
+        if (this.state.user) {
+            this.state.refreshing = true
+            let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
+            if (user) {
+                this.state.user = user
+                this.getCourseWatching()
+                this.props.getProfile();
+                this.getCourseTopRate();
+                setTimeout(() => { this.getCourseTopSell() })
+            }
         }
     }
 
@@ -200,20 +226,29 @@ export class HomeView extends BaseView {
                     if (data != null && data.payload != null) {
                         console.log("GET_PROFILE data", data.payload)
                         this.state.user = data.payload
+                    } else {
+                        this.logout()
                     }
                 }
                 if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_TOP_RATE)) {
-                    console.log("GET_COURSE_TOP_RATE data", data)
+                    console.log("GET_COURSE_TOP_RATE data home", data)
                     if (data.data && data.data.payload) {
                         this.courseTopRate = data.data.payload
                     }
                 }
                 if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_TOP_SELL)) {
-                    console.log("GET_COURSE_TOP_SELL data", data)
+                    console.log("GET_COURSE_TOP_SELL data home", data)
                     if (data.data && data.data.payload) {
                         this.courseTopSell = data.data.payload
                     }
                 }
+                if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_WATCHING)) {
+                    console.log("GET_COURSE_WATCHING data home", data)
+                    if (data.data && data.data.payload) {
+                        this.courseWatching = data.data.payload
+                    }
+                }
+                this.state.refreshing = false
             } else {
                 this.handleError(this.props.errorCode, this.props.error);
             }
@@ -242,22 +277,26 @@ export class HomeView extends BaseView {
                 <View style={{ marginBottom: Constants.MARGIN_X_LARGE }}>
                     <Image source={img_iron_man} style={{ width: 120, height: 150, alignSelf: 'flex-end' }} resizeMode={'contain'} />
                     <View style={{ position: 'absolute', bottom: 20, left: 16 }}>
-                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM }}>Welcome to Pluralsight !</Text>
+                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM }}>Welcome to VietStudy !</Text>
                         <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM, marginTop: 20, width: Constants.MAX_WIDTH * 0.8 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Text>
                     </View>
                 </View>
-                {this.renderList('Khóa học được đánh giá cao', this.courseTopRate)}
-                {this.renderList('Khóa học bán chạy nhất', this.courseTopSell)}
+                {this.courseWatching.length > 0 && this.renderListCourseWatching()}
+                {this.renderList('Khóa học được đánh giá cao', this.courseTopRate, categoryId.TOP_RATE)}
+                {this.renderList('Khóa học bán chạy nhất', this.courseTopSell, categoryId.TOP_SELL)}
             </View>
         )
     }
 
-    renderList = (title, data) => {
+    renderList = (title, data, id) => {
         return (
             <View>
                 <View style={styles.titleList}>
                     <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>{title}</Text>
-                    <Pressable style={{}} onPress={() => this.props.navigation.navigate('CourseList')}>
+                    <Pressable
+                        android_ripple={Constants.ANDROID_RIPPLE}
+                        style={{}}
+                        onPress={() => this.props.navigation.navigate('CourseList', { categoryId: id, categoryTitle: title })}>
                         <Text style={[commonStyles.textSmall]}>{'See all >'}</Text>
                     </Pressable>
                 </View>
@@ -272,7 +311,38 @@ export class HomeView extends BaseView {
                     keyExtractor={item => item.id}
                     showsHorizontalScrollIndicator={false}
                     horizontal={true}
-                    isShowEmpty={data == 0}
+                    isShowEmpty={data.length == 0}
+                    isShowImageEmpty={true}
+                    textForEmpty={""}
+                />
+            </View>
+        )
+    }
+
+    renderListCourseWatching = () => {
+        return (
+            <View>
+                <View style={styles.titleList}>
+                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>Đang học</Text>
+                    <Pressable
+                        android_ripple={Constants.ANDROID_RIPPLE}
+                        style={{}}
+                        onPress={() => this.props.navigation.navigate('WatchingList')}>
+                        <Text style={[commonStyles.textSmall]}>{'See all >'}</Text>
+                    </Pressable>
+                </View>
+                <FlatListCustom
+                    onRef={(ref) => { this.flatListRef = ref }} 
+                    contentContainerStyle={{
+                    }}
+                    style={{
+                    }}
+                    data={this.courseWatching}
+                    renderItem={this.renderItemCourseWatching}
+                    keyExtractor={item => item.id}
+                    showsHorizontalScrollIndicator={false}
+                    horizontal={true}
+                    isShowEmpty={this.courseWatching.length == 0}
                     isShowImageEmpty={true}
                     textForEmpty={""}
                 />
@@ -293,6 +363,19 @@ export class HomeView extends BaseView {
         )
     }
 
+    renderItemCourseWatching = (item, index) => {
+        return (
+            <ItemCourseWatching
+                key={index}
+                index={index}
+                item={item}
+                horizontal={true}
+                length={this.courseWatching.length}
+                onPress={(item) => this.props.navigation.navigate("CourseDetail", { id: item.id })}
+            />
+        )
+    }
+
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -300,16 +383,24 @@ export class HomeView extends BaseView {
                     title={"Home"}
                     visibleBack={false}
                     visibleAccount={true}
-                    user={{ name: 'abc', avatar: null }}
-                    onBack={() => { }}
+                    user={this.state.user}
                     visibleMenu={true}
                     menus={LIST_MENU}
+                    onPressAccount={() => { this.props.navigation.navigate('UserProfile') }}
                     navigation={this.props.navigation}
                 />
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            progressViewOffset={Constants.HEIGHT_HEADER_OFFSET_REFRESH}
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.handleRefresh}
+                        />
+                    }
+                    contentContainerStyle={{ flexGrow: 1 }}>
                     {Utils.isNull(this.state.user) ? this.renderNotLogin() : this.renderListCourses()}
                 </ScrollView>
-                {this.showLoadingBar(this.props.isLoading)}
+                {!this.state.refreshing && this.showLoadingBar(this.props.isLoading)}
             </View>
         )
     }

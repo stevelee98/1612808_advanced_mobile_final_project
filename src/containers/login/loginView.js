@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, BackHandler, StatusBar } from 'react-native'
+import { View, Text, BackHandler, StatusBar, Keyboard } from 'react-native'
 import {
     Container, Content, Root,
 } from 'native-base'
@@ -18,6 +18,7 @@ import StorageUtil from 'utils/storageUtil';
 import Utils from 'utils/utils';
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import { ErrorCode } from 'config/errorCode';
+import { GoogleSignin, statusCodes } from '@react-native-community/google-signin';
 
 class LoginView extends BaseView {
 
@@ -44,11 +45,57 @@ class LoginView extends BaseView {
         }
     }
 
+    signOutGG = async (data) => {
+        try {
+            if (!Utils.isNull(data)) {
+                await GoogleSignin.signOut();
+            }
+        } catch (error) {
+            console.log("error sign out google", error);
+        }
+    };
+
+    loginGoogle = async () => {
+        Keyboard.dismiss();
+        try {
+            await this.signOutGG('Google');
+            await GoogleSignin.hasPlayServices();
+            await GoogleSignin.configure({
+                webClientId:
+                    '661179561027-ii0ksq3las4t9s5qagt16q2o8pqr4d8l.apps.googleusercontent.com',
+                offlineAccess: true
+            });
+            const { user } = await GoogleSignin.signIn();
+            let userInfo = user
+            const data = {
+                user: {
+                    email: userInfo.email,
+                    id: userInfo.id
+                }
+            };
+            this.props.loginGoogle(data);
+        } catch (error) {
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                // user cancelled the login flow
+                console.log('user cancelled the login flow');
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                console.log('operation (e.g. sign in) is in progress already');
+                // operation (e.g. sign in) is in progress already
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                console.log('play services not available or outdated');
+                // play services not available or outdated
+            } else {
+                // some other error happened
+                console.log(error);
+            }
+        }
+    };
+
     handleData = () => {
         let data = this.props.data;
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
-                if (this.props.action == getActionSuccess(ActionEvent.LOGIN)) {
+                if (this.props.action == getActionSuccess(ActionEvent.LOGIN) || this.props.action == getActionSuccess(ActionEvent.LOGIN_GOOGLE)) {
                     console.log("Data login", data)
                     if (data != null) {
                         StorageUtil.storeItem(StorageUtil.USER_PROFILE, data.userInfo);
@@ -197,12 +244,19 @@ class LoginView extends BaseView {
                     title={"SIGN IN"}
                     titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }}
                     backgroundColor={Colors.COLOR_DRK_GREY} />
-                <Button title={"FORGOT PASSWORD?"} titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />
-                <Button title={"USE SINGLE SIGN-ON (SSO)"} titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} border={{ borderWidth: 1, borderColor: Colors.COLOR_BLUE }} />
                 <Button
                     onPress={() => { this.props.navigation.navigate("Register") }}
                     title={"SIGN UP FREE"}
+                    border={{ borderWidth: 1, borderColor: Colors.COLOR_BLUE }}
                     titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />
+                <Button
+                    onPress={() => { this.props.navigation.navigate('ForgetPass') }}
+                    title={"FORGOT PASSWORD?"}
+                    titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />
+                <Button title={"USE GOOGLE SIGN IN"}
+                    onPress={this.loginGoogle}
+                    titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }}
+                />
             </View>
         )
     }

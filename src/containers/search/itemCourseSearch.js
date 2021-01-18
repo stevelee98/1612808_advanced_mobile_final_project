@@ -27,59 +27,46 @@ class ItemCourseSearch extends PureComponent {
         }
     }
 
-    render() { 
+    render() {
         const { item, index, length, onPress, horizontal } = this.props;
-        console.log("horizontal" , item.title);
-        console.log("horizontal" , horizontal);
+        console.log("horizontal", item);
         return (
             <Pressable
                 onPress={() => { onPress(item) }}
-                style={horizontal && {
-                    width: Constants.MAX_WIDTH * 0.6,
-                    marginRight: Constants.MARGIN_LARGE,
-                    marginLeft: index == 0 ? Constants.MARGIN_X_LARGE : 0
+                style={{
                 }}>
                 <View style={{
-                    flexDirection: horizontal ? 'column' : 'row',
+                    flexDirection: 'row',
                     alignItems: 'flex-start',
                     flex: 1,
                     paddingVertical: Constants.PADDING_LARGE + 2,
-                }}>
-                    <View>
-                        <ImageLoader path={item.imageUrl} resizeModeType={'cover'}
-                            style={{
-                                width: horizontal ? Constants.MAX_WIDTH * 0.6 : 110,
-                                height: horizontal ? Constants.MAX_WIDTH * 0.4 : 60,
-                                borderRadius: 6
-                            }} />
-                        {horizontal && <Image source={img_background_gradient} style={styles.imgGradient} />}
-                        {horizontal && <Text numberOfLines={2} style={styles.titleHorizontal}>{item.title}</Text>}  
-                    </View>
-                    <View style={{ flex: 1, marginTop: horizontal ? 4 : -4, marginHorizontal: horizontal ? 8 : 8 }}>
-                        {!horizontal && <Text numberOfLines={2} style={styles.titleVertical}>{item.title}</Text>}
+                }}><ImageLoader path={item.imageUrl} resizeModeType={'cover'}
+                    style={{
+                        width: 110,
+                        height: 60,
+                        borderRadius: 6
+                    }} />
+                    <View style={{ flex: 1, marginTop: -4, marginHorizontal: 8 }}>
+                        <Text numberOfLines={2} style={styles.titleVertical}>{item.title}</Text>
                         <Text style={styles.txtArthur}>{item['instructor.user.name'] != null ? item['instructor.user.name'] : item.name}</Text>
                         <Text style={[commonStyles.textSmall, { color: Colors.COLOR_TEXT_HOLDER, marginRight: Constants.MARGIN_X_LARGE }]}>
-                            {item.price != null && StringUtil.formatStringCashNoUnit(item.price)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'}</Text>  {DateUtil.convertFromFormatToFormat(item.createdAt, DateUtil.FORMAT_DATE_TIME_ZONE_T, DateUtil.FORMAT_DATE_V2)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {StringUtil.convertNumberHourToStringTime(item.totalHours)}
+                            {item.price != null && StringUtil.formatStringCashNoUnit(item.price)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'}</Text>  {DateUtil.convertFromFormatToFormat(item.updatedAt, DateUtil.FORMAT_DATE_TIME_ZONE_T, DateUtil.FORMAT_DATE_V2)}  <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {StringUtil.convertNumberHourToStringTime(item.totalHours)}
                         </Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 6 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                            <AirbnbRating
-                                count={5}
-                                showRating={false}
-                                isDisabled={true}
-                                defaultRating={2.5}
-                                size={10}
-                            />
-                            <Text style={commonStyles.textSmall}>{item.ratedNumber && `(${item.ratedNumber})`}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginRight: 6, marginTop: 6 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                <AirbnbRating
+                                    count={5}
+                                    showRating={false}
+                                    isDisabled={true}
+                                    defaultRating={2.5}
+                                    size={10}
+                                />
+                                <Text style={commonStyles.textSmall}>{item.ratedNumber && `(${item.ratedNumber})`}</Text>
+                            </View>
+                            {item.soldNumber && <Text style={{ ...commonStyles.textSmall, textAlign: 'right', alignSelf: 'flex-end' }}>đã bán: {item.soldNumber}</Text>}
                         </View>
-                        {item.soldNumber && <Text style={{ ...commonStyles.textSmall, textAlign: 'right', alignSelf: 'flex-end' }}>đã bán: {item.soldNumber}</Text>}
                     </View>
-                    <Pressable onPress={() => { }} style={[{ elevation: 16 }, horizontal && { position: 'absolute', top: 16, right: 4 }]}>
-                        <Image source={ic_menu_vertical} />
-                    </Pressable>
                 </View>
-                { !horizontal && (index == 2 || index == 12 || index == 13) && <View style={{ backgroundColor: Colors.COLOR_DRK_GREY, height: 1, width: Constants.MAX_WIDTH }} />}
             </Pressable>
         );
     }

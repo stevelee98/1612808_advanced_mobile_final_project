@@ -14,6 +14,10 @@ export default function (state = initialState, action) {
         case ActionEvent.GET_COURSE_DETAIL_V2:
         case ActionEvent.GET_SAVE_COURSE_STATUS:
         case ActionEvent.SAVE_COURSE:
+        case ActionEvent.GET_COURSE_RECOMMEND:
+        case ActionEvent.GET_COURSE_TOP_RATE:
+        case ActionEvent.GET_COURSE_TOP_SELL:
+        case ActionEvent.GET_COURSE_WATCHING:
             return {
                 ...state,
                 isLoading: true,
@@ -30,6 +34,10 @@ export default function (state = initialState, action) {
         case getActionSuccess(ActionEvent.GET_COURSE_DETAIL_V2):
         case getActionSuccess(ActionEvent.GET_SAVE_COURSE_STATUS):
         case getActionSuccess(ActionEvent.SAVE_COURSE):
+        case getActionSuccess(ActionEvent.GET_COURSE_RECOMMEND):
+        case getActionSuccess(ActionEvent.GET_COURSE_TOP_RATE):
+        case getActionSuccess(ActionEvent.GET_COURSE_TOP_SELL):
+        case getActionSuccess(ActionEvent.GET_COURSE_WATCHING):
             return {
                 ...state,
                 isLoading: false,

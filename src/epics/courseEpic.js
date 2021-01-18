@@ -422,3 +422,52 @@ export const saveCourseEpic = action$ =>
                 })
         )
     );
+
+export const getCourseWatchingEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_COURSE_WATCHING),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `user/get-process-courses`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader()
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                console.log("get GET_COURSE_WATCHING EPIC", responseJson);
+                return courseActions.getCourseWatchingSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_COURSE_WATCHING EPIC:", ActionEvent.GET_COURSE_WATCHING, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const getCourseRecommendEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_COURSE_RECOMMEND),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `user/recommend-course/${action.payload.id}/${action.payload.limit}/${action.payload.offset}`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader()
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                return courseActions.getCourseRecommendSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_COURSE_RECOMMEND EPIC:", ActionEvent.GET_COURSE_RECOMMEND, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );

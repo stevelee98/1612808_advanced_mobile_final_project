@@ -3,7 +3,7 @@ import { ActionEvent, getActionSuccess } from './actionEvent'
 
 export const login = (data) => ({
     type: ActionEvent.LOGIN,
-    payload: data 
+    payload: data
 })
 
 export const loginSuccess = data => ({
@@ -31,5 +31,25 @@ export const getProfile = () => ({
 
 export const getProfileSuccess = (data) => ({
     type: getActionSuccess(ActionEvent.GET_PROFILE),
+    payload: data
+})
+
+export const forgotPassword = (filter) => ({
+    type: ActionEvent.FORGOT_PASSWORD,
+    payload: { ...filter }
+});
+
+export const forgotPasswordSuccess = (data) => ({
+    type: getActionSuccess(ActionEvent.FORGOT_PASSWORD),
+    payload: data
+})
+
+export const loginGoogle = (filter) => ({
+    type: ActionEvent.LOGIN_GOOGLE,
+    payload: { ...filter }
+});
+
+export const loginGoogleSuccess = (data) => ({
+    type: getActionSuccess(ActionEvent.LOGIN_GOOGLE),
     payload: data
 })

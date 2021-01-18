@@ -91,3 +91,57 @@ export const getProfileEpic = action$ =>
                 })
         )
     );
+
+export const forgotPasswordEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.FORGOT_PASSWORD),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + 'user/forget-pass/send-email', {
+                method: 'POST',
+                headers: new Headers({
+                    "Accept": "*/*",
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + global.token,
+                }),
+                body: JSON.stringify(action.payload)
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400 || response.status == 500) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                return userActions.forgotPasswordSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("FORGOT_PASSWORD USER_EPIC:", ActionEvent.FORGOT_PASSWORD, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );
+
+export const loginGoogleEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.LOGIN_GOOGLE),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + 'user/login-google-mobile', {
+                method: 'POST',
+                headers: ApiUtil.getHeader(),
+                body: JSON.stringify(action.payload)
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                return userActions.loginGoogleSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("LOGIN_GOOGLE USER_EPIC:", ActionEvent.LOGIN_GOOGLE, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );

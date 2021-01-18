@@ -157,3 +157,31 @@ export const getSaveCourseStatusSuccess = data => ({
     type: getActionSuccess(ActionEvent.GET_SAVE_COURSE_STATUS),
     payload: { data }
 })
+
+export const getCourseWatching = () => ({
+    type: ActionEvent.GET_COURSE_WATCHING,
+})
+
+export const getCourseWatchingSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_COURSE_WATCHING),
+    payload: { data }
+})
+
+export const getCourseRecommend = (id, limit, offset) => ({
+    type: ActionEvent.GET_COURSE_RECOMMEND,
+    payload: { id, limit, offset }
+})
+
+export const getCourseRecommendSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_COURSE_RECOMMEND),
+    payload: { data }
+})
+
+export const getSearchHistory = () => ({
+    type: ActionEvent.GET_SEARCH_HISTORY
+})
+
+export const getSearchHistorySuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_SEARCH_HISTORY),
+    payload: { data }
+})

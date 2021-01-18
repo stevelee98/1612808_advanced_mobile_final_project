@@ -6,6 +6,7 @@ import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 export default function (state = initialState, action) {
     switch (action.type) {
         case ActionEvent.LOGIN:
+        case ActionEvent.LOGIN_GOOGLE:
             return {
                 ...state,
                 isLoading: true,
@@ -14,6 +15,7 @@ export default function (state = initialState, action) {
                 errorCode: null,
             }
         case getActionSuccess(ActionEvent.LOGIN):
+        case getActionSuccess(ActionEvent.LOGIN_GOOGLE):
             return {
                 ...state,
                 isLoading: false,

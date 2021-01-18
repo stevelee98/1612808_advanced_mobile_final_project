@@ -24,6 +24,11 @@ export const ActionEvent = {
     GET_COURSE_SAVE: 'getCourseSave',
     SAVE_COURSE: 'saveCourse',
     GET_SAVE_COURSE_STATUS: 'getSaveCourseStatus',
+    FORGOT_PASSWORD: 'forgotPassword',
+    GET_COURSE_WATCHING: 'getCourseWatching',
+    LOGIN_GOOGLE: 'loginGoogle',
+    GET_COURSE_RECOMMEND: 'getCourseRecommend',
+    GET_SEARCH_HISTORY: 'getSearchHistory'
 };
 
 export function getActionSuccess(action) {

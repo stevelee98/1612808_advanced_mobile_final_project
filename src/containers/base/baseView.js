@@ -23,6 +23,7 @@ import { Fonts } from "values/fonts";
 import NetInfo from "@react-native-community/netinfo";
 import { CommonActions } from '@react-navigation/native';
 
+
 const resetAction = CommonActions.reset({
     index: 0,
     routes: [{ name: "Main" }]

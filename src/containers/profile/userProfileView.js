@@ -36,7 +36,7 @@ class UserProfileView extends BaseView {
             <View style={{ flex: 1 }}>
                 <Header
                     title={"Profile"}
-                    onBack={() => { }}
+                    onBack={this.onBack}
                 />
                 <ScrollView
                     contentContainerStyle={{ flexGrow: 1 }}

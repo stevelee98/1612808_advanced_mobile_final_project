@@ -17,8 +17,8 @@ import ic_search_white from 'images/ic_search_white.png';
 import ic_grid_white from 'images/ic_grid_white.png';
 import img_iron_man from 'images/img_iron_man.jpg';
 import img_download from 'images/img_download.png';
-import img_download_guide_1 from 'images/img_download_guide_1.png';
-import img_download_guide_2 from 'images/img_download_guide_2.png';
+import img_download_guide_1 from 'images/img_download_guide_1.jpg';
+import img_download_guide_2 from 'images/img_download_guide_2.jpg';
 import Button from 'components/button';
 import * as userActions from 'actions/userActions'
 import * as courseActions from 'actions/courseActions'

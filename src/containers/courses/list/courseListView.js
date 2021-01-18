@@ -20,6 +20,7 @@ import BaseView from 'containers/base/baseView';
 import * as userActions from 'actions/userActions'
 import * as courseActions from 'actions/courseActions'
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
+import CategoryId from 'enum/categoryId';
 
 
 class CourseListView extends BaseView {
@@ -29,8 +30,10 @@ class CourseListView extends BaseView {
         this.state = {
             user: null,
             enableLoadMore: false,
+            isLoadingMore: false,
             enableRefresh: true,
-            refreshing: false
+            refreshing: false,
+            page: 0 //user for request list course recommend
         }
         let { categoryId, categoryTitle } = this.props.route.params;
         this.categoryId = categoryId;
@@ -71,6 +74,19 @@ class CourseListView extends BaseView {
                 ]
             }
         }
+        this.filterRecommend = {
+            id: null,
+            limit: Constants.PAGE_SIZE,
+            offset: Constants.PAGE_SIZE * this.state.page
+        }
+        this.filterGetCourseTopRate = {
+            page: 1,
+            limit: Constants.PAGE_SIZE
+        }
+        this.filterGetCourseTopSell = {
+            page: 1,
+            limit: Constants.PAGE_SIZE
+        }
     }
 
     componentDidMount = () => {
@@ -79,11 +95,16 @@ class CourseListView extends BaseView {
 
     handleGetCourse = () => {
         switch (this.categoryId) {
-            case Constants.NEW_RELEASE:
+            case CategoryId.NEW_RELEASE:
                 this.props.getNewCourses(this.filter);
                 return;
+            case CategoryId.TOP_RATE:
+                this.props.getCourseTopRate(this.filterGetCourseTopRate);
+                return;
+            case CategoryId.TOP_SELL:
+                this.props.getCourseTopSell(this.filterGetCourseTopSell);
+                return;
             default:
-                console.log("filter search, ", this.filterSearch);
                 this.props.search(this.filterSearch);
                 return;
         }
@@ -136,6 +157,25 @@ class CourseListView extends BaseView {
                         this.state.enableLoadMore = false
                         this.showNoData = true;
                     }
+                } else if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_TOP_RATE)
+                    || this.props.action == getActionSuccess(ActionEvent.GET_COURSE_TOP_SELL)) {
+                    if (data.data && data.data.payload) {
+                        let payload = data.data.payload
+                        console.log("payload tôp rate: ", payload);
+                        if (payload.length > 0) {
+                            this.state.enableLoadMore = !(payload.length < Constants.PAGE_SIZE)
+                            payload.forEach(element => {
+                                this.data.push({ ...element })
+                            });
+                            this.showNoData = false
+                        } else {
+                            this.state.enableLoadMore = false
+                            this.showNoData = true;
+                        }
+                    } else {
+                        this.state.enableLoadMore = false
+                        this.showNoData = true;
+                    }
                 }
                 this.state.refreshing = false
                 this.state.isLoadingMore = false
@@ -167,7 +207,8 @@ class CourseListView extends BaseView {
     }
 
     onLoadMore = () => {
-        if (this.data.length % Constants.PAGE_SIZE == 0 && this.state.enableLoadMore) {
+        console.log("this.state.enableLoadMore", this.state.enableLoadMore);
+        if (this.state.enableLoadMore) {
             this.state.isLoadingMore = true;
             this.updateFilter()
             this.handleGetCourse()
@@ -178,6 +219,12 @@ class CourseListView extends BaseView {
         switch (this.categoryId) {
             case Constants.NEW_RELEASE:
                 this.filter.page = Math.round(this.data.length / Constants.PAGE_SIZE)
+                return;
+            case CategoryId.TOP_RATE:
+                this.filterGetCourseTopRate.page = Math.round(this.data.length / Constants.PAGE_SIZE)
+                return;
+            case CategoryId.TOP_SELL:
+                this.filterGetCourseTopSell.page = Math.round(this.data.length / Constants.PAGE_SIZE)
                 return;
             default:
                 this.filterSearch.offset = Math.round(this.data.length / Constants.PAGE_SIZE)

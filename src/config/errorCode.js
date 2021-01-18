@@ -3,6 +3,7 @@ export const ErrorCode = {
     ERROR_SUCCESS: 200,
     ERROR_COMMON: 1,
     ERROR_400: 400,
+    ERROR_500: 500,
     UN_AUTHORIZE: 401,
     NO_CONNECTION: 404,
     INVALID_ACCOUNT: 103,
