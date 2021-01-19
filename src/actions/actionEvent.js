@@ -28,7 +28,8 @@ export const ActionEvent = {
     GET_COURSE_WATCHING: 'getCourseWatching',
     LOGIN_GOOGLE: 'loginGoogle',
     GET_COURSE_RECOMMEND: 'getCourseRecommend',
-    GET_SEARCH_HISTORY: 'getSearchHistory'
+    GET_SEARCH_HISTORY: 'getSearchHistory',
+    GET_LESSON_VIDEO: 'getLessonVideo'
 };
 
 export function getActionSuccess(action) {

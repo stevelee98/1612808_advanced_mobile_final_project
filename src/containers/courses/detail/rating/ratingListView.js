@@ -126,7 +126,7 @@ class RatingListView extends BaseView {
                         paddingVertical: Constants.PADDING_X_LARGE,
                         paddingHorizontal: Constants.PADDING_X_LARGE
                     }}>
-                        <Text style={{ ...commonStyles.textBold, fontSize: Fonts.FONT_SIZE_XX_LARGE }}>{this.data && this.calculateStar()}</Text>
+                        <Text style={{ ...commonStyles.textBold, fontSize: Fonts.FONT_SIZE_XX_LARGE - 4 }}>{this.data && this.calculateStar()}</Text>
                     </View>
                     <Text style={[commonStyles.textSmall, { textAlign: 'center', marginTop: Constants.MARGIN_LARGE }]}>{this.data != null && this.data.ratingList != null ? this.data.ratingList.length : 0} đánh giá</Text>
                 </View>

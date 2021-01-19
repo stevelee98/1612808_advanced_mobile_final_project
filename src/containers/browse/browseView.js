@@ -183,11 +183,18 @@ export class BrowseView extends BaseView {
     }
 
     componentDidMount() {
-        super.componentDidMount()
         this.props.getCategories()
         this.props.getLectures()
+        this.getProfile()
     }
-
+    
+    getProfile = async () => {
+        let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
+        if (user) {
+            this.props.getProfile();
+            this.setState({user: user})
+        }
+    }
 
     componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {

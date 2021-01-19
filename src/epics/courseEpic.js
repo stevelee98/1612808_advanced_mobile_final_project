@@ -471,3 +471,27 @@ export const getCourseRecommendEpic = action$ =>
                 })
         )
     );
+
+export const getLessonVideoEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_LESSON_VIDEO),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `lesson/video/${action.payload.courseId}/${action.payload.lessonId}`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader()
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                return courseActions.getLessonVideoSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_LESSON_VIDEO EPIC:", ActionEvent.GET_LESSON_VIDEO, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );

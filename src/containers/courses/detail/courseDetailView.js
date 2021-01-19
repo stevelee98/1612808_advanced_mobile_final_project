@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { View, Text, BackHandler, Image, Pressable, ScrollView, StatusBar } from 'react-native';
+import {
+    View, Text, BackHandler, Image, Pressable, ScrollView,
+    StatusBar, Share, Animated, PermissionsAndroid, Platform
+} from 'react-native';
 import {
     Container, Content, Root, Tabs, ScrollableTab, Tab
 } from "native-base";
@@ -21,6 +24,7 @@ import ImageLoader from 'components/imageLoader';
 import ic_back_white from 'images/ic_back_white.png';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import ic_download_white from 'images/ic_download_white.png';
+import ic_download_blue_gray from 'images/ic_download_blue_gray.png';
 import ic_book_mark from 'images/ic_book_mark.png';
 import ic_online from 'images/ic_online.png';
 import ic_bookmark_yellow from 'images/ic_bookmark_yellow.png';
@@ -37,6 +41,13 @@ import Button from 'components/button';
 import RatingListView from './rating/ratingListView';
 import QuestionListView from './question/questionListView';
 import NoteListView from './note/noteListView';
+import ServerPath from 'config/Server';
+import VideoPlayer from 'components/videoPlayer';
+import YoutubePlayer from 'react-native-youtube-iframe';
+import loader_icon from 'images/loader-icon.png';
+import RNFetchBlob from 'rn-fetch-blob'
+import RNFS from 'react-native-fs';
+import * as Progress from 'react-native-progress'
 
 export class CourseDetailView extends BaseView {
 
@@ -54,13 +65,26 @@ export class CourseDetailView extends BaseView {
             chapPlaying: { chap: 0, session: 0 },
             user: null,
             permission: false,
-            likeStatus: false
+            likeStatus: false,
+            videoPaused: false,
+            videoMuted: false,
+            currentTime: 0,
+            video: null,
+            play: true,
+            loader: {
+                rotate: new Animated.Value(0),
+                MAX_VALUE: 360,
+            },
+            lesson: null,
+            progress: 0,
+            isDownloaded: true
         }
         let { id } = this.props.route.params;
         this.id = id
         this.dataCourse = null
         this.sections = [];
         this.ratings = null;
+        this.video = null;
         this.tabs = [
             { id: 1, name: 'BÀI HỌC', user: false, },
             { id: 2, name: 'CÂU HỎI', user: true, },
@@ -72,7 +96,6 @@ export class CourseDetailView extends BaseView {
 
     componentDidMount = () => {
         this.getProfile()
-        this.getCourseSaveStatus()
     }
 
     getCourseDetail = () => {
@@ -87,6 +110,7 @@ export class CourseDetailView extends BaseView {
         let user = await StorageUtil.retrieveItem(StorageUtil.USER_PROFILE);
         console.log("user course detail", user);
         if (user != null) {
+            this.getCourseSaveStatus()
             this.getCourseDetailV2(user.id)
         } else {
             this.getCourseDetail()
@@ -100,6 +124,15 @@ export class CourseDetailView extends BaseView {
 
     getCourseSaveStatus = () => {
         this.props.getSaveCourseStatus(this.id)
+    }
+
+    getLessonVideo = (lessonId) => {
+        this.setState({
+            video: {
+                videoUrl: ''
+            }
+        })
+        this.props.getLessonVideo(this.id, lessonId);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -155,7 +188,7 @@ export class CourseDetailView extends BaseView {
                         this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_RATING)) {
-                    console.log("REGISTER_FREE_COURSE data", data)
+                    console.log("GET_COURSE_RATING data", data)
                     if (data.data && data.data.messsage == 'OK') {
                         this.showMessage("Đăng ký thành công")
                     }
@@ -175,11 +208,18 @@ export class CourseDetailView extends BaseView {
                     if (data.data && data.data.errorCode) {
                         this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
                     }
-                }
-                else if (this.props.action == getActionSuccess(ActionEvent.GET_SAVE_COURSE_STATUS)) {
+                } else if (this.props.action == getActionSuccess(ActionEvent.GET_SAVE_COURSE_STATUS)) {
                     console.log("GET_SAVE_COURSE_STATUS data", data)
                     if (data.data && data.data.message == 'OK') {
                         this.state.likeStatus = data.data.likeStatus
+                    }
+                    if (data.data && data.data.errorCode) {
+                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                    }
+                } else if (this.props.action == getActionSuccess(ActionEvent.GET_LESSON_VIDEO)) {
+                    console.log("GET_LESSON_VIDEO data", data)
+                    if (data.data && data.data.payload) {
+                        this.state.video = data.data.payload
                     }
                     if (data.data && data.data.errorCode) {
                         this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
@@ -199,16 +239,118 @@ export class CourseDetailView extends BaseView {
     onPressItem = (id) => {
     }
 
+    onShareCourse = () => {
+        let url = ServerPath.API_URL.split("api.")
+        console.log("urrl", url)
+        Share.share({
+            message: 'VietStudy: Study with me \n ' + `${url[0]}${url[1]}course-detail/${this.dataCourse.id}`,
+            url: url[0] + url[1] + '/course-detail/' + this.dataCourse.id,
+            title: "Share to social",
+        }, {
+            // Android only:
+            dialogTitle: 'Share to social',
+            // iOS only:
+            excludedActivityTypes: [
+                'com.apple.UIKit.activity.PostToTwitter'
+            ]
+        })
+    }
+
+    // fetchFile = (fileMeta) => {
+    //     return new Promise((resolve, reject) => {
+    //         fetchBlobTask = RNFetchBlob.config({
+    //             path: fileMeta.filename,
+    //             fileCache: true,
+    //         }).fetch(
+    //             'GET', encodeURI(fileMeta.url)
+    //         );
+    //         fetchBlobTask.then((result) => {
+    //             resolve(result);
+    //         }).catch((error) => {
+    //             reject(error);
+    //         });
+    //     });
+    // }
+
+    downloadVideo = async (url) => {
+        const hasWritePermission = await this.hasPermission(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+        const hasReadPermission = await this.hasPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+        if (!hasWritePermission || !hasReadPermission) return;
+        let dirs = Platform.OS == 'ios' ? RNFetchBlob.fs.dirs.DocumentDir : RNFS.DownloadDirectoryPath;
+        this.setState({ isDownloaded: false });
+        try {
+            RNFetchBlob.config({
+                fileCache: true,
+                path: dirs + '/' + this.state.lesson.name.replace(/\s/g, '') + '.mp4',
+            }).fetch('GET', url).progress((received, total) => {
+                console.log("Download progess", received / total)
+                this.setState({ progress: received / total })
+            }).then((res) => {
+                console.log("Download video", res)
+                // the path of downloaded file 
+                this.downloaded = Platform.OS === "ios" ? res.data : res.path();
+                this.showMessage("Tải thành công")
+                this.setState({ progress: 1, isDownloaded: true });
+            }).catch((error) => {
+                console.log("error while download", error);
+            })
+        } catch {
+            (error) => {
+                console.log("download error", error);
+            }
+        }
+
+        // let DownloadDir = RNFetchBlob.fs.dirs.DownloadDir
+        // console.log("download dir", DownloadDir + "/viet_study" + this.state.lesson.name.replace(/\s/g, ''));
+        // let options = {
+        //     fileCache: true,
+        //     // addAndroidDownloads: {
+        //     useDownloadManager: true,
+        //     notification: false,
+        //     path: DownloadDir + "/viet_study" + this.state.lesson.name.replace(/\s/g, ''),
+        //     description: 'Downloading course video.'
+        //     // }
+        // }
+        // RNFetchBlob.config(options).fetch('GET', url, {
+        //     Authorization: 'Bearer ' + global.token,
+        // }).then((res) => {
+        //     console.log("Download video", res.path())
+        //     let status = res.info().status;
+
+        //     if (status == 200) {
+        //         // the conversion is done in native code
+        //         let base64Str = res.base64()
+        //         // the following conversions are done in js, it's SYNC
+        //         let text = res.text()
+        //         let json = res.json()
+        //     } else {
+        //         // handle other status codes
+        //     }
+        // })
+        //     // Something went wrong:
+        //     .catch((errorMessage, statusCode) => {
+        //         console.log("error while download", errorMessage);
+        //     })
+    }
+
+    onSaveCourse = () => {
+        if (this.state.user) {
+            this.props.saveCourse({ courseId: this.id })
+        } else {
+            this.showMessage("Bạn cần đăng nhập để lưu khóa học")
+        }
+    }
+
     render() {
+        let videoUrl = this.state.video ? this.state.video.videoUrl : null
         return (
             <View style={{ flex: 1 }}>
-                <ImageLoader path={this.dataCourse != null ? this.dataCourse.imageUrl : ''} resizeModeType={'cover'} style={styles.courseResource} />
+                {videoUrl ? this.renderVideo(videoUrl) : <ImageLoader path={this.dataCourse != null ? this.dataCourse.imageUrl : ''} resizeModeType={'cover'} style={styles.courseResource} />}
                 <ScrollView style={styles.viewInfo} contentContainerStyle={{ flexGrow: 1 }}>
                     {this.renderCourseInfo()}
-                    {/* {this.renderButton()} */}
                     {this.renderDescription()}
+                    {this.renderButton()}
                     {/* {this.renderButtonBottom()} */}
-
                     <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, marginTop: Constants.MARGIN_LARGE }}>
                         <Text style={{ ...commonStyles.text }}>Bạn sẽ học được</Text>
                         <View style={{ marginTop: Constants.MARGIN, flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -253,8 +395,8 @@ export class CourseDetailView extends BaseView {
                             }) : null}
                         </View>
                     </View>
-                    <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
-                        {this.renderTabs()}
+                    <View style={{ backgroundColor: Colors.COLOR_BLACK, flex: 1 }}>
+                        {this.state.user ? this.renderTabs() : this.renderButtonLogin()}
                     </View>
                 </ScrollView>
                 <Pressable
@@ -264,7 +406,103 @@ export class CourseDetailView extends BaseView {
                     <Image source={ic_back_white} style={{}} />
                 </Pressable>
                 <StatusBar translucent backgroundColor='transparent' />
+                {this.showLoadingBar(this.props.isLoading)}
             </View>
+        )
+    }
+
+    renderButtonLogin = () => {
+        return (
+            <Pressable style={styles.buttonSignIn} onPress={() => {
+                this.showLoginView({ fromScreen: 'CourseDetail', id: this.id, callBack: this.getProfile })
+            }}>
+                <Text style={[commonStyles.text]}>Đăng nhập để tham gia khóa học</Text>
+            </Pressable>
+        )
+    }
+
+    renderLoadingDownload = () => {
+        if ((0 < this.state.progress || this.state.progress < 1) && !this.state.isDownloaded)
+            return (
+                <Progress.Circle
+                    color={'#7be11e'}
+                    style={{
+                        position: 'absolute'
+                    }}
+                    progress={this.state.progress}
+                    size={40}
+                    indeterminate={false}
+                    showsText={true}
+                />
+            )
+    }
+
+    renderVideo = (videoUrl) => {
+        let thumbnail = this.dataCourse != null ? this.dataCourse.imageUrl : '';
+        let isYoutube = videoUrl.indexOf('https://youtube.com') != -1;
+        if (isYoutube) {
+            let id = videoUrl.split('embed/')
+            return (
+                <View style={{ marginTop: 44 }}>
+                    <YoutubePlayer
+                        style={{}}
+                        ref={'youtube'}
+                        height={Constants.MAX_WIDTH * (9 / 16)}
+                        width={Constants.MAX_WIDTH}
+                        videoId={id[1]}
+                        play={this.state.play}
+                        onChangeState={event => {
+                            if (event == 'playing') {
+                                this.setState({
+                                    play: true
+                                })
+                            }
+                        }}
+                        onReady={() => console.log("ready")}
+                        onError={e => console.log(e)}
+                        onPlaybackQualityChange={q => console.log(q)}
+                        volume={50}
+                        playbackRate={1}
+                        webViewStyle={{ borderTopLeftRadius: Constants.CORNER_RADIUS, borderTopRightRadius: Constants.CORNER_RADIUS }}
+                    />
+                </View>
+            )
+        }
+        return (
+            <VideoPlayer
+                style={[styles.courseResource, {
+                    width: Constants.MAX_WIDTH,
+                    height: Constants.MAX_WIDTH * (9 / 16),
+                    backgroundColor: Colors.COLOR_BLACK,
+                    marginTop: 44,
+                }]}
+                source={{ uri: videoUrl }}
+                resizeMode='cover'
+                paused={this.state.videoPaused}
+                muted={this.state.videoMuted}
+                onProgress={response => {
+                    this.state.currentTime = response.currentTime;
+                }}
+                currentTime={this.state.currentTime}
+                onLoad={response => {
+                    const { width, height } = response.naturalSize;
+                }}
+                onEnd={response => {
+                    // if (index < lengthData - 1) {
+                    //     scrollToIndex(index + 1);
+                    // }
+                }}
+                showOnStart={false}
+                // onPressVideo={() => {
+                //     this.setState({ videoPaused: !this.state.paused });
+                // }}
+                disableTitle={false}
+                disableFullscreen={false}
+                disableTimer={false}
+                disableSeekbar={false}
+                disablePlayPause={false}
+                disableVignette={false}
+            />
         )
     }
 
@@ -293,11 +531,11 @@ export class CourseDetailView extends BaseView {
                                     defaultRating={2.5}
                                     size={10}
                                 /> */}
-                                <Text style={commonStyles.textSmall}>(403)</Text>
+                                {/* <Text style={commonStyles.textSmall}>(403)</Text> */}
                             </View>
                         </View>
                     </View>
-                    <View
+                    {/* <View
                         style={styles.btnAction}>
                         <Pressable
                             onPress={() => { this.props.saveCourse({ courseId: this.id }) }}
@@ -305,7 +543,7 @@ export class CourseDetailView extends BaseView {
                             <Image source={this.state.likeStatus ? ic_bookmark_yellow : ic_book_mark} />
                         </Pressable>
                         <Text style={commonStyles.textSmall}>Lưu khóa học</Text>
-                    </View>
+                    </View> */}
                 </View>
             </View>
         )
@@ -315,30 +553,46 @@ export class CourseDetailView extends BaseView {
         return (
             <View style={styles.viewBtn}>
                 <Pressable
+                    style={styles.btnAction}
+                    onPress={() => { this.onSaveCourse() }}
+                    android_ripple={Constants.ANDROID_RIPPLE}>
+                    <View style={styles.imgBtnAction}>
+                        <Image source={this.state.likeStatus ? ic_bookmark_yellow : ic_book_mark} />
+                    </View>
+                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>Yêu thích</Text>
+                </Pressable>
+                <Pressable
+                    onPress={() => {
+                        if (this.state.user) {
+                            if (this.state.video) {
+                                if (this.state.video.videoUrl && this.state.video.videoUrl.indexOf('https://youtube.com') != -1) {
+                                    this.showMessage("Không thể tải đối với bài học là video youtube")
+                                } else
+                                    this.downloadVideo(this.state.video.videoUrl)
+                            } else
+                                this.showMessage("Vui lòng chọn bài học")
+                        } else {
+                            this.showMessage("Bạn cần đăng nhập để thực hiện chức năng này")
+                        }
+                    }}
                     android_ripple={Constants.ANDROID_RIPPLE}
                     style={styles.btnAction}>
                     <View style={styles.imgBtnAction}>
-                        <Image source={ic_book_mark} />
+                        <Image source={this.state.isDownloaded ? ic_download_white : ic_download_blue_gray} />
                     </View>
-                    <Text style={commonStyles.text}>Bookmark</Text>
+                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>{!this.state.isDownloaded ? 'Đang tải' : 'Tải về máy'}</Text>
+                    {this.renderLoadingDownload()}
                 </Pressable>
                 <Pressable
+                    onPress={this.onShareCourse}
                     android_ripple={Constants.ANDROID_RIPPLE}
                     style={styles.btnAction}>
                     <View style={styles.imgBtnAction}>
                         <Image source={ic_online} />
                     </View>
-                    <Text style={commonStyles.text}>Add to chanel</Text>
+                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>Chia sẻ</Text>
                 </Pressable>
-                <Pressable
-                    android_ripple={Constants.ANDROID_RIPPLE}
-                    style={styles.btnAction}>
-                    <View style={styles.imgBtnAction}>
-                        <Image source={ic_download_white} />
-                    </View>
-                    <Text style={commonStyles.text}>Download</Text>
-                </Pressable>
-            </View>
+            </View >
         )
     }
 
@@ -405,8 +659,6 @@ export class CourseDetailView extends BaseView {
                     locked={false}
                     tabContainerStyle={{ elevation: 4, borderBottomWidth: 0, backgroundColor: Colors.COLOR_BLACK }}
                     tabBarUnderlineStyle={{ height: 3, backgroundColor: Colors.COLOR_BLUE, borderRadius: Constants.CORNER_RADIUS }}
-                    onChangeTab={(event) => this.onChangeTab(event)}
-                    onScroll={(event) => this.onChangeTab(event)}
                 >
                     <Tab
                         heading={'BÀI HỌC'}
@@ -415,7 +667,7 @@ export class CourseDetailView extends BaseView {
                         textStyle={{ color: Colors.COLOR_DRK_GREY }}
                         activeTextStyle={{ color: Colors.COLOR_TEXT }}
                     >
-                        <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
+                        <View style={{ flex: 1, backgroundColor: Colors.COLOR_BLACK }}>
                             {this.renderListSession()}
                         </View>
                     </Tab>
@@ -463,7 +715,6 @@ export class CourseDetailView extends BaseView {
                             {this.renderListSession()}
                         </View>
                     </Tab>
-
                 </Tabs>
             </View>
         )
@@ -523,18 +774,6 @@ export class CourseDetailView extends BaseView {
                 textForEmpty={""}
                 nestedScrollEnabled
             />
-        )
-    }
-
-    renderTranscript = () => {
-        return (
-            this.state.tabActive == 1 && <View style={{ flex: 1, padding: Constants.PADDING_X_LARGE }}>
-                <Text style={commonStyles.text}>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                    {'\n'}{'\n'}
-                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-                </Text>
-            </View>
         )
     }
 
@@ -627,7 +866,9 @@ export class CourseDetailView extends BaseView {
 
     renderItemChap = (item, index) => {
         return (
-            <Pressable style={styles.chapItem}>
+            <Pressable
+                onPress={() => { this.getLessonVideo(item.id); this.setState({ lesson: item }) }}
+                style={styles.chapItem}>
                 <View style={{
                     ...styles.chapLearned,
                     backgroundColor: item.learned ? Colors.COLOR_GREEN : Colors.COLOR_DRK_GREY

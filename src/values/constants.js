@@ -25,7 +25,7 @@ export const Constants = {
     STATUS_BAR_HEIGHT: 18,
     ANDROID_RIPPLE: {
         color: Colors.COLOR_GREY_LIGHT,
-        borderless: false,
+        borderless: false
     },
     NEW_RELEASE: -100,
     RECOMMEND_FOR_YOU: - 101

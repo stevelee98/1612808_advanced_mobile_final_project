@@ -29,6 +29,7 @@ import {
     getSaveCourseStatusEpic,
     getCourseWatchingEpic,
     getCourseRecommendEpic,
+    getLessonVideoEpic,
 } from './courseEpic'
 
 import {
@@ -60,5 +61,6 @@ export default combineEpics(
     forgotPasswordEpic,
     getCourseWatchingEpic,
     loginGoogleEpic,
-    getCourseRecommendEpic
+    getCourseRecommendEpic,
+    getLessonVideoEpic
 );

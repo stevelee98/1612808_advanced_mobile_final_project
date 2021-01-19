@@ -185,3 +185,13 @@ export const getSearchHistorySuccess = data => ({
     type: getActionSuccess(ActionEvent.GET_SEARCH_HISTORY),
     payload: { data }
 })
+
+export const getLessonVideo = (courseId, lessonId) => ({
+    type: ActionEvent.GET_LESSON_VIDEO,
+    payload: { courseId, lessonId }
+})
+
+export const getLessonVideoSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_LESSON_VIDEO),
+    payload: { data }
+})

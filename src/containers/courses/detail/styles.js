@@ -48,7 +48,7 @@ export default styles = {
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginTop: Constants.MARGIN_X_LARGE
+        marginVertical: Constants.MARGIN_LARGE
     },
     courseResource: {
         width: Constants.MAX_WIDTH,
@@ -151,8 +151,9 @@ export default styles = {
     },
     bottom: {
         marginTop: Constants.MARGIN_LARGE,
-        marginBottom: Constants.MARGIN_X_LARGE,
+        paddingBottom: Constants.MARGIN_X_LARGE,
         flex: 1,
+        height: '100%',
         backgroundColor: Colors.COLOR_BLACK
     },
     buttonSignIn: {
@@ -162,5 +163,8 @@ export default styles = {
         backgroundColor:Colors.COLOR_BLUE,
         marginVertical: Constants.MARGIN_XX_LARGE,
         alignSelf: 'center',
-    }
+    },
+    progress: {
+        margin: 2,
+    },
 };
