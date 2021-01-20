@@ -145,3 +145,28 @@ export const loginGoogleEpic = action$ =>
                 })
         )
     );
+
+export const editProfileEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.EDIT_PROFILE),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + 'user/update-profile', {
+                method: 'POST',
+                headers: ApiUtil.getHeader(),
+                body: JSON.stringify(action.payload)
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                return userActions.editProfileSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("EDIT_PROFILE USER_EPIC:", ActionEvent.EDIT_PROFILE, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );

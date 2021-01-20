@@ -6,6 +6,7 @@ import {
     getProfileEpic,
     forgotPasswordEpic,
     loginGoogleEpic,
+    editProfileEpic
 } from './userEpic';
 import {
     getCategoriesEpic
@@ -30,6 +31,7 @@ import {
     getCourseWatchingEpic,
     getCourseRecommendEpic,
     getLessonVideoEpic,
+    getCourseProcessEpic,
 } from './courseEpic'
 
 import {
@@ -62,5 +64,7 @@ export default combineEpics(
     getCourseWatchingEpic,
     loginGoogleEpic,
     getCourseRecommendEpic,
-    getLessonVideoEpic
+    getLessonVideoEpic,
+    getCourseProcessEpic,
+    editProfileEpic
 );

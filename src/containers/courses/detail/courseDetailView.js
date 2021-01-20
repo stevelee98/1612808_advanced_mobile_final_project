@@ -77,7 +77,8 @@ export class CourseDetailView extends BaseView {
             },
             lesson: null,
             progress: 0,
-            isDownloaded: true
+            isDownloaded: true,
+            progressCourse: null
         }
         let { id } = this.props.route.params;
         this.id = id
@@ -135,6 +136,10 @@ export class CourseDetailView extends BaseView {
         this.props.getLessonVideo(this.id, lessonId);
     }
 
+    getCourseProcess = () => {
+        this.props.getCourseProcess(this.id)
+    }
+
     componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
             this.props = nextProps;
@@ -165,6 +170,7 @@ export class CourseDetailView extends BaseView {
                         this.sections = this.dataCourse.section;
                         this.ratings = this.dataCourse.ratings;
                     }
+                    this.getCourseProcess()
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_LECTURE)) {
                     console.log("GET_LECTURE data", data)
                     if (data.data && data.data.payload) {
@@ -222,6 +228,16 @@ export class CourseDetailView extends BaseView {
                         this.state.video = data.data.payload
                     }
                     if (data.data && data.data.errorCode) {
+                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                    }
+                } else if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_PROCESS)) {
+                    console.log("GET_COURSE_PROCESS data", data)
+                    if (data.data && data.data.payload) {
+                        this.state.progressCourse = data.data.payload
+                        this.state.currentTime = Math.round((this.dataCourse.totalHours * (data.data.payload / 100)))
+                    } else if (data.data && data.data.status == 400) {
+                        this.state.permission = false
+                    } else if (data.data && data.data.errorCode) {
                         this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
                     }
                 }
@@ -283,11 +299,8 @@ export class CourseDetailView extends BaseView {
                 fileCache: true,
                 path: dirs + '/' + this.state.lesson.name.replace(/\s/g, '') + '.mp4',
             }).fetch('GET', url).progress((received, total) => {
-                console.log("Download progess", received / total)
                 this.setState({ progress: received / total })
             }).then((res) => {
-                console.log("Download video", res)
-                // the path of downloaded file 
                 this.downloaded = Platform.OS === "ios" ? res.data : res.path();
                 this.showMessage("Tải thành công")
                 this.setState({ progress: 1, isDownloaded: true });
@@ -299,38 +312,6 @@ export class CourseDetailView extends BaseView {
                 console.log("download error", error);
             }
         }
-
-        // let DownloadDir = RNFetchBlob.fs.dirs.DownloadDir
-        // console.log("download dir", DownloadDir + "/viet_study" + this.state.lesson.name.replace(/\s/g, ''));
-        // let options = {
-        //     fileCache: true,
-        //     // addAndroidDownloads: {
-        //     useDownloadManager: true,
-        //     notification: false,
-        //     path: DownloadDir + "/viet_study" + this.state.lesson.name.replace(/\s/g, ''),
-        //     description: 'Downloading course video.'
-        //     // }
-        // }
-        // RNFetchBlob.config(options).fetch('GET', url, {
-        //     Authorization: 'Bearer ' + global.token,
-        // }).then((res) => {
-        //     console.log("Download video", res.path())
-        //     let status = res.info().status;
-
-        //     if (status == 200) {
-        //         // the conversion is done in native code
-        //         let base64Str = res.base64()
-        //         // the following conversions are done in js, it's SYNC
-        //         let text = res.text()
-        //         let json = res.json()
-        //     } else {
-        //         // handle other status codes
-        //     }
-        // })
-        //     // Something went wrong:
-        //     .catch((errorMessage, statusCode) => {
-        //         console.log("error while download", errorMessage);
-        //     })
     }
 
     onSaveCourse = () => {
@@ -394,6 +375,7 @@ export class CourseDetailView extends BaseView {
                                 )
                             }) : null}
                         </View>
+                        {!this.state.permission && this.renderButtonRegister()}
                     </View>
                     <View style={{ backgroundColor: Colors.COLOR_BLACK, flex: 1 }}>
                         {this.state.user ? this.renderTabs() : this.renderButtonLogin()}
@@ -507,6 +489,9 @@ export class CourseDetailView extends BaseView {
     }
 
     renderCourseInfo = () => {
+        let current = 0
+        if (this.dataCourse && this.state.progressCourse)
+            current = this.dataCourse.totalHours * (this.state.progressCourse / 100)
         return (
             <View style={{ padding: Constants.PADDING_X_LARGE }}>
                 <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_X_LARGE }]}>{this.dataCourse?.title}</Text>
@@ -522,6 +507,7 @@ export class CourseDetailView extends BaseView {
                         </View>
                         <View style={styles.viewCat}>
                             <Text style={[commonStyles.textSmall, { marginTop: Constants.MARGIN_LARGE }]}>{DateUtil.convertFromFormatToFormat(this.dataCourse?.createdAt, DateUtil.FORMAT_DATE_TIME_ZONE_T, DateUtil.FORMAT_DATE_V2)} <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {this.dataCourse && StringUtil.convertNumberHourToStringTime(this.dataCourse.totalHours)}
+                                <Text>   Đã học : {StringUtil.convertNumberHourToStringTime(current)} ({this.state.progressCourse ? this.state.progressCourse : 0}%)</Text>
                             </Text>
                             <View style={styles.viewRating}>
                                 {/* <AirbnbRating
@@ -640,6 +626,27 @@ export class CourseDetailView extends BaseView {
         )
     }
 
+    renderButtonRegister = () => {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: Constants.PADDING_LARGE }}>
+                <Pressable
+                    style={styles.buttonSignIn}
+                    onPress={() => {
+                        if (this.dataCourse)
+                            if (this.dataCourse.price === 0) {
+                                this.props.registerFreeCourse({ courseId: this.id })
+                            }
+                    }}>
+                    {this.dataCourse ?
+                        this.dataCourse.price === 0 ?
+                            <Text style={commonStyles.text}>THAM GIA KHÓA HỌC</Text> :
+                            <Text style={commonStyles.text}>Mua khóa học với giá {StringUtil.formatStringCashNoUnit(this.dataCourse.price)}</Text>
+                        : null}
+                </Pressable>
+            </View>
+        )
+    }
+
     renderTabs = () => {
         let { tabActive } = this.state;
         return (
@@ -660,7 +667,7 @@ export class CourseDetailView extends BaseView {
                     tabContainerStyle={{ elevation: 4, borderBottomWidth: 0, backgroundColor: Colors.COLOR_BLACK }}
                     tabBarUnderlineStyle={{ height: 3, backgroundColor: Colors.COLOR_BLUE, borderRadius: Constants.CORNER_RADIUS }}
                 >
-                    <Tab
+                    {this.state.permission && <Tab
                         heading={'BÀI HỌC'}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
@@ -670,8 +677,8 @@ export class CourseDetailView extends BaseView {
                         <View style={{ flex: 1, backgroundColor: Colors.COLOR_BLACK }}>
                             {this.renderListSession()}
                         </View>
-                    </Tab>
-                    <Tab
+                    </Tab>}
+                    {this.state.permission && <Tab
                         heading={'CÂU HỎI'}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
@@ -681,8 +688,8 @@ export class CourseDetailView extends BaseView {
                         <View style={{ flex: 1, backgroundColor: Colors.COLOR_BLACK }}>
                             {this.renderQuestions()}
                         </View>
-                    </Tab>
-                    <Tab
+                    </Tab>}
+                    {this.state.permission && <Tab
                         heading={'GHI CHÚ'}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
@@ -692,7 +699,7 @@ export class CourseDetailView extends BaseView {
                         <View style={{ flex: 1, backgroundColor: Colors.COLOR_BLACK }}>
                             {this.renderNotes()}
                         </View>
-                    </Tab>
+                    </Tab>}
                     <Tab
                         heading={'ĐÁNH GIÁ'}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
@@ -704,7 +711,7 @@ export class CourseDetailView extends BaseView {
                             {this.renderRating()}
                         </View>
                     </Tab>
-                    <Tab
+                    {this.state.permission && <Tab
                         heading={'BÀI TẬP'}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
@@ -714,7 +721,7 @@ export class CourseDetailView extends BaseView {
                         <View style={{ backgroundColor: Colors.COLOR_BLACK }}>
                             {this.renderListSession()}
                         </View>
-                    </Tab>
+                    </Tab>}
                 </Tabs>
             </View>
         )

@@ -53,3 +53,13 @@ export const loginGoogleSuccess = (data) => ({
     type: getActionSuccess(ActionEvent.LOGIN_GOOGLE),
     payload: data
 })
+
+export const editProfile = (filter) => ({
+    type: ActionEvent.EDIT_PROFILE,
+    payload: { ...filter }
+});
+
+export const editProfileSuccess = (data) => ({
+    type: getActionSuccess(ActionEvent.EDIT_PROFILE),
+    payload: data
+})

@@ -29,7 +29,9 @@ export const ActionEvent = {
     LOGIN_GOOGLE: 'loginGoogle',
     GET_COURSE_RECOMMEND: 'getCourseRecommend',
     GET_SEARCH_HISTORY: 'getSearchHistory',
-    GET_LESSON_VIDEO: 'getLessonVideo'
+    GET_LESSON_VIDEO: 'getLessonVideo',
+    GET_COURSE_PROCESS: 'getCourseProcess' ,
+    EDIT_PROFILE: 'editProfile'
 };
 
 export function getActionSuccess(action) {

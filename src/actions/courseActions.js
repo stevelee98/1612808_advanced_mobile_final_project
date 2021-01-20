@@ -195,3 +195,13 @@ export const getLessonVideoSuccess = data => ({
     type: getActionSuccess(ActionEvent.GET_LESSON_VIDEO),
     payload: { data }
 })
+
+export const getCourseProcess = (courseId) => ({
+    type: ActionEvent.GET_COURSE_PROCESS,
+    payload: { courseId }
+})
+
+export const getCourseProcessSuccess = data => ({
+    type: getActionSuccess(ActionEvent.GET_COURSE_PROCESS),
+    payload: { data }
+})

@@ -495,3 +495,27 @@ export const getLessonVideoEpic = action$ =>
                 })
         )
     );
+
+export const getCourseProcessEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.GET_COURSE_PROCESS),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + `course/process-course/${action.payload.courseId}`, {
+                method: 'GET',
+                headers: ApiUtil.getHeader()
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                return courseActions.getCourseProcessSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("GET_COURSE_PROCESS EPIC:", ActionEvent.GET_COURSE_PROCESS, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );

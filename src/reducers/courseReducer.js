@@ -12,6 +12,7 @@ export default function (state = initialState, action) {
         case ActionEvent.GET_NEW_COURSES:
         case ActionEvent.GET_LESSON_VIDEO:
         case ActionEvent.GET_COURSE_DETAIL:
+        case ActionEvent.GET_COURSE_PROCESS:
         case ActionEvent.GET_COURSE_TOP_RATE:
         case ActionEvent.GET_COURSE_TOP_SELL:
         case ActionEvent.GET_COURSE_WATCHING:
@@ -33,6 +34,7 @@ export default function (state = initialState, action) {
         case getActionSuccess(ActionEvent.GET_NEW_COURSES):
         case getActionSuccess(ActionEvent.GET_LESSON_VIDEO):
         case getActionSuccess(ActionEvent.GET_COURSE_DETAIL):
+        case getActionSuccess(ActionEvent.GET_COURSE_PROCESS):
         case getActionSuccess(ActionEvent.GET_COURSE_TOP_RATE):
         case getActionSuccess(ActionEvent.GET_COURSE_TOP_SELL):
         case getActionSuccess(ActionEvent.GET_COURSE_WATCHING):
