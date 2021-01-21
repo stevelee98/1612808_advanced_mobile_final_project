@@ -40,7 +40,7 @@ export class ItemQuestion extends PureComponent {
         let item = this.props.item;
         if (item.tags) {
             return (
-                <View>
+                <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     {item.tags.map((e, i) => {
                         return <View key={i} style={{
                             marginLeft: Constants.MARGIN_LARGE,

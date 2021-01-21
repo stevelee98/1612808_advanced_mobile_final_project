@@ -14,6 +14,7 @@ import searchReducer from './searchReducer';
 import forgotPasswordReducer from './forgotPasswordReducer';
 import userReducer from './userReducer';
 import settingReducer from './settingReducer';
+import changePassReducer from './changePassReducer';
 
 export const initialState = {
     data: null,
@@ -37,5 +38,6 @@ export default combineReducers({
     search: searchReducer,
     forgotPass: forgotPasswordReducer,
     user: userReducer,
-    setting: settingReducer
+    setting: settingReducer,
+    changPass: changePassReducer
 });

@@ -213,7 +213,7 @@ export default class TextInputCustom extends Component {
         const { value, isFocus } = this.state;
         let top = this.animate.interpolate({
             inputRange: [0, 1],
-            outputRange: [8, 0],
+            outputRange: [8, 3],
         });
         return (
             label && (
@@ -224,7 +224,7 @@ export default class TextInputCustom extends Component {
                         { position: isMultiLines && (isFocus || !StringUtil.isNullOrEmpty(value)) ? 'relative' : 'absolute' },
                         isInputAction || !StringUtil.isNullOrEmpty(value)
                             ? {
-                                top: 4,
+                                top: 3,
                                 fontSize: !Utils.isNull(value) ? Fonts.FONT_SIZE_X_SMALL : Fonts.FONT_SIZE_MEDIUM,
                                 opacity: !Utils.isNull(value) ? 1 : 0,
                                 color: !Utils.isNull(warnLabel) ? Colors.COLOR_RED : Colors.COLOR_BLUE,

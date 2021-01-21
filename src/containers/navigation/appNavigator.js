@@ -21,6 +21,8 @@ import SearchView from "containers/search/searchView";
 import RecommendListView from "containers/courses/list/recommend/recommendListView";
 import Analytics from 'containers/analytic/analytic'
 import watchingListView from "containers/courses/list/watching/watchingListView";
+import changePasswordView from "containers/changePass/changePasswordView";
+import courseLikeCategory from "containers/courses/list/similary/courseLikeCategory";
 
 enableScreens();
 
@@ -83,6 +85,8 @@ const AppNavigator = () => {
                 <Stack.Screen name="Search" component={SearchView} />
                 <Stack.Screen name="RecommendList" component={RecommendListView} />
                 <Stack.Screen name="WatchingList" component={watchingListView} />
+                <Stack.Screen name="ChangePass" component={changePasswordView} />
+                <Stack.Screen name="CourseLikeCategory" component={courseLikeCategory} />
             </Stack.Navigator>
         </NavigationContainer>
     )

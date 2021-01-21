@@ -200,7 +200,7 @@ class CourseListView extends BaseView {
     }
 
     onPress = (item) => {
-        this.props.navigation.navigate('CourseDetail', { id: item.id })
+        this.props.navigation.push('CourseDetail', { id: item.id })
     }
 
     onLoadMore = () => {
@@ -244,7 +244,12 @@ class CourseListView extends BaseView {
                     title={""}
                     onBack={this.onBack}
                 />
-                <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, paddingVertical: Constants.MARGIN_XX_LARGE }}><Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_X_LARGE }]}>{this.categoryTitle}</Text></View>
+                <View style={{
+                    paddingHorizontal: Constants.PADDING_X_LARGE,
+                    paddingVertical: Constants.MARGIN_XX_LARGE
+                }}>
+                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_X_LARGE }]}>{this.categoryTitle}</Text>
+                </View>
                 <FlatListCustom
                     onRef={(ref) => { this.flatListRef = ref }}
                     contentContainerStyle={{

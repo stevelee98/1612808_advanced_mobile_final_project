@@ -26,6 +26,20 @@
         "appVersion": "Phiên bản",
         "changePassSuccess" :"Đổi mật khẩu thành công"
     },
+    "changePass": {
+        "title": "Đổi mật khẩu",
+        "password": "Mật khẩu hiện tại",
+        "newPassword": "Mật khẩu mới",
+        "confirmPassword": "Nhập lại mật khẩu mới",
+        "fillPassword": "Vui lòng nhập mật khẩu hiện tại",
+        "fillNewPasswordLength": "Mật khẩu phải dài hơn 8 ký tự",
+        "fillNewPassword": "Vui lòng nhập mật khẩu mới",
+        "fillRePassword": "Vui lòng nhập lại mật khẩu mới",
+        "passwordMissMatch": "Mật khẩu nhập lại không khớp",
+        "success": "Đổi mật khẩu thành công",
+        "error": "Mật khẩu hiện tại không chính xác",
+        "txtChange": "Đổi mật khẩu"
+    },
     "forgotPassword": {
         "title": "Quên mật khẩu",
         "guide": "Nhập email mà bạn đã đăng ký, chúng tôi sẽ gửi email đặt lại mật khẩu cho bạn",
@@ -92,7 +106,7 @@
         "letStarted": "Chúng ta hãy bắt đầu",
         "titleIntro": "Xem các khóa học của bạn mà bạn đã yêu thích",
         "intro": "Nhấn yêu thích khóa học để lưu những khóa học thú vị cho riêng bạn",
-        "how": "Làm sao để lưu",
+        "how": "Làm sao để lưu ?",
         "gotoSearch": "TÌM KIẾM KHÓA HỌC VÀ LƯU CHÚNG",
         "gotoLogin": "ĐĂNG NHẬP HOẶC ĐĂNG KÝ ĐỂ LƯU KHÓA HỌC"
     },
@@ -126,7 +140,9 @@
         "question": "Câu hỏi",
         "note": "Ghi chú",
         "rating": "Đánh giá",
-        "exercise": "Bài tập"
+        "exercise": "Bài tập",
+        "courseLikeCategory" : "Các khóa học tương tự",
+        "viewCourseLikeCategory" : "Xem các khóa học tương tự"
     },
     "otp": {},
     "dialog": {

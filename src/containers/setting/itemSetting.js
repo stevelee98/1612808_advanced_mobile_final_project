@@ -21,7 +21,8 @@ class ItemSetting extends PureComponent {
     }
 
     render() {
-        const { item, index, length, onPress } = this.props;
+        const { item, index, length, onPress, user } = this.props;
+        if (item.forUser && user == null) return null;
         return (
             <Pressable android_ripple={Constants.ANDROID_RIPPLE}
                 onPress={() => { if (item.onPress) item.onPress() }}>

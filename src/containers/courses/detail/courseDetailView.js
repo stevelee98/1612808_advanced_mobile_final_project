@@ -273,22 +273,6 @@ export class CourseDetailView extends BaseView {
         })
     }
 
-    // fetchFile = (fileMeta) => {
-    //     return new Promise((resolve, reject) => {
-    //         fetchBlobTask = RNFetchBlob.config({
-    //             path: fileMeta.filename,
-    //             fileCache: true,
-    //         }).fetch(
-    //             'GET', encodeURI(fileMeta.url)
-    //         );
-    //         fetchBlobTask.then((result) => {
-    //             resolve(result);
-    //         }).catch((error) => {
-    //             reject(error);
-    //         });
-    //     });
-    // }
-
     downloadVideo = async (url) => {
         const hasWritePermission = await this.hasPermission(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
         const hasReadPermission = await this.hasPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
@@ -327,59 +311,21 @@ export class CourseDetailView extends BaseView {
         let videoUrl = this.state.video ? this.state.video.videoUrl : null
         return (
             <View style={{ flex: 1 }}>
-                {videoUrl ? this.renderVideo(videoUrl) : <ImageLoader path={this.dataCourse != null ? this.dataCourse.imageUrl : ''} resizeModeType={'cover'} style={styles.courseResource} />}
+                {videoUrl ? this.renderVideo(videoUrl) :
+                    <ImageLoader
+                        path={this.dataCourse != null ? this.dataCourse.imageUrl : ''}
+                        resizeModeType={'cover'}
+                        style={styles.courseResource} />}
                 <ScrollView style={styles.viewInfo} contentContainerStyle={{ flexGrow: 1 }}>
                     {this.renderCourseInfo()}
-                    {this.renderDescription()}
                     {this.renderButton()}
-                    {/* {this.renderButtonBottom()} */}
-                    <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, marginTop: Constants.MARGIN_LARGE }}>
-                        <Text style={{ ...commonStyles.text }}>{localizes('course.whatStudy')}</Text>
-                        <View style={{ marginTop: Constants.MARGIN, flexDirection: 'row', flexWrap: 'wrap' }}>
-                            {this.dataCourse && this.dataCourse.learnWhat ? this.dataCourse.learnWhat.map((item, index) => {
-                                return (
-                                    <View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', marginRight: Constants.MARGIN_LARGE, marginTop: Constants.MARGIN }}>
-                                        <Pressable
-                                            style={{
-                                                backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT,
-                                                borderRadius: Constants.BORDER_RADIUS,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                padding: 2
-                                            }}
-                                        >
-                                            <Text numberOfLines={1} style={styles.nameArthur}>{item}</Text>
-                                        </Pressable>
-                                    </View>
-                                )
-                            }) : null}
-                        </View>
-                    </View>
-                    <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, marginVertical: Constants.MARGIN_X_LARGE }}>
-                        <Text style={{ ...commonStyles.text }}>{localizes('course.requirement')}</Text>
-                        <View style={{ marginTop: Constants.MARGIN, flexDirection: 'row', flexWrap: 'wrap' }}>
-                            {this.dataCourse && this.dataCourse.requirement ? this.dataCourse.requirement.map((item, index) => {
-                                return (
-                                    <View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', marginRight: Constants.MARGIN_LARGE, marginTop: Constants.MARGIN }}>
-                                        <Pressable
-                                            style={{
-                                                backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT,
-                                                borderRadius: Constants.BORDER_RADIUS,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                padding: 2
-                                            }}
-                                        >
-                                            <Text numberOfLines={1} style={styles.nameArthur}>{item}</Text>
-                                        </Pressable>
-                                    </View>
-                                )
-                            }) : null}
-                        </View>
-                        {!this.state.permission && this.state.user && this.renderButtonRegister()}
-                    </View>
+                    {this.renderButtonBottom()}
+                    {this.renderDescription()}
+                    {this.renderLearnWhat()}
+                    {this.renderRequirement()}
+                    {/* {this.renderCourseSimilar()} */}
                     <View style={{ backgroundColor: Colors.COLOR_BLACK, flex: 1 }}>
-                        {this.state.user ? this.renderTabs() : this.renderButtonLogin()}
+                        {this.state.user != null ? this.renderTabs() : this.renderButtonLogin()}
                     </View>
                 </ScrollView>
                 <Pressable
@@ -471,14 +417,8 @@ export class CourseDetailView extends BaseView {
                     const { width, height } = response.naturalSize;
                 }}
                 onEnd={response => {
-                    // if (index < lengthData - 1) {
-                    //     scrollToIndex(index + 1);
-                    // }
                 }}
                 showOnStart={false}
-                // onPressVideo={() => {
-                //     this.setState({ videoPaused: !this.state.paused });
-                // }}
                 disableTitle={false}
                 disableFullscreen={false}
                 disableTimer={false}
@@ -511,26 +451,9 @@ export class CourseDetailView extends BaseView {
                                 <Text>   {localizes('course.watched')} : {StringUtil.convertNumberHourToStringTime(current)} ({this.state.progressCourse ? this.state.progressCourse : 0}%)</Text>
                             </Text>
                             <View style={styles.viewRating}>
-                                {/* <AirbnbRating
-                                    count={5}
-                                    showRating={false}
-                                    isDisabled={true}
-                                    defaultRating={2.5}
-                                    size={10}
-                                /> */}
-                                {/* <Text style={commonStyles.textSmall}>(403)</Text> */}
                             </View>
                         </View>
                     </View>
-                    {/* <View
-                        style={styles.btnAction}>
-                        <Pressable
-                            onPress={() => { this.props.saveCourse({ courseId: this.id }) }}
-                            android_ripple={Constants.ANDROID_RIPPLE} style={styles.imgBtnAction}>
-                            <Image source={this.state.likeStatus ? ic_bookmark_yellow : ic_book_mark} />
-                        </Pressable>
-                        <Text style={commonStyles.textSmall}>Lưu khóa học</Text>
-                    </View> */}
                 </View>
             </View>
         )
@@ -612,15 +535,26 @@ export class CourseDetailView extends BaseView {
     }
 
     renderButtonBottom = () => {
+        let catId = this.dataCourse && this.dataCourse.categoryIds ? this.dataCourse.categoryIds[0] : null
+        let courseLike = this.dataCourse ? this.dataCourse.coursesLikeCategory : [];
         return (
             <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE }}>
-                <Pressable android_ripple={Constants.ANDROID_RIPPLE} style={styles.btnAction2}>
+                {/* <Pressable android_ripple={Constants.ANDROID_RIPPLE} style={styles.btnAction2}>
                     <Image source={ic_download_white} />
                     <Text style={commonStyles.text}>Take a learning check</Text>
-                </Pressable>
-                <Pressable android_ripple={Constants.ANDROID_RIPPLE} style={styles.btnAction2}>
-                    <Image source={ic_download_white} />
-                    <Text style={commonStyles.text}>View related paths and course</Text>
+                </Pressable> */}
+                <Pressable
+                    onPress={() => {
+                        if (catId != null) {
+                            this.props.navigation.push('CourseList', { categoryId: catId, categoryTitle: localizes('course.courseLikeCategory') })
+                        } else if (courseLike != null) {
+                            this.props.navigation.navigate('CourseLikeCategory', { dataCourses: courseLike })
+                        }
+                    }}
+                    android_ripple={Constants.ANDROID_RIPPLE}
+                    style={styles.btnAction2}>
+                    {/* <Image source={ic_download_white} /> */}
+                    <Text style={commonStyles.text}>{localizes('course.viewCourseLikeCategory')}</Text>
                 </Pressable>
             </View>
 
@@ -643,6 +577,58 @@ export class CourseDetailView extends BaseView {
                             <Text style={commonStyles.text}>{localizes('course.enroll').toUpperCase()}</Text> :
                             <Text style={commonStyles.text}>{localizes('course.buy')} {StringUtil.formatStringCashNoUnit(this.dataCourse.price)}</Text>
                         : null}
+                </Pressable>
+            </View>
+        )
+    }
+
+    renderLearnWhat = () => {
+        return (
+            <View style={styles.viewLearnWhat}>
+                <Text style={{ ...commonStyles.text }}>{localizes('course.whatStudy')}</Text>
+                <View style={styles.itemLearnWhatContainer}>
+                    {this.dataCourse && this.dataCourse.learnWhat ?
+                        this.dataCourse.learnWhat.map((item, index) => {
+                            return (
+                                <View key={index} style={styles.viewItemLearnWhat}>
+                                    <Pressable style={styles.itemLearnWhat}>
+                                        <Text numberOfLines={1} style={styles.nameArthur}>{item}</Text>
+                                    </Pressable>
+                                </View>
+                            )
+                        }) : null}
+                </View>
+            </View>
+        )
+    }
+
+    renderRequirement = () => {
+        return (
+            <View style={styles.viewRequirement}>
+                <Text style={{ ...commonStyles.text }}>{localizes('course.requirement')}</Text>
+                <View style={styles.itemLearnWhatContainer}>
+                    {this.dataCourse && this.dataCourse.requirement ?
+                        this.dataCourse.requirement.map((item, index) => {
+                            return (
+                                <View key={index} style={styles.viewItemLearnWhat}>
+                                    <Pressable style={styles.itemLearnWhat}>
+                                        <Text numberOfLines={1} style={styles.nameArthur}>{item}</Text>
+                                    </Pressable>
+                                </View>
+                            )
+                        }) : null}
+                </View>
+                {!this.state.permission && this.state.user && this.renderButtonRegister()}
+            </View>
+        )
+    }
+
+    renderCourseSimilar = () => {
+        return (
+            <View>
+                <Pressable>
+                    <Text style={{ ...commonStyles.text }}>{localizes('course.courseLikeCategory')}</Text>
+                    <Image />
                 </Pressable>
             </View>
         )

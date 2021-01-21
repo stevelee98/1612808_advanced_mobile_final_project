@@ -26,6 +26,20 @@
         "appVersion": "App version",
         "changePassSuccess" :"Change password success"
     },
+    "changePass": {
+        "title": "Change password",
+        "password": "Current password",
+        "newPassword": "New password",
+        "confirmPassword": "Retype new password",
+        "fillPassword": "Please input current password",
+        "fillNewPasswordLength": "Password must be more than 8 character long",
+        "fillNewPassword": "Please input new password",
+        "fillRePassword": "Please input confirm new password",
+        "passwordMissMatch": "Retype passwords do not match",
+        "success": "Change password success",
+        "error": "Current password incorrect",
+        "txtChange": "Change password"
+    },
     "forgotPassword": {
         "title": "Forget password",
         "guide": "Enter the email you signed up for, and we will send you a password reset email",
@@ -92,7 +106,7 @@
         "letStarted": "Let's get you started",
         "titleIntro": "Watch your courses save on the go!",
         "intro": "Give love to the courses so you can save your favorite courses",
-        "how": "How to save course",
+        "how": "How to save course ?",
         "gotoSearch": "FIND A COURSE TO STUDYING AND LOVE",
         "gotoLogin": "LOGIN OR REGISTER TO SAVE COURSE"
     },
@@ -126,7 +140,9 @@
         "question": "Questions",
         "note": "Note",
         "rating": "Ratings",
-        "exercise": "Exercises"
+        "exercise": "Exercises",
+        "courseLikeCategory" : "Similar courses",
+        "viewCourseLikeCategory" : "View related courses"
     },
     "otp": {},
     "dialog": {

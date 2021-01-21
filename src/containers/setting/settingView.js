@@ -38,25 +38,13 @@ export class SettingView extends BaseView {
             showingChangLanguageModal: false
         }
         this.list = [
-            // { title: 'Account' },
-            // { title: 'Subscription', subTitle: 'Free Pluralsight IQ (Limited Library) (Free)' }, 
-            // { title: 'Communication Preferences' },
-            // { title: 'Default caption language', subTitle: 'English' },
-            // { title: 'Require wi-fi for streaming', toggle: true },
-            // { title: 'Require wi-fi for downloading', toggle: true },
-            // { title: 'Show quiz at the end of video', toggle: true },
-            // { title: 'Download location', subTitle: 'Default location (7.63 GB free of 108.78 GB)' },
-            // { title: 'Recommended content push notifications', subTitle: 'Receive notification about recommended content', toggle: true },
-            // { title: 'Recommender to learn notifications', subTitle: 'Schedule the app to remind you to learn to skill up faster and conquer your goals', toggle: true },
-            // { title: 'Captions' },
             { title: localizes('setting.notification') },
-            { title: localizes('setting.changePass') },
+            { title: localizes('setting.changePass'), onPress: () => {this.props.navigation.navigate('ChangePass')}, forUser: true },
             { title: localizes('setting.language'), onPress: this.showModal },
             { title: localizes('setting.term') },
             { title: localizes('setting.privacy') },
             { title: localizes('setting.payment') },
             { title: localizes('setting.faq') },
-            // { title: 'Advance Options' },
 
         ]
     }
@@ -64,15 +52,6 @@ export class SettingView extends BaseView {
     componentDidMount = async () => {
         let user = await this.getProfile();
         const deviceLocale = I18n.locale
-        // if (deviceLocale == 'vi') {
-        //     this.setState({
-        //         itemSelected: 1
-        //     })
-        // } else if (deviceLocale == 'en') {
-        //     this.setState({
-        //         itemSelected: 2
-        //     })
-        // }
         this.list.push({ title: localizes('setting.appVersion'), subTitle: DeviceInfo.getVersion() })
         this.setState({
             user: user,
@@ -128,6 +107,7 @@ export class SettingView extends BaseView {
         return <ItemSetting
             key={index}
             item={item}
+            user={this.state.user}
             index={index}
             length={this.list.length}
         />
@@ -193,7 +173,10 @@ export class SettingView extends BaseView {
             onBackButtonPress={() => {
                 this.hideModal()
             }}
+            animationIn={'slideInUp'}
+            animationInTiming={400}
             backdropOpacity={0.7}
+            onBackdropPress={this.hideModal}
             deviceHeight={Constants.MAX_HEIGHT}
             statusBarTranslucent={true}
             useNativeDriver={Platform.OS === 'android'}
@@ -216,13 +199,13 @@ export class SettingView extends BaseView {
                     <Text style={[commonStyles.text, styles.textVi]}>{localizes("setting.vietnamese")}</Text>
                     <View style={{
                         borderWidth: 2.5,
-                        borderColor: this.state.selected == 1 ? Colors.COLOR_PRIMARY : Colors.COLOR_GREY_LIGHT,
+                        borderColor: this.state.itemSelected == 1 ? Colors.COLOR_PRIMARY : Colors.COLOR_GREY_LIGHT,
                         borderRadius: 100,
                         width: 18, height: 18,
                         justifyContent: 'center',
                         alignItems: 'center'
                     }}>
-                        {this.state.selected == 1 && <View style={{
+                        {this.state.itemSelected == 1 && <View style={{
                             width: 8, height: 8,
                             backgroundColor: Colors.COLOR_PRIMARY, borderRadius: 100
                         }} />}
@@ -239,13 +222,13 @@ export class SettingView extends BaseView {
                     <Text style={[commonStyles.text, styles.textVi]}>{localizes("setting.english")}</Text>
                     <View style={{
                         borderWidth: 2.5,
-                        borderColor: this.state.selected == 2 ? Colors.COLOR_PRIMARY : Colors.COLOR_GREY_LIGHT,
+                        borderColor: this.state.itemSelected == 2 ? Colors.COLOR_PRIMARY : Colors.COLOR_GREY_LIGHT,
                         borderRadius: 100,
                         width: 18, height: 18,
                         justifyContent: 'center',
                         alignItems: 'center'
                     }}>
-                        {this.state.selected == 2 && <View style={{
+                        {this.state.itemSelected == 2 && <View style={{
                             width: 8, height: 8,
                             backgroundColor: Colors.COLOR_PRIMARY, borderRadius: 100
                         }} />}

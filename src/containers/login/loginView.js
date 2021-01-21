@@ -220,7 +220,7 @@ class LoginView extends BaseView {
                         this.setState({ password: txt });
                     }}
                     onSubmitEditing={() => {
-                        Keyboard.dismiss();
+                        this.login()
                     }}
                     returnKeyType={'done'}
                     contentRight={this.state.hidePassword ? ic_eye_lock_grey : ic_eye_grey}

@@ -160,11 +160,35 @@ export default styles = {
         paddingHorizontal: Constants.PADDING_X_LARGE,
         paddingVertical: Constants.PADDING_LARGE - 2,
         borderRadius: Constants.CORNER_RADIUS,
-        backgroundColor:Colors.COLOR_BLUE,
+        backgroundColor: Colors.COLOR_BLUE,
         marginVertical: Constants.MARGIN_XX_LARGE,
         alignSelf: 'center',
     },
     progress: {
         margin: 2,
     },
+    itemLearnWhat: {
+        backgroundColor: Colors.COLOR_GREY_BLUE_LIGHT,
+        borderRadius: Constants.BORDER_RADIUS,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 2
+    },
+    viewItemLearnWhat: {
+        flexDirection: 'row', flexWrap: 'wrap',
+        marginRight: Constants.MARGIN_LARGE,
+        marginTop: Constants.MARGIN
+    },
+    viewRequirement: {
+        paddingHorizontal: Constants.PADDING_X_LARGE,
+        marginVertical: Constants.MARGIN_X_LARGE
+    },
+    viewLearnWhat: {
+        paddingHorizontal: Constants.PADDING_X_LARGE,
+        marginTop: Constants.MARGIN_LARGE
+    },
+    itemLearnWhatContainer: {
+        marginTop: Constants.MARGIN,
+        flexDirection: 'row', flexWrap: 'wrap'
+    }
 };

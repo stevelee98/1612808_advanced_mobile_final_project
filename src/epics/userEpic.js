@@ -175,7 +175,7 @@ export const changePasswordEpic = action$ =>
     action$.pipe(
         ofType(ActionEvent.CHANGE_PASSWORD),
         switchMap((action) =>
-            fetch(ServerPath.API_URL + 'user/login-google-mobile', {
+            fetch(ServerPath.API_URL + 'user/change-password', {
                 method: 'POST',
                 headers: ApiUtil.getHeader(),
                 body: JSON.stringify(action.payload)

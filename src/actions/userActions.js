@@ -66,7 +66,7 @@ export const editProfileSuccess = (data) => ({
 
 export const changePassword = (data) => ({
     type: ActionEvent.CHANGE_PASSWORD,
-    payload: { data }
+    payload: { ...data }
 })
 
 export const changePasswordSuccess = data => ({
