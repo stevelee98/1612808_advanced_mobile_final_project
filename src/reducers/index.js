@@ -13,6 +13,7 @@ import downloadReducer from './downloadReducer';
 import searchReducer from './searchReducer';
 import forgotPasswordReducer from './forgotPasswordReducer';
 import userReducer from './userReducer';
+import settingReducer from './settingReducer';
 
 export const initialState = {
     data: null,
@@ -35,5 +36,6 @@ export default combineReducers({
     download: downloadReducer,
     search: searchReducer,
     forgotPass: forgotPasswordReducer,
-    user: userReducer
+    user: userReducer,
+    setting: settingReducer
 });

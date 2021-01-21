@@ -27,6 +27,7 @@ import cat5 from 'images/cat5.jpg';
 import cat6 from 'images/cat6.jpg';
 import cat7 from 'images/cat7.jpg';
 import cat8 from 'images/cat8.jpg';
+import { localizes } from 'locales/i18n';
 
 export class CategoryList extends BaseView {
 
@@ -78,10 +79,10 @@ export class CategoryList extends BaseView {
                     style={styles.itemCategory}
                 >
                     <Pressable
-                        onPress={() => { this.props.navigation.navigate('CourseList', { categoryId: Constants.NEW_RELEASE, categoryTitle: 'New release' }) }}
+                        onPress={() => { this.props.navigation.navigate('CourseList', { categoryId: Constants.NEW_RELEASE, categoryTitle: localizes("newRelease_v2") }) }}
                         android_ripple={Constants.ANDROID_RIPPLE}
                         style={styles.btnCat}>
-                        <Text numberOfLines={2} style={styles.txtCat}>NEW{'\n'}RELEASES</Text>
+                        <Text numberOfLines={2} style={styles.txtCat}>{localizes("newRelease")}</Text>
                     </Pressable>
                 </ImageBackground>
                 <ImageBackground
@@ -93,7 +94,7 @@ export class CategoryList extends BaseView {
                         onPress={() => { this.props.navigation.navigate('RecommendList') }}
                         android_ripple={Constants.ANDROID_RIPPLE}
                         style={styles.btnCat}>
-                        <Text numberOfLines={2} style={styles.txtCat}>RECOMMEND{'\n'}FOR YOU</Text>
+                        <Text numberOfLines={2} style={styles.txtCat}>{localizes("recommend")}</Text>
                     </Pressable>
                 </ImageBackground>
                 <FlatListCustom

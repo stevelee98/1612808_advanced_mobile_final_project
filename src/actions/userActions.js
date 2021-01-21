@@ -63,3 +63,13 @@ export const editProfileSuccess = (data) => ({
     type: getActionSuccess(ActionEvent.EDIT_PROFILE),
     payload: data
 })
+
+export const changePassword = (data) => ({
+    type: ActionEvent.CHANGE_PASSWORD,
+    payload: { data }
+})
+
+export const changePasswordSuccess = data => ({
+    type: getActionSuccess(ActionEvent.CHANGE_PASSWORD),
+    payload: { data }
+})

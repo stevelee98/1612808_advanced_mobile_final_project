@@ -20,6 +20,7 @@ import BaseView from 'containers/base/baseView';
 import * as userActions from 'actions/userActions'
 import * as courseActions from 'actions/courseActions'
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
+import { localizes } from 'locales/i18n';
 
 
 class RecommendListView extends BaseView {
@@ -66,7 +67,6 @@ class RecommendListView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_RECOMMEND)) {
-                    console.log("GET_COURSE_RECOMMEND data", data)
                     if (data.data && data.data.payload) {
                         let payload = data.data.payload
                         if (payload.length > 0) {
@@ -134,11 +134,11 @@ class RecommendListView extends BaseView {
     renderNotLogin = () => {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: -100 }}>
-                <Text style={commonStyles.text}>Please sign in to view your recommend courses</Text>
+                <Text style={commonStyles.text}>{localizes('course.errorViewRecommend')}</Text>
                 <Pressable style={styles.buttonSignIn} onPress={() => {
                     this.props.navigation.navigate("Login")
                 }}>
-                    <Text style={[commonStyles.text]}>SIGN IN</Text>
+                    <Text style={[commonStyles.text]}>{localizes("course.gotoSignIn")}</Text>
                 </Pressable>
             </View>
         )
@@ -151,7 +151,7 @@ class RecommendListView extends BaseView {
                     title={""}
                     onBack={this.onBack}
                 />
-                <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, paddingVertical: Constants.MARGIN_XX_LARGE }}><Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_X_LARGE }]}>RECOMMEND FOR YOU</Text></View>
+                <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, paddingVertical: Constants.MARGIN_XX_LARGE }}><Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_X_LARGE }]}>{localizes('course.titleRecommend')}</Text></View>
                 {!this.state.user ? this.renderNotLogin():
                     <FlatListCustom
                         onRef={(ref) => { this.flatListRef = ref }}

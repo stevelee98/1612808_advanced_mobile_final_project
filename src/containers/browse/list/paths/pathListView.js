@@ -19,6 +19,7 @@ import StorageUtil from "utils/storageUtil";
 import FlatListCustom from "components/flatListCustom";
 import ItemPath from './itemPath';
 import styles from "./styles";
+import { localizes } from 'locales/i18n';
 
 export class PathListView extends BaseView {
 
@@ -66,8 +67,8 @@ export class PathListView extends BaseView {
         return (
             <View>
                 <View style={styles.viewTitle}>
-                    <Text style={styles.titleList}>Paths</Text>
-                    <Text style={[commonStyles.textSmall, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>see all {'>'}</Text>
+                    <Text style={styles.titleList}>{localizes('browse.path')}</Text>
+                    <Text style={[commonStyles.textSmall, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>{localizes('more')}</Text>
                 </View>
                 <FlatListCustom
                     onRef={(ref) => { this.flatListRef = ref }}

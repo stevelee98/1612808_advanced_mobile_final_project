@@ -18,10 +18,11 @@ import { ErrorCode } from 'config/errorCode';
 import * as userActions from 'actions/userActions'
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import StringUtil from 'utils/stringUtil';
+import { localizes } from 'locales/i18n';
 
 class RegisterView extends BaseView {
 
-    constructor(props) {
+    constructor(props) { 
         super(props);
         this.state = {
             hidePassword: true,
@@ -76,14 +77,13 @@ class RegisterView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.REGISTER)) {
-                    console.log("Register data", data)
                     if (data != null) {
-                        this.showMessage("Đăng ký thành công. Vui lòng kích hoạt tài khoản để đăng nhập qua email đã đăng ký")
+                        this.showMessage(localizes('register.success'))
                         setTimeout(() => { this.onBack() })
                     }
                 }
             } else if (this.props.errorCode == ErrorCode.ERROR_400) {
-                this.showMessage("Email hoặc số điện thoại đã được sử dụng")
+                this.showMessage(localizes('register.error'))
             } else {
                 this.handleError(this.props.errorCode, this.props.error);
             }
@@ -95,8 +95,8 @@ class RegisterView extends BaseView {
             <Container style={styles.container}>
                 <Root>
                     <Header
-                        title={"SIGN UP"}
-                        onBack={() => { }}
+                        title={localizes('register.title').toUpperCase()}
+                        onBack={() => { this.onBack()}}
                     />
                     <Content style={{ flex: 1, backgroundColor: Colors.COLOR_BACKGROUND, paddingHorizontal: Constants.PADDING_LARGE }}>
                         {this.renderForm()}
@@ -110,46 +110,46 @@ class RegisterView extends BaseView {
     validate = () => {
         const { userName, password, phone, email, rePassword } = this.state;
         if (Utils.isNull(userName)) {
-            this.showMessage("Please fill your name");
+            this.showMessage(localizes('register.fillName'));
             this.userName.focus();
         } else if (userName.trim() == "" || userName.trim() == null) {
-            this.showMessage("Please fill your name");
+            this.showMessage(localizes('register.fillName'));
             this.userName.focus();
         } else if (StringUtil.validSpecialCharacter(userName)) {
-            this.showMessage('User name must not contain special character');
+            this.showMessage(localizes('register.errorNameSpecial'));
             this.userName.focus();
         } else if (userName.length > 60) {
-            this.showMessage('User name must have less than 60 character');
+            this.showMessage(localizes('register.errorNameLength'));
             this.userName.focus();
         } else if (email == null) {
-            this.showMessage('Please fill your email');
+            this.showMessage(localizes('register.fillEmail'));
             this.email.focus()
         } else if (email.trim() == '') {
-            this.showMessage('Please fill your email');
+            this.showMessage(localizes('register.fillEmail'));
             this.email.focus()
         } else if (!Utils.validateEmail(email.trim())) {
-            this.showMessage('Email not have right format');
+            this.showMessage(localizes('register.fillEmailRightFormat'));
             this.email.focus()
         } else if (Utils.isNull(phone)) {
-            this.showMessage('Please fill your phone');
+            this.showMessage(localizes('register.fillPhone'));
             this.phone.focus();
         } else if (phone.length != 10 || phone.charAt(0) != "0") {
-            this.showMessage('Phone not have right format');
+            this.showMessage(localizes('register.fillPhoneRightFormat'));
             this.phone.focus();
         } else if (!Utils.validatePhone(phone)) {
-            this.showMessage('Phone not have right format');
+            this.showMessage(localizes('register.fillPhoneRightFormat'));
             this.phone.focus();
         } else if (Utils.isNull(password)) {
-            this.showMessage('Please fill your password');
+            this.showMessage(localizes('register.fillPassword'));
             this.password.focus();
         } else if (password.length < 8) {
-            this.showMessage('Password must have at least 8 character');
+            this.showMessage(localizes('register.fillPasswordLength'));
             this.password.focus();
         } else if (Utils.isNull(rePassword)) {
-            this.showMessage('Please re-type password');
+            this.showMessage(localizes('register.fillRePassword'));
             this.rePassword.focus();
         } else if (password != rePassword) {
-            this.showMessage('Password and re-password miss match');
+            this.showMessage(localizes('register.passwordMissMatch'));
             this.rePassword.focus();
         } else {
             let data = {
@@ -169,8 +169,8 @@ class RegisterView extends BaseView {
                 <TextInputCustom
                     onRef={(r) => (this.userName = r)}
                     oneLine={true}
-                    label={'User name *'}
-                    placeholder={'Please input user name'}
+                    label={localizes('register.userName')}
+                    placeholder={localizes('register.userName')}
                     value={userName}
                     onChangeText={(userName) => {
                         this.setState({ userName });
@@ -184,8 +184,8 @@ class RegisterView extends BaseView {
                 <TextInputCustom
                     onRef={(r) => (this.email = r)}
                     oneLine={true}
-                    label={'Email *'}
-                    placeholder={'Please input email'}
+                    label={localizes('register.email')}
+                    placeholder={localizes('register.email')}
                     value={email}
                     onChangeText={(email) => {
                         this.setState({ email });
@@ -198,8 +198,8 @@ class RegisterView extends BaseView {
                 <TextInputCustom
                     onRef={(ref) => (this.phone = ref)}
                     oneLine={true}
-                    label={'Phone *'}
-                    placeholder={'Please input your phone'}
+                    label={localizes('register.phone')}
+                    placeholder={localizes('register.phone')}
                     value={phone}
                     onChangeText={(phone) => {
                         this.setState({ phone });
@@ -213,8 +213,8 @@ class RegisterView extends BaseView {
                 <TextInputCustom
                     onRef={(ref) => (this.password = ref)}
                     oneLine={true}
-                    label={'Password *'}
-                    placeholder={'Please fill your password'}
+                    label={localizes('register.password')}
+                    placeholder={localizes('register.password')}
                     value={password}
                     secureTextEntry={this.state.hidePassword}
                     onChangeText={(password) => {
@@ -230,8 +230,8 @@ class RegisterView extends BaseView {
                 <TextInputCustom
                     onRef={(ref) => (this.rePassword = ref)}
                     oneLine={true}
-                    label={'Retype Password *'}
-                    placeholder={'Please retype password'}
+                    label={localizes('register.confirmPassword')}
+                    placeholder={localizes('register.confirmPassword')}
                     value={rePassword}
                     secureTextEntry={this.state.hidePassword}
                     onChangeText={(rePassword) => {
@@ -252,7 +252,7 @@ class RegisterView extends BaseView {
         return (
             <View style={{ marginTop: Constants.MARGIN }}>
                 <Button
-                    title={"SIGN UP"}
+                    title={localizes('register.title').toUpperCase()}
                     titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }}
                     backgroundColor={Colors.COLOR_DRK_GREY}
                     onPress={this.validate} />

@@ -22,6 +22,7 @@ import { async } from "rxjs/internal/scheduler/async";
 import { Fonts } from "values/fonts";
 import NetInfo from "@react-native-community/netinfo";
 import { CommonActions } from '@react-navigation/native';
+import { localizes } from "locales/i18n";
 
 
 const resetAction = CommonActions.reset({
@@ -190,16 +191,16 @@ class BaseView extends Component {
     handleError(errorCode, error) {
         switch (errorCode) {
             case ErrorCode.ERROR_COMMON:
-                this.showMessage('Có lỗi xảy ra, vui lòng thử lại')
+                this.showMessage(localizes('error_in_process'))
                 break
             case ErrorCode.NO_CONNECTION:
                 NetInfo.fetch().then(state => {
                     console.log("Connection type", state.type);
                     console.log("Is connected?", state.isConnected);
                     if (state.isConnected) {
-                        this.showMessage('Không kết nối được máy chủ, vui lòng kiểm tra lại')
+                        this.showMessage(localizes('error_connect_to_server'))
                     } else {
-                        this.showMessage('Không kết nối được mạng, vui lòng kiểm tra lại')
+                        this.showMessage(localizes('error_network'))
                     }
                 });
                 break

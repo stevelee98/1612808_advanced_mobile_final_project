@@ -23,10 +23,10 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DialogCustom from 'components/dialogCustom';
 import ic_image from 'images/ic_image.png';
 import { ErrorCode } from 'config/errorCode';
+import i18n, { localizes } from "locales/i18n";
 
 const CANCEL_INDEX = 2;
-const FILE_SELECTOR = ['Camera', 'Thư viện', 'Hủy'];
-const optionsCamera = {
+const optionsCamera = { 
     title: "Select avatar",
     storageOptions: {
         skipBackup: true,
@@ -71,15 +71,13 @@ class UserProfileView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.EDIT_PROFILE)) {
-                    console.log("EDIT_PROFILE data", data)
                     if (data != null && data.payload != null) {
-                        this.showMessage("Chỉnh sửa thông tin thành công")
+                        this.showMessage(localizes("userProfile.success"))
                         this.state.isEdit = false
                         this.props.getProfile(this.state.user.id)
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_PROFILE)) {
                     if (data != null && data.payload != null) {
-                        console.log("GET_PROFILE data", data.payload)
                         this.state.user = data.payload
                         this.handleProfile(data.payload)
                         StorageUtil.storeItem(StorageUtil.USER_PROFILE, data.payload)
@@ -96,31 +94,28 @@ class UserProfileView extends BaseView {
     validateData() {
         const { name, phone } = this.state;
         if (name == null) {
-            this.showMessage("Please fill your name");
+            this.showMessage(localizes('userProfile.fillName'));
             this.name.focus()
             return false;
         } else if (name.trim() == '') {
-            this.showMessage("Please fill your name");
+            this.showMessage(localizes('userProfile.fillName'));
             this.name.focus()
             return false;
         } else if (phone == null) {
-            this.showMessage("Please fill your phone");
+            this.showMessage(localizes('userProfile.fillPhone'));
             this.phone.focus()
             return false;
         } else if (!Utils.validatePhone(phone.trim())) {
-            this.showMessage("Số điện thoại không đúng định dạng");
-            this.phone.focus();
-        } else if (phone.trim().includes(" ") && phone.trim() == '') {
-            this.showMessage("Vui lòng nhập số điện thoại");
+            this.showMessage(localizes('userProfile.fillPhoneRightFormat'));
             this.phone.focus();
             return false;
         } else if (Utils.validatePhoneContainSpecialCharacter(phone.trim()) ||
             Utils.validatePhoneContainWord(phone.trim())) {
-            this.showMessage("Số điện thoại không đúng định dạng");
+            this.showMessage(localizes('userProfile.fillPhoneRightFormat'));
             this.phone.focus();
             return false;
         } else if (phone.trim().length != 10 || phone.charAt(0) != '0') {
-            this.showMessage("Số điện thoại không đúng định dạng");
+            this.showMessage(localizes('userProfile.fillPhoneRightFormat'));
             this.phone.focus();
             return false;
         }
@@ -151,7 +146,6 @@ class UserProfileView extends BaseView {
         fr.putFile(uri, { contentType: 'image/jpeg' }).on(
             storage.TaskEvent.STATE_CHANGED,
             snapshot => {
-                console.log("snapshot uploaded image to firebase", snapshot);
                 if (snapshot.state == "success") {
                     fr.getDownloadURL().then((url) => {
                         this.setState({
@@ -213,7 +207,6 @@ class UserProfileView extends BaseView {
       */
     showDocumentPicker = async fileType => {
         const hasCameraPermission = await this.hasPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-        console.log("hasCameraPermission", hasCameraPermission)
         if (!hasCameraPermission) {
             this.hideDialog();
             return;
@@ -261,7 +254,7 @@ class UserProfileView extends BaseView {
         return (
             <View style={{ flex: 1 }}>
                 <Header
-                    title={"Profile"}
+                    title={localizes('userProfile.title').toUpperCase()}
                     onBack={this.onBack}
                 />
                 <ScrollView
@@ -282,7 +275,7 @@ class UserProfileView extends BaseView {
                 visible={this.state.visibleDialog}
                 isVisibleTitle={true}
                 isVisibleContentForChooseImg={true}
-                contentTitle={'Chọn hình ảnh'}
+                contentTitle={localizes("dialog.title")}
                 onTouchOutside={() => {
                     this.setState({ visibleDialog: false });
                 }}
@@ -302,11 +295,11 @@ class UserProfileView extends BaseView {
     renderNotLogin = () => {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={commonStyles.text}>Please sign in to view your profile</Text>
+                <Text style={commonStyles.text}>{localizes('userProfile.gotoSignIn')}</Text>
                 <Pressable style={styles.buttonSignIn} onPress={() => {
                     this.props.navigation.navigate("Login")
                 }}>
-                    <Text style={[commonStyles.text]}>SIGN IN</Text>
+                    <Text style={[commonStyles.text]}>{localizes('userProfile.signIn').toUpperCase()}</Text>
                 </Pressable>
             </View>
         )
@@ -330,14 +323,13 @@ class UserProfileView extends BaseView {
                         }}>
                         <Image source={ic_image} />
                     </Pressable>}
-                    {/* <Text style={[commonStyles.textBold, { fontSize: Fonts.FONT_SIZE_X_LARGE, flex: 1, marginVertical: Constants.MARGIN_X_LARGE }]}>{name} âlal</Text> */}
                 </View>
                 <TextInputCustom
                     editable={this.state.isEdit}
                     onRef={(r) => (this.name = r)}
                     oneLine={true}
-                    label={'Name'}
-                    placeholder={'Name'}
+                    label={localizes('userProfile.userName')}
+                    placeholder={localizes('userProfile.userName')}
                     value={name}
                     onChangeText={(txt) => {
                         this.setState({ name: txt });
@@ -350,11 +342,11 @@ class UserProfileView extends BaseView {
                     editable={this.state.isEdit}
                     onRef={(r) => (this.phone = r)}
                     oneLine={true}
-                    label={'Phone'}
-                    placeholder={'Phone'}
+                    label={localizes('userProfile.phone')}
+                    placeholder={localizes('userProfile.phone')}
                     value={phone}
                     onChangeText={(txt) => {
-                        this.setState({ Phone: txt });
+                        this.setState({ phone: txt });
                     }}
                     onSubmitEditing={() => {
                     }}
@@ -365,8 +357,8 @@ class UserProfileView extends BaseView {
                     editable={false}
                     onRef={(r) => (this.email = r)}
                     oneLine={true}
-                    label={'Email'}
-                    placeholder={'Email'}
+                    label={localizes('userProfile.email')}
+                    placeholder={localizes('userProfile.email')}
                     value={email}
                     onChangeText={(txt) => {
                         this.setState({ email: txt });
@@ -380,29 +372,16 @@ class UserProfileView extends BaseView {
                     {this.state.isEdit ?
                         <Button
                             onPress={() => { this.onEditData() }}
-                            title={"SAVE"}
+                            title={localizes('userProfile.save').toUpperCase()}
                             border={{ borderWidth: 1, borderColor: Colors.COLOR_BLUE }}
                             titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />
                         : <Button
                             onPress={() => { this.setState({ isEdit: true }, () => { this.name.focus() }) }}
-                            title={"CHỈNH SỬA"}
+                            title={localizes('userProfile.edit').toUpperCase()}
                             titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }}
                             backgroundColor={Colors.COLOR_DRK_GREY} />}
                 </View>
                 {this.renderFileSelectionDialog()}
-                {/* <Text style={[commonStyles.textBold, { fontSize: Fonts.FONT_SIZE_XX_MEDIUM, marginVertical: Constants.MARGIN_XX_LARGE }]}>Activity insights (last 30 days)</Text>
-                <View>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_MEDIUM }]}>TOTAL ACTIVE DAYS</Text>
-                    <Text style={[commonStyles.textBold, { fontSize: Fonts.FONT_SIZE_XX_MEDIUM }]}>0          <Text style={[commonStyles.textSmall, { fontWeight: 'normal' }]}>0 day streak</Text></Text>
-                </View>
-                <View style={{ marginTop: Constants.MARGIN_X_LARGE }}>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_MEDIUM }]}>MOST ACTIVE TIME OF DAY</Text>
-                    <Text style={[commonStyles.textBold, { fontSize: Fonts.FONT_SIZE_XX_MEDIUM }]}>7:00 AM</Text>
-                </View>
-                <View style={{ marginTop: Constants.MARGIN_X_LARGE }}>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_MEDIUM }]}>MOST VIEWED SUBJECT</Text>
-                    <Text style={[commonStyles.textBold, { fontSize: Fonts.FONT_SIZE_XX_MEDIUM }]}>N/A</Text>
-                </View> */}
                 {this.showLoadingBar(this.props.isLoading || this.state.isLoading)}
             </View>
         );

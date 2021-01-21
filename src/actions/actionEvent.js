@@ -31,7 +31,8 @@ export const ActionEvent = {
     GET_SEARCH_HISTORY: 'getSearchHistory',
     GET_LESSON_VIDEO: 'getLessonVideo',
     GET_COURSE_PROCESS: 'getCourseProcess' ,
-    EDIT_PROFILE: 'editProfile'
+    EDIT_PROFILE: 'editProfile',
+    CHANGE_PASSWORD: 'changePassword'
 };
 
 export function getActionSuccess(action) {

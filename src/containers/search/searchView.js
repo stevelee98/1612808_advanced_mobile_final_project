@@ -21,6 +21,7 @@ import * as userActions from 'actions/userActions'
 import * as courseActions from 'actions/courseActions'
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import ItemCourseSearch from './itemCourseSearch';
+import { localizes } from 'locales/i18n';
 
 export class SearchView extends BaseView {
 
@@ -80,7 +81,6 @@ export class SearchView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.SEARCH)) {
-                    console.log("SEARCH DATA ", data)
                     if (data.data && data.data.payload.rows) {
                         let payload = data.data.payload.rows
                         if (payload.length > 0) {
@@ -154,9 +154,8 @@ export class SearchView extends BaseView {
     }
 
     render() {
-        console.log("this.state.stringSearch", this.state.showSearchList);
         return (
-            <View style={{ flexGrow: 1 }}>
+            <View style={{ flex: 1 }}>
                 <Header style={{ ...commonStyles.header }}>
                     <View style={{
                         flex: 1,
@@ -167,7 +166,7 @@ export class SearchView extends BaseView {
                         <TextInput
                             autoFocus
                             style={styles.inputSearch}
-                            placeholder={"Search..."}
+                            placeholder={`${localizes('search')} ...`}
                             placeholderTextColor={Colors.COLOR_TEXT_HOLDER}
                             ref={r => (this.search = r)}
                             value={this.state.stringSearch}

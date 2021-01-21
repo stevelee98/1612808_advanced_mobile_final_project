@@ -26,15 +26,16 @@ import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import BaseView from 'containers/base/baseView';
 import ItemCourseSave from './itemCourseSave'
 import StorageUtil from 'utils/storageUtil';
+import i18n, { localizes } from "locales/i18n";
 
 const LIST_MENU = [
     {
-        name: 'Profile',
+        name: localizes('userProfile.title'),
         screen: 'UserProfile',
         value: 1
     },
     {
-        name: 'Setting',
+        name: localizes('setting.title'),
         screen: 'Setting',
         value: 2
     }
@@ -75,7 +76,6 @@ export class DownloadView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_SAVE)) {
-                    console.log("GET_COURSE_SAVE data", data)
                     if (data.data && data.data.payload) {
                         let payload = data.data.payload
                         if (payload.length > 0) {
@@ -121,37 +121,6 @@ export class DownloadView extends BaseView {
         )
     }
 
-
-    renderNotLogin = () => {
-        return (
-            <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>Let's get you started</Text>
-                <View style={{ marginTop: Constants.MARGIN_XX_LARGE * 2, alignItems: 'center' }}>
-                    <Image source={ic_grid_white} />
-                    <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>Browser new and popular course</Text>
-                </View>
-                <View style={{ marginTop: Constants.MARGIN_X_LARGE * 3, alignItems: 'center' }}>
-                    <Image source={ic_search_white} />
-                    <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>Search the library</Text>
-                </View>
-            </View>
-        )
-    }
-
-    renderListCourses = () => {
-        return (
-            <View>
-                <View style={{ marginBottom: Constants.MARGIN_X_LARGE }}>
-                    <Image source={img_iron_man} style={{ width: 120, height: 150, alignSelf: 'flex-end' }} resizeMode={'contain'} />
-                    <View style={{ position: 'absolute', bottom: 20, left: 16 }}>
-                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM }}>Welcome to Pluralsight !</Text>
-                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM, marginTop: 20, width: Constants.MAX_WIDTH * 0.8 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Text>
-                    </View>
-                </View>
-            </View>
-        )
-    }
-
     renderList = () => {
         return (
             <FlatListCustom
@@ -188,17 +157,17 @@ export class DownloadView extends BaseView {
             <View>
                 <View style={styles.viewHeaderDownload}>
                     <Image source={img_download} style={styles.imgDownload} />
-                    <Text style={styles.titleDownload}>Watch your courses save on the go!</Text>
-                    <Text style={styles.txtContentDownload}>Save courses so you can continue to skill up-even when you're offline</Text>
+                    <Text style={styles.titleDownload}>{localizes('favorite.titleIntro')}</Text>
+                    <Text style={styles.txtContentDownload}>{localizes('favorite.intro')}</Text>
                 </View>
                 {this.state.user ? <Button
                     onPress={() => { this.props.navigation.navigate("Search") }}
-                    title={"FIND A COURSE TO DOWNLOAD"}
+                    title={localizes('favorite.gotoSearch')}
                     titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_WHITE }}
                     backgroundColor={Colors.COLOR_PRIMARY} /> :
                     <Button
                         onPress={() => { this.props.navigation.navigate("Login") }}
-                        title={"LOGIN OR REGISTER TO SAVE COURSE"}
+                        title={localizes('favorite.gotoLogin')}
                         titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_WHITE }}
                         backgroundColor={Colors.COLOR_PRIMARY}
                     />}
@@ -209,7 +178,7 @@ export class DownloadView extends BaseView {
     renderDownloadGuide = () => {
         return (
             <View style={styles.viewHowTo}>
-                <Text style={styles.txtHowTo}>How to save course</Text>
+                <Text style={styles.txtHowTo}>{localizes('favorite.how')}</Text>
                 <View style={styles.viewDownloadGuide}>
                     <Image source={img_download_guide_1} style={styles.imgDownloadGuide} />
                     <Image source={img_download_guide_2} style={styles.imgDownloadGuide} />
@@ -222,10 +191,10 @@ export class DownloadView extends BaseView {
         return (
             <View style={{ flex: 1 }}>
                 <Header
-                    title={"Downloads"}
+                    title={localizes('favorite.title')}
                     visibleBack={false}
                     visibleAccount={true}
-                    user={{ name: 'abc', avatar: null }}
+                    user={this.state.user}
                     onBack={() => { }}
                     visibleMenu={true}
                     menus={LIST_MENU}

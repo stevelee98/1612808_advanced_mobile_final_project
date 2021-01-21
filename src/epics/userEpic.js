@@ -170,3 +170,28 @@ export const editProfileEpic = action$ =>
                 })
         )
     );
+
+export const changePasswordEpic = action$ =>
+    action$.pipe(
+        ofType(ActionEvent.CHANGE_PASSWORD),
+        switchMap((action) =>
+            fetch(ServerPath.API_URL + 'user/login-google-mobile', {
+                method: 'POST',
+                headers: ApiUtil.getHeader(),
+                body: JSON.stringify(action.payload)
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 400) {
+                    return { status: response.status };
+                }
+                return handleErrors(response)
+            }).then((responseJson) => {
+                return userActions.changePasswordSuccess(responseJson);
+            })
+                .catch((error) => {
+                    consoleLogEpic("CHANGE_PASSWORD USER_EPIC:", ActionEvent.CHANGE_PASSWORD, error)
+                    return handleConnectErrors(error)
+                })
+        )
+    );

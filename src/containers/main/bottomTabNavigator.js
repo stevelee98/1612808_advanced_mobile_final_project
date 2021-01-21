@@ -25,6 +25,7 @@ import ic_grid_blue from 'images/ic_grid_blue.png';
 import ic_download_blue from 'images/ic_download_blue.png';
 import ic_download_white from 'images/ic_download_white.png';
 import { Colors } from 'values/colors';
+import i18n, { localizes } from "locales/i18n";
 
 const BottomTabNavigator = () => {
 	return (
@@ -38,7 +39,7 @@ const BottomTabNavigator = () => {
 				name="TabHome"
 				component={HomeView}
 				options={{
-					title: "Home",
+					title: localizes('bottomTab.home'),
 					tabBarIcon: ({ focused, color, size }) => (
 						<Image source={focused ? ic_home_blue : ic_home_white} />
 					),
@@ -49,7 +50,7 @@ const BottomTabNavigator = () => {
 				name="Downloads"
 				component={DownloadView}
 				options={{
-					title: "Downloads",
+					title: localizes('bottomTab.favorite'),
 					tabBarIcon: ({ focused, color, size }) => (
 						<Image source={focused ? ic_download_blue : ic_download_white} />
 					),
@@ -60,7 +61,7 @@ const BottomTabNavigator = () => {
 				name="Browser"
 				component={BrowseView}
 				options={{
-					title: "Browser",
+					title: localizes('bottomTab.browser'),
 					tabBarIcon: ({ focused, color, size }) => (
 						<Image source={focused ? ic_grid_blue : ic_grid_white} />
 					),
@@ -71,7 +72,7 @@ const BottomTabNavigator = () => {
 				name="Search"
 				component={SearchView}
 				options={{
-					title: "Search",
+					title: localizes('bottomTab.search'),
 					tabBarIcon: ({ focused, color, size }) => (
 						<Image source={focused ? ic_search_blue : ic_search_white} />
 					),

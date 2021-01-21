@@ -35,15 +35,16 @@ import * as courseActions from 'actions/courseActions'
 import * as categoryActions from 'actions/categoryActions'
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import StorageUtil from 'utils/storageUtil';
+import i18n, { localizes } from "locales/i18n";
 
 const LIST_MENU = [
     {
-        name: 'Profile',
+        name: localizes('userProfile.title'),
         screen: 'UserProfile',
         value: 1
     },
     {
-        name: 'Setting',
+        name: localizes('setting.title'),
         screen: 'Setting',
         value: 2
     }
@@ -155,15 +156,6 @@ export class BrowseView extends BaseView {
                 ]
             }
         ];
-
-        // this.dataCat = [
-        //     { title: "CONFERENCES", source: cat3 },
-        //     { title: "CERTIFICATIONS", source: cat4 },
-        //     { title: `<Software>${'\n'}Development`, source: cat5 },
-        //     { title: `IT${'\n'}OPS`, source: cat6 },
-        //     { title: `Information${'\n'}AND${'\n'}CYBER SECURITY`, source: cat7 },
-        //     { title: `DATA${'\n'}PROFESSIONAL`, source: cat8 },
-        // ]
         this.dataCat = []
         this.dataPopularSkill = [
             { title: "Angular" },
@@ -208,13 +200,11 @@ export class BrowseView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.GET_CATEGORIES)) {
-                    console.log("GET_CATEGORIES data", data)
                     if (data.data && data.data.payload) {
                         this.state.dataCat = []
                         this.state.dataCat = data.data.payload;
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_LECTURES)) {
-                    console.log("GET_LECTURES data", data)
                     if (data.data && data.data.payload) {
                         this.topAuthor = []
                         this    .topAuthor = data.data.payload;
@@ -229,12 +219,12 @@ export class BrowseView extends BaseView {
     renderNotLogin = () => {
         return (
             <View style={{ flexGrow: 1, marginBottom: Constants.MARGIN_X_LARGE }}>
-                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE - 2, marginHorizontal: Constants.MARGIN_X_LARGE + 8 }]}>Sign in to skill up today</Text>
-                <Text style={[commonStyles.text, { marginHorizontal: Constants.MARGIN_X_LARGE + 8, opacity: 0.7 }]}>Keep your skills uo-to-date with access to thousands of courses by industry experts</Text>
+                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE - 2, marginHorizontal: Constants.MARGIN_X_LARGE + 8 }]}>{localizes('browse.gotoLogin')}</Text>
+                <Text style={[commonStyles.text, { marginHorizontal: Constants.MARGIN_X_LARGE + 8, opacity: 0.7 }]}>{localizes('browse.intro')}</Text>
                 <Button
                     onPress={() => { this.props.navigation.navigate("Login") }}
                     style={{ marginHorizontal: Constants.MARGIN_X_LARGE }}
-                    title={"SIGN IN TO START WATCHING"}
+                    title={localizes('browse.signIn')}
                     titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_WHITE }}
                     backgroundColor={Colors.COLOR_PRIMARY} />
             </View>
@@ -253,7 +243,7 @@ export class BrowseView extends BaseView {
     renderPopularSkill = () => {
         return (
             <View>
-                <Text style={styles.txtPopularSkill}>Popular Skills</Text>
+                <Text style={styles.txtPopularSkill}>{localizes("browse.popularSkill")}</Text>
                 <FlatListCustom
                     onRef={(ref) => { this.flatListRef = ref }}
                     contentContainerStyle={{
@@ -293,7 +283,7 @@ export class BrowseView extends BaseView {
     renderTopAuthors = () => {
         return (
             <View>
-                <Text style={styles.txtTopAuthor}>Top Authors</Text>
+                <Text style={styles.txtTopAuthor}>{localizes('browse.topAuthor')}</Text>
                 <FlatListCustom
                     onRef={(ref) => { this.flatListRef = ref }}
                     contentContainerStyle={{
@@ -332,10 +322,10 @@ export class BrowseView extends BaseView {
         return (
             <View style={{ flex: 1 }}>
                 <Header
-                    title={"Browse"}
+                    title={localizes('bottomTab.browser')}
                     visibleBack={false}
                     visibleAccount={true}
-                    user={{ name: 'abc', avatar: null }}
+                    user={this.state.user}
                     onBack={() => { }}
                     visibleMenu={true}
                     menus={LIST_MENU}

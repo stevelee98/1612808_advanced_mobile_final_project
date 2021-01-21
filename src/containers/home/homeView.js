@@ -25,16 +25,17 @@ import StorageUtil from 'utils/storageUtil';
 import crashlytics from '@react-native-firebase/crashlytics';
 import ItemCourseWatching from 'containers/courses/list/watching/itemCourseWatching';
 import categoryId from 'enum/categoryId';
+import i18n, { localizes } from "locales/i18n";
 
 console.disableYellowBox = true;
 const LIST_MENU = [
     {
-        name: 'Profile',
+        name: localizes('userProfile.title'),
         screen: 'UserProfile',
         value: 1
     },
     {
-        name: 'Setting',
+        name: localizes('setting.title'),
         screen: 'Setting',
         value: 2
     }
@@ -224,26 +225,22 @@ export class HomeView extends BaseView {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.GET_PROFILE)) {
                     if (data != null && data.payload != null) {
-                        console.log("GET_PROFILE data", data.payload)
                         this.state.user = data.payload
                     } else {
                         this.logout()
                     }
                 }
                 if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_TOP_RATE)) {
-                    console.log("GET_COURSE_TOP_RATE data home", data)
                     if (data.data && data.data.payload) {
                         this.courseTopRate = data.data.payload
                     }
                 }
                 if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_TOP_SELL)) {
-                    console.log("GET_COURSE_TOP_SELL data home", data)
                     if (data.data && data.data.payload) {
                         this.courseTopSell = data.data.payload
                     }
                 }
                 if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_WATCHING)) {
-                    console.log("GET_COURSE_WATCHING data home", data)
                     if (data.data && data.data.payload) {
                         this.courseWatching = data.data.payload
                     }
@@ -258,14 +255,14 @@ export class HomeView extends BaseView {
     renderNotLogin = () => {
         return (
             <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>Let's get you started</Text>
+                <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>{localizes('home.letStarted')}</Text>
                 <Pressable style={{ marginTop: Constants.MARGIN_XX_LARGE * 2, alignItems: 'center' }} onPress={() => { this.props.navigation.navigate('Browser') }}>
                     <Image source={ic_grid_white} />
-                    <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>Browser new and popular course</Text>
+                    <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>{localizes('home.browser')}</Text>
                 </Pressable>
                 <Pressable style={{ marginTop: Constants.MARGIN_X_LARGE * 3, alignItems: 'center' }} onPress={() => { this.props.navigation.navigate('Search') }}>
                     <Image source={ic_search_white} />
-                    <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>Search the library</Text>
+                    <Text style={[commonStyles.text, { marginTop: Constants.MARGIN_LARGE }]}>{localizes('home.search')}</Text>
                 </Pressable>
             </View>
         )
@@ -274,16 +271,16 @@ export class HomeView extends BaseView {
     renderListCourses = () => {
         return (
             <View>
-                <View style={{ marginBottom: Constants.MARGIN_X_LARGE }}>
+                <View style={{ marginBottom: Constants.MARGIN_X_LARGE }}> 
                     <Image source={img_iron_man} style={{ width: 120, height: 150, alignSelf: 'flex-end' }} resizeMode={'contain'} />
                     <View style={{ position: 'absolute', bottom: 20, left: 16 }}>
-                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM }}>Welcome to VietStudy !</Text>
-                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM, marginTop: 20, width: Constants.MAX_WIDTH * 0.8 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Text>
+                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM }}>{localizes("home.welcome")}</Text>
+                        <Text style={{ ...commonStyles.text, fontSize: Fonts.FONT_SIZE_MEDIUM, marginTop: 20, width: Constants.MAX_WIDTH * 0.8 }}>{localizes("home.intro")}</Text>
                     </View>
                 </View>
                 {this.courseWatching.length > 0 && this.renderListCourseWatching()}
-                {this.renderList('Khóa học được đánh giá cao', this.courseTopRate, categoryId.TOP_RATE)}
-                {this.renderList('Khóa học bán chạy nhất', this.courseTopSell, categoryId.TOP_SELL)}
+                {this.renderList(localizes('home.topRate'), this.courseTopRate, categoryId.TOP_RATE)}
+                {this.renderList(localizes('home.topSell'), this.courseTopSell, categoryId.TOP_SELL)}
             </View>
         )
     }
@@ -323,12 +320,12 @@ export class HomeView extends BaseView {
         return (
             <View>
                 <View style={styles.titleList}>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>Đang học</Text>
+                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_LARGE }]}>{localizes('home.watching')}</Text>
                     <Pressable
                         android_ripple={Constants.ANDROID_RIPPLE}
                         style={{}}
                         onPress={() => this.props.navigation.navigate('WatchingList')}>
-                        <Text style={[commonStyles.textSmall]}>{'See all >'}</Text>
+                        <Text style={[commonStyles.textSmall]}>{localizes('more')}</Text>
                     </Pressable>
                 </View>
                 <FlatListCustom
@@ -380,7 +377,7 @@ export class HomeView extends BaseView {
         return (
             <View style={{ flex: 1 }}>
                 <Header
-                    title={"Home"}
+                    title={localizes('home.title')}
                     visibleBack={false}
                     visibleAccount={true}
                     user={this.state.user}

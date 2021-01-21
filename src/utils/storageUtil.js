@@ -8,6 +8,7 @@ export default class StorageUtil {
     static FCM_TOKEN = "fcmToken";
     static VERSION = 'versionApp';
     static FIREBASE_TOKEN = 'firebase-token';
+    static LANGUAGE = 'language';
 
     /**
      * Store data

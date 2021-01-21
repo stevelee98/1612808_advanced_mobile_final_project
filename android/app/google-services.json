@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "661179561027",
+    "project_id": "advance-mobile-8fd7e",
+    "storage_bucket": "advance-mobile-8fd7e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661179561027:android:bbdf65e78fb080b7a050f6",
+        "android_client_info": {
+          "package_name": "com.steve.finalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "661179561027-jslp95v58lr6m5vp6bg743alia65mhrb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.steve.finalproject",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "661179561027-lqc2ieeuflfoke1s87ql06qsccc1t2u5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.steve.finalproject",
+            "certificate_hash": "a39b6239e1195c62090d3b3031e6e4e288518ced"
+          }
+        },
+        {
+          "client_id": "661179561027-ii0ksq3las4t9s5qagt16q2o8pqr4d8l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8fxFiJfdDhic-0CMsY-3pDBquEdqxnGQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "661179561027-ii0ksq3las4t9s5qagt16q2o8pqr4d8l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,7 +6,7 @@ import FlatListCustom from 'components/flatListCustom';
 import Dialog, { DIALOG_WIDTH } from 'components/dialog'
 import commonStyles from 'styles/commonStyles';
 import { Colors } from 'values/colors';
-// import { localizes } from 'locales/i18n';
+import { localizes } from 'locales/i18n';
 import ic_cancel_white from "images/ic_cancel_white.png";
 import Utils from 'utils/utils';
 import Hr from './hr';
@@ -51,14 +51,14 @@ class DialogCustom extends Component {
                     style={{ marginVertical: Constants.MARGIN }}
                     activeOpacity={0}
                     onPress={() => onPressCamera()}>
-                    <Text style={[commonStyles.text, { marginLeft: 0, marginVertical: Constants.MARGIN_LARGE }, styleItemRow]} >Camera</Text>
+                    <Text style={[commonStyles.text, { marginLeft: 0, marginVertical: Constants.MARGIN_LARGE }, styleItemRow]} >{localizes('camera')}</Text>
                 </TouchableOpacity>
                 <Hr color={Colors.COLOR_GREY_LIGHT} width={1} style={{ opacity: 0.6 }} />
                 <TouchableOpacity
                     style={{ marginTop: Constants.MARGIN_LARGE }}
                     activeOpacity={0}
                     onPress={() => onPressGallery()}>
-                    <Text style={[commonStyles.text, { marginLeft: 0, marginBottom: Constants.MARGIN }, styleItemRow]} >Thư viện</Text>
+                    <Text style={[commonStyles.text, { marginLeft: 0, marginBottom: Constants.MARGIN }, styleItemRow]} >{localizes('library')}</Text>
                 </TouchableOpacity>
             </View>
         )

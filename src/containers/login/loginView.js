@@ -19,6 +19,7 @@ import Utils from 'utils/utils';
 import { ActionEvent, getActionSuccess } from 'actions/actionEvent';
 import { ErrorCode } from 'config/errorCode';
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin';
+import { localizes } from 'locales/i18n';
 
 class LoginView extends BaseView {
 
@@ -96,7 +97,6 @@ class LoginView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.LOGIN) || this.props.action == getActionSuccess(ActionEvent.LOGIN_GOOGLE)) {
-                    console.log("Data login", data)
                     if (data != null) {
                         StorageUtil.storeItem(StorageUtil.USER_PROFILE, data.userInfo);
                         StorageUtil.storeItem(StorageUtil.USER_TOKEN, data.token);
@@ -110,7 +110,7 @@ class LoginView extends BaseView {
                     }
                 }
             } else if (this.props.errorCode == ErrorCode.ERROR_400) {
-                this.showMessage("Email hoặc mật khẩu không hợp lệ hoặc chưa kích hoạt tài khoản")
+                this.showMessage(localizes('login.error'))
             } else {
                 this.handleError(this.props.errorCode, this.props.error);
             }
@@ -129,19 +129,19 @@ class LoginView extends BaseView {
     validateData() {
         const { email, password } = this.state;
         if (email == null) {
-            this.showMessage("Please fill your email");
+            this.showMessage(localizes('login.fillEmail'));
             this.email.focus()
             return false;
         } else if (email.trim() == '') {
-            this.showMessage("Please fill your email");
+            this.showMessage(localizes('login.fillEmail'));
             this.email.focus()
             return false;
         } else if (!Utils.validateEmail(email.trim())) {
-            this.showMessage("Please fill right email format");
+            this.showMessage(localizes('login.fillEmailRightFormat'));
             this.email.focus()
             return false;
         } else if (Utils.isNull(password)) {
-            this.showMessage("Please fill password");
+            this.showMessage(localizes('login.fillPassword'));
             this.password.focus();
             return false;
         }
@@ -175,8 +175,8 @@ class LoginView extends BaseView {
         return (
             <View style={styles.container}>
                 <Header
-                    title={"Sign In"}
-                    onBack={() => { }}
+                    title={localizes('login.title').toUpperCase()}
+                    onBack={() => { this.onBack() }}
                 />
                 <Content style={{ flex: 1, backgroundColor: Colors.COLOR_BACKGROUND, paddingHorizontal: Constants.PADDING_LARGE }}>
                     {this.renderForm()}
@@ -195,32 +195,29 @@ class LoginView extends BaseView {
                 <TextInputCustom
                     onRef={(r) => (this.email = r)}
                     oneLine={true}
-                    label={'Email'}
-                    placeholder={'Email'}
+                    label={localizes('login.email')}
+                    placeholder={localizes('login.email')}
                     warnLabel={validateEmail}
                     value={email}
                     onChangeText={(txt) => {
-                        this.setState({ email: txt, validateEmail: null });
+                        this.setState({ email: txt });
                     }}
                     onSubmitEditing={() => {
                         this.password.focus();
                     }}
                     keyboardType={"email-address"}
                     returnKeyType={'next'}
-                    onBlur={() => {
-                        this.setState({ validateEmail: null });
-                    }}
                 />
                 <TextInputCustom
                     onRef={(ref) => (this.password = ref)}
                     oneLine={true}
-                    label={'Password'}
+                    label={localizes('login.password')}
                     warnLabel={validatePass}
-                    placeholder={'Password'}
+                    placeholder={localizes('login.password')}
                     value={password}
                     secureTextEntry={this.state.hidePassword}
                     onChangeText={(txt) => {
-                        this.setState({ password: txt, validatePass: null });
+                        this.setState({ password: txt });
                     }}
                     onSubmitEditing={() => {
                         Keyboard.dismiss();
@@ -228,9 +225,6 @@ class LoginView extends BaseView {
                     returnKeyType={'done'}
                     contentRight={this.state.hidePassword ? ic_eye_lock_grey : ic_eye_grey}
                     onPressRight={this.managePasswordVisibility}
-                    onBlur={() => {
-                        this.setState({ validatePass: null });
-                    }}
                 />
             </View>
         );
@@ -241,19 +235,19 @@ class LoginView extends BaseView {
             <View style={{ marginTop: Constants.MARGIN }}>
                 <Button
                     onPress={this.login}
-                    title={"SIGN IN"}
+                    title={localizes('login.title').toUpperCase()}
                     titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }}
                     backgroundColor={Colors.COLOR_DRK_GREY} />
                 <Button
                     onPress={() => { this.props.navigation.navigate("Register") }}
-                    title={"SIGN UP FREE"}
+                    title={localizes('login.signUp').toUpperCase()}
                     border={{ borderWidth: 1, borderColor: Colors.COLOR_BLUE }}
                     titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />
                 <Button
                     onPress={() => { this.props.navigation.navigate('ForgetPass') }}
-                    title={"FORGOT PASSWORD?"}
+                    title={localizes('login.forgotPass').toUpperCase()}
                     titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }} />
-                <Button title={"USE GOOGLE SIGN IN"}
+                <Button title={localizes('login.googleSignIn').toUpperCase()}
                     onPress={this.loginGoogle}
                     titleStyle={{ fontWeight: 'bold', color: Colors.COLOR_BLUE }}
                 />

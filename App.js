@@ -21,6 +21,8 @@ import SplashScreen from 'react-native-splash-screen';
 import { Provider } from 'react-redux';
 import { Root } from 'native-base';
 import { MenuProvider } from 'react-native-popup-menu';
+import I18n from 'react-native-i18n';
+import StorageUtil from 'utils/storageUtil';
 
 export default class App extends React.Component {
 
@@ -29,7 +31,23 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
+        this.setLanguage()
         SplashScreen.hide()
+    }
+
+    setLanguage() {
+        StorageUtil.retrieveItem(StorageUtil.LANGUAGE).then((language) => {
+            console.log('language', language);
+            if (language != null) {
+                I18n.locale = language;
+                StorageUtil.storeItem(StorageUtil.LANGUAGE, language)
+            } else {
+                I18n.locale = 'vi';
+                StorageUtil.storeItem(StorageUtil.LANGUAGE, 'vi')
+            }
+        }).catch((error) => {
+            console.log(`Promise is rejected with error: ${error}`);
+        });
     }
 
     render() {
@@ -37,7 +55,7 @@ export default class App extends React.Component {
             <Provider store={store}>
                 <Root>
                     <MenuProvider>
-                        <AppNavigator/>
+                        <AppNavigator />
                     </MenuProvider>
                 </Root>
             </Provider>

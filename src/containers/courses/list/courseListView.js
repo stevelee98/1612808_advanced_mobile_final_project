@@ -122,7 +122,6 @@ class CourseListView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.GET_NEW_COURSES)) {
-                    console.log("GET_NEW_COURSES data", data)
                     if (data.data && data.data.payload) {
                         let payload = data.data.payload
                         if (payload.length > 0) {
@@ -140,7 +139,6 @@ class CourseListView extends BaseView {
                         this.showNoData = true;
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.SEARCH)) {
-                    console.log("SEARCH DATA ", data)
                     if (data.data && data.data.payload.rows) {
                         let payload = data.data.payload.rows
                         if (payload.length > 0) {
@@ -161,7 +159,6 @@ class CourseListView extends BaseView {
                     || this.props.action == getActionSuccess(ActionEvent.GET_COURSE_TOP_SELL)) {
                     if (data.data && data.data.payload) {
                         let payload = data.data.payload
-                        console.log("payload tôp rate: ", payload);
                         if (payload.length > 0) {
                             this.state.enableLoadMore = !(payload.length < Constants.PAGE_SIZE)
                             payload.forEach(element => {
@@ -207,7 +204,6 @@ class CourseListView extends BaseView {
     }
 
     onLoadMore = () => {
-        console.log("this.state.enableLoadMore", this.state.enableLoadMore);
         if (this.state.enableLoadMore) {
             this.state.isLoadingMore = true;
             this.updateFilter()

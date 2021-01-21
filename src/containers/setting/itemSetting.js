@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Switch } from 'react-native';
+import { View, Text, Switch, Pressable } from 'react-native';
 import commonStyles from 'styles/commonStyles';
 import { Colors } from 'values/colors';
 import { Constants } from 'values/constants';
@@ -23,10 +23,11 @@ class ItemSetting extends PureComponent {
     render() {
         const { item, index, length, onPress } = this.props;
         return (
-            <View>
+            <Pressable android_ripple={Constants.ANDROID_RIPPLE}
+                onPress={() => { if (item.onPress) item.onPress() }}>
                 <View style={{
-                    flexDirection: 'row', alignItems: 'center', 
-                    paddingVertical: Constants.PADDING_LARGE + 2,
+                    flexDirection: 'row', alignItems: 'center',
+                    paddingVertical: Constants.PADDING_LARGE + 6,
                     paddingHorizontal: Constants.PADDING_X_LARGE
                 }}>
                     <View style={{ flex: 1 }}>
@@ -41,8 +42,8 @@ class ItemSetting extends PureComponent {
                         value={this.state.isEnabled}
                     />}
                 </View>
-                {(index == 2 || index == 12 || index == 13) && <View style={{ backgroundColor: Colors.COLOR_DRK_GREY, height: 1, width: Constants.MAX_WIDTH }} />}
-            </View>
+                {(index == 2 || index == 5 || index == 6) && <View style={{ backgroundColor: Colors.COLOR_DRK_GREY, height: 1, width: Constants.MAX_WIDTH }} />}
+            </Pressable>
         );
     }
 }

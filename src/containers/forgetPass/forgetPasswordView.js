@@ -19,6 +19,7 @@ import { ErrorCode } from 'config/errorCode';
 import * as userActions from 'actions/userActions';
 import Utils from 'utils/utils';
 import BaseView from 'containers/base/baseView';
+import { localizes } from 'locales/i18n';
 
 class ForgetPasswordView extends BaseView {
 
@@ -48,16 +49,15 @@ class ForgetPasswordView extends BaseView {
         if (this.props.errorCode != ErrorCode.ERROR_INIT) {
             if (this.props.errorCode == ErrorCode.ERROR_SUCCESS) {
                 if (this.props.action == getActionSuccess(ActionEvent.FORGOT_PASSWORD)) {
-                    console.log("FORGOT_PASSWORD data", data)
                     if (data != null) {
-                        this.showMessage("Email đã được gửi, vui lòng kiểm tra email của bạn")
+                        this.showMessage(localizes('forgotPassword.sendSuccess'))
                         setTimeout(() => {
                             this.onBack()
                         })
                     }
                 }
             } else if (this.props.errorCode == ErrorCode.ERROR_500 || this.props.errorCode == ErrorCode.ERROR_400) {
-                this.showMessage("Email has not been registered")
+                this.showMessage(localizes('forgotPassword.emailNotRegistered'))
             } else {
                 this.handleError(this.props.errorCode, this.props.error);
             }
@@ -67,15 +67,15 @@ class ForgetPasswordView extends BaseView {
     validateData() {
         const { email } = this.state;
         if (email == null) {
-            this.showMessage("Please fill your email");
+            this.showMessage(localizes('forgotPassword.fillEmail'));
             this.email.focus()
             return false;
         } else if (email.trim() == '') {
-            this.showMessage("Please fill your email");
+            this.showMessage(localizes('forgotPassword.fillEmail'));
             this.email.focus()
             return false;
         } else if (!Utils.validateEmail(email.trim())) {
-            this.showMessage("Please fill right email format");
+            this.showMessage(localizes('forgotPassword.fillEmailRightFormat'));
             this.email.focus()
             return false;
         }
@@ -93,8 +93,8 @@ class ForgetPasswordView extends BaseView {
                     contentContainerStyle={{ flexGrow: 1 }}
                     style={{ flexGrow: 1, backgroundColor: Colors.COLOR_BACKGROUND, paddingHorizontal: Constants.PADDING_LARGE }}>
                     <View style={{ marginHorizontal: Constants.MARGIN_X_LARGE, marginTop: Constants.MARGIN_XX_LARGE }}>
-                        <Text style={{ ...commonStyles.textBold, fontSize: Fonts.FONT_SIZE_XX_LARGE }}>Forgot password</Text>
-                        <Text style={{ ...commonStyles.text, width: "80%", marginTop: Constants.MARGIN_XX_LARGE }}>Enter your email address and we'll send you a link to reset your password</Text>
+                        <Text style={{ ...commonStyles.textBold, fontSize: Fonts.FONT_SIZE_XX_LARGE }}>{localizes("forgotPassword.title")}</Text>
+                        <Text style={{ ...commonStyles.text, width: "80%", marginTop: Constants.MARGIN_XX_LARGE }}>{localizes("forgotPassword.guide")}</Text>
                     </View>
                     {this.renderForm()}
                     {this.renderButton()}
@@ -111,8 +111,8 @@ class ForgetPasswordView extends BaseView {
                 <TextInputCustom
                     onRef={(r) => (this.email = r)}
                     oneLine={true}
-                    label={'Your email'}
-                    placeholder={'Please input your email'}
+                    label={localizes('forgotPassword.email')}
+                    placeholder={localizes('forgotPassword.email')}
                     value={email}
                     onChangeText={(txt) => {
                         this.setState({ email: txt });
@@ -139,7 +139,7 @@ class ForgetPasswordView extends BaseView {
                             this.props.forgotPassword(filter)
                         }
                     }}
-                    title={"SEND EMAIL"}
+                    title={localizes("forgotPassword.sendEmail").toUpperCase()}
                     titleStyle={{ fontWeight: 'bold', color: '#a5a5a5' }}
                     backgroundColor={Colors.COLOR_DRK_GREY} />
             </View>

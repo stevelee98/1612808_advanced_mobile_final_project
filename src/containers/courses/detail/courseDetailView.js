@@ -48,6 +48,7 @@ import loader_icon from 'images/loader-icon.png';
 import RNFetchBlob from 'rn-fetch-blob'
 import RNFS from 'react-native-fs';
 import * as Progress from 'react-native-progress'
+import { localizes } from "locales/i18n";
 
 export class CourseDetailView extends BaseView {
 
@@ -191,7 +192,7 @@ export class CourseDetailView extends BaseView {
                         this.showMessage("Đăng ký thành công")
                     }
                     if (data.data && data.data.errorCode) {
-                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                        this.showMessage(localizes('error_in_process'))
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_RATING)) {
                     console.log("GET_COURSE_RATING data", data)
@@ -199,7 +200,7 @@ export class CourseDetailView extends BaseView {
                         this.showMessage("Đăng ký thành công")
                     }
                     if (data.data && data.data.errorCode) {
-                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                        this.showMessage(localizes('error_in_process'))
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.SAVE_COURSE)) {
                     console.log("SAVE_COURSE data", data)
@@ -208,11 +209,11 @@ export class CourseDetailView extends BaseView {
                         if (data.data.likeStatus) {
                             this.showMessage("Lưu khóa học thành công")
                         } else {
-                            this.showMessage("Bỏ lưu khóa học thành công")
+                            this.showMessage(localizes('error_in_process'))
                         }
                     }
                     if (data.data && data.data.errorCode) {
-                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                        this.showMessage(localizes('error_in_process'))
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_SAVE_COURSE_STATUS)) {
                     console.log("GET_SAVE_COURSE_STATUS data", data)
@@ -220,7 +221,7 @@ export class CourseDetailView extends BaseView {
                         this.state.likeStatus = data.data.likeStatus
                     }
                     if (data.data && data.data.errorCode) {
-                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                        this.showMessage(localizes('error_in_process'))
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_LESSON_VIDEO)) {
                     console.log("GET_LESSON_VIDEO data", data)
@@ -228,7 +229,7 @@ export class CourseDetailView extends BaseView {
                         this.state.video = data.data.payload
                     }
                     if (data.data && data.data.errorCode) {
-                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                        this.showMessage(localizes('error_in_process'))
                     }
                 } else if (this.props.action == getActionSuccess(ActionEvent.GET_COURSE_PROCESS)) {
                     console.log("GET_COURSE_PROCESS data", data)
@@ -238,7 +239,7 @@ export class CourseDetailView extends BaseView {
                     } else if (data.data && data.data.status == 400) {
                         this.state.permission = false
                     } else if (data.data && data.data.errorCode) {
-                        this.showMessage("Có lỗi xảy ra, vui lòng thử lại")
+                        this.showMessage(localizes('error_in_process'))
                     }
                 }
                 this.state.refreshing = false
@@ -302,7 +303,7 @@ export class CourseDetailView extends BaseView {
                 this.setState({ progress: received / total })
             }).then((res) => {
                 this.downloaded = Platform.OS === "ios" ? res.data : res.path();
-                this.showMessage("Tải thành công")
+                this.showMessage(localizes('course.downloadSuccess'))
                 this.setState({ progress: 1, isDownloaded: true });
             }).catch((error) => {
                 console.log("error while download", error);
@@ -333,7 +334,7 @@ export class CourseDetailView extends BaseView {
                     {this.renderButton()}
                     {/* {this.renderButtonBottom()} */}
                     <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, marginTop: Constants.MARGIN_LARGE }}>
-                        <Text style={{ ...commonStyles.text }}>Bạn sẽ học được</Text>
+                        <Text style={{ ...commonStyles.text }}>{localizes('course.whatStudy')}</Text>
                         <View style={{ marginTop: Constants.MARGIN, flexDirection: 'row', flexWrap: 'wrap' }}>
                             {this.dataCourse && this.dataCourse.learnWhat ? this.dataCourse.learnWhat.map((item, index) => {
                                 return (
@@ -355,7 +356,7 @@ export class CourseDetailView extends BaseView {
                         </View>
                     </View>
                     <View style={{ paddingHorizontal: Constants.PADDING_X_LARGE, marginVertical: Constants.MARGIN_X_LARGE }}>
-                        <Text style={{ ...commonStyles.text }}>Yêu cầu</Text>
+                        <Text style={{ ...commonStyles.text }}>{localizes('course.requirement')}</Text>
                         <View style={{ marginTop: Constants.MARGIN, flexDirection: 'row', flexWrap: 'wrap' }}>
                             {this.dataCourse && this.dataCourse.requirement ? this.dataCourse.requirement.map((item, index) => {
                                 return (
@@ -375,7 +376,7 @@ export class CourseDetailView extends BaseView {
                                 )
                             }) : null}
                         </View>
-                        {!this.state.permission && this.renderButtonRegister()}
+                        {!this.state.permission && this.state.user && this.renderButtonRegister()}
                     </View>
                     <View style={{ backgroundColor: Colors.COLOR_BLACK, flex: 1 }}>
                         {this.state.user ? this.renderTabs() : this.renderButtonLogin()}
@@ -398,7 +399,7 @@ export class CourseDetailView extends BaseView {
             <Pressable style={styles.buttonSignIn} onPress={() => {
                 this.showLoginView({ fromScreen: 'CourseDetail', id: this.id, callBack: this.getProfile })
             }}>
-                <Text style={[commonStyles.text]}>Đăng nhập để tham gia khóa học</Text>
+                <Text style={[commonStyles.text]}>{localizes('course.gotoLogin')}</Text>
             </Pressable>
         )
     }
@@ -507,7 +508,7 @@ export class CourseDetailView extends BaseView {
                         </View>
                         <View style={styles.viewCat}>
                             <Text style={[commonStyles.textSmall, { marginTop: Constants.MARGIN_LARGE }]}>{DateUtil.convertFromFormatToFormat(this.dataCourse?.createdAt, DateUtil.FORMAT_DATE_TIME_ZONE_T, DateUtil.FORMAT_DATE_V2)} <Text style={{ ...commonStyles.textSmallBold }}>{'\u0387'} </Text> {this.dataCourse && StringUtil.convertNumberHourToStringTime(this.dataCourse.totalHours)}
-                                <Text>   Đã học : {StringUtil.convertNumberHourToStringTime(current)} ({this.state.progressCourse ? this.state.progressCourse : 0}%)</Text>
+                                <Text>   {localizes('course.watched')} : {StringUtil.convertNumberHourToStringTime(current)} ({this.state.progressCourse ? this.state.progressCourse : 0}%)</Text>
                             </Text>
                             <View style={styles.viewRating}>
                                 {/* <AirbnbRating
@@ -545,20 +546,20 @@ export class CourseDetailView extends BaseView {
                     <View style={styles.imgBtnAction}>
                         <Image source={this.state.likeStatus ? ic_bookmark_yellow : ic_book_mark} />
                     </View>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>Yêu thích</Text>
+                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>{localizes('course.favorite')}</Text>
                 </Pressable>
                 <Pressable
                     onPress={() => {
                         if (this.state.user) {
                             if (this.state.video) {
                                 if (this.state.video.videoUrl && this.state.video.videoUrl.indexOf('https://youtube.com') != -1) {
-                                    this.showMessage("Không thể tải đối với bài học là video youtube")
+                                    this.showMessage(localizes('course.cannotDownload'))
                                 } else
                                     this.downloadVideo(this.state.video.videoUrl)
                             } else
-                                this.showMessage("Vui lòng chọn bài học")
+                                this.showMessage(localizes('course.pleaseChooseLesson'))
                         } else {
-                            this.showMessage("Bạn cần đăng nhập để thực hiện chức năng này")
+                            this.showMessage(localizes('course.neededLogin'))
                         }
                     }}
                     android_ripple={Constants.ANDROID_RIPPLE}
@@ -566,7 +567,7 @@ export class CourseDetailView extends BaseView {
                     <View style={styles.imgBtnAction}>
                         <Image source={this.state.isDownloaded ? ic_download_white : ic_download_blue_gray} />
                     </View>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>{!this.state.isDownloaded ? 'Đang tải' : 'Tải về máy'}</Text>
+                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>{!this.state.isDownloaded ? localizes('course.downloading') : localizes('course.download')}</Text>
                     {this.renderLoadingDownload()}
                 </Pressable>
                 <Pressable
@@ -576,9 +577,9 @@ export class CourseDetailView extends BaseView {
                     <View style={styles.imgBtnAction}>
                         <Image source={ic_online} />
                     </View>
-                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>Chia sẻ</Text>
+                    <Text style={[commonStyles.text, { fontSize: Fonts.FONT_SIZE_XX_SMALL }]}>{localizes('course.share')}</Text>
                 </Pressable>
-            </View >
+            </View>
         )
     }
 
@@ -639,8 +640,8 @@ export class CourseDetailView extends BaseView {
                     }}>
                     {this.dataCourse ?
                         this.dataCourse.price === 0 ?
-                            <Text style={commonStyles.text}>THAM GIA KHÓA HỌC</Text> :
-                            <Text style={commonStyles.text}>Mua khóa học với giá {StringUtil.formatStringCashNoUnit(this.dataCourse.price)}</Text>
+                            <Text style={commonStyles.text}>{localizes('course.enroll').toUpperCase()}</Text> :
+                            <Text style={commonStyles.text}>{localizes('course.buy')} {StringUtil.formatStringCashNoUnit(this.dataCourse.price)}</Text>
                         : null}
                 </Pressable>
             </View>
@@ -668,7 +669,7 @@ export class CourseDetailView extends BaseView {
                     tabBarUnderlineStyle={{ height: 3, backgroundColor: Colors.COLOR_BLUE, borderRadius: Constants.CORNER_RADIUS }}
                 >
                     {this.state.permission && <Tab
-                        heading={'BÀI HỌC'}
+                        heading={localizes('course.lesson')}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         textStyle={{ color: Colors.COLOR_DRK_GREY }}
@@ -679,7 +680,7 @@ export class CourseDetailView extends BaseView {
                         </View>
                     </Tab>}
                     {this.state.permission && <Tab
-                        heading={'CÂU HỎI'}
+                        heading={localizes('course.question')}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         textStyle={{ color: Colors.COLOR_DRK_GREY }}
@@ -690,7 +691,7 @@ export class CourseDetailView extends BaseView {
                         </View>
                     </Tab>}
                     {this.state.permission && <Tab
-                        heading={'GHI CHÚ'}
+                        heading={localizes('course.note')}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         textStyle={{ color: Colors.COLOR_DRK_GREY }}
@@ -701,7 +702,7 @@ export class CourseDetailView extends BaseView {
                         </View>
                     </Tab>}
                     <Tab
-                        heading={'ĐÁNH GIÁ'}
+                        heading={localizes('course.rating')}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         textStyle={{ color: Colors.COLOR_DRK_GREY }}
@@ -712,7 +713,7 @@ export class CourseDetailView extends BaseView {
                         </View>
                     </Tab>
                     {this.state.permission && <Tab
-                        heading={'BÀI TẬP'}
+                        heading={localizes('course.exercise')}
                         tabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         activeTabStyle={{ backgroundColor: Colors.COLOR_BLACK }}
                         textStyle={{ color: Colors.COLOR_DRK_GREY }}
